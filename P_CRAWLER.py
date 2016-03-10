@@ -499,6 +499,17 @@ class Ortho_Stats:
         self.e_value = None
         self.res_val = None
 
+    def df_simple_sampler(self,
+                          in_size):
+        """Returns Ortho_Stats.inter_df_stats (pandas.DataFrame) sampled using
+        pandas.DataFrame.sample method in a given size.
+
+        Args:
+            in_size (int): desired size of the sampled Ortho_Stats.inter_df_stats
+            (pandas.DataFrame)
+        """
+        self.inter_df_stats = self.inter_df_stats.sample(in_size)
+
     def df_num_prop(self,
                     in_prof_sim_lev):
         """Returns Ortho_Stats.tot_inter_num (int),
