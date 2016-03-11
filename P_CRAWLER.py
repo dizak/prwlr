@@ -452,8 +452,8 @@ class Ortho_Interactions():
                                                        self.genes_inter)
                                  for i in self.interact_df.itertuples()]
         prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
-                                              index = self.interact_df.index,
-                                              columns = ["Profiles_similarity_score"])
+                                          index = self.interact_df.index,
+                                          columns = ["Profiles_similarity_score"])
         conc_q_a_prof_temp_df = pd.DataFrame(conc_qa_prof_temp_list,
                                              index = self.interact_df.index,
                                              columns = ["Query_gene_profile", "Array_gene_profile"])
@@ -501,14 +501,35 @@ class Ortho_Stats:
 
     def df_simple_sampler(self,
                           in_size):
-        """Returns Ortho_Stats.inter_df_stats (pandas.DataFrame) sampled using
-        pandas.DataFrame.sample method in a given size.
+        """Returns Ortho_Stats.inter_df_stats (pandas.DataFrame) reduced to a
+        given size using pandas.DataFrame.sample method on the whole DataFrame
+        at once.
 
         Args:
             in_size (int): desired size of the sampled Ortho_Stats.inter_df_stats
             (pandas.DataFrame)
         """
         self.inter_df_stats = self.inter_df_stats.sample(in_size)
+
+    def df_indep_sampler(self,
+                         in_size):
+        """Returns Ortho_Stats.inter_df_stats (pandas.DataFrame) reduced to a
+        given size using pandas.DataFrame.sample method on the gene names
+        independently.
+
+        Args:
+            in_size (int): desired size of the sampled Ortho_Stats.inter_df_stats
+            (pandas.DataFrame)
+        """
+        out_df = pd.DataFrame()
+        while len(out_df) < in_size:
+            q_g_names_sam_ser = self.inter_df_stats["Query_gene_name"].sample(in_size)
+            a_g_names_sam_ser = self.inter_df_stats["Array_gene_name"].sample(in_size)
+            q_a_sam_conc_df = pd.concat([q_g_names_sam_ser,
+                                         a_g_names_sam_ser],
+                                        axis=1).dropna()
+            out_df = pd.concat([q_a_sam_conc_df, out_df])
+        self.inter_df_stats = pd.merge(self.inter_df_stats, out_df)
 
     def df_num_prop(self,
                     in_prof_sim_lev):
