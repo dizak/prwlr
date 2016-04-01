@@ -497,6 +497,7 @@ class Ortho_Stats:
         self.DMF_negative_num = None
         self.sim_prof_num = None
         self.e_value = None
+        self.p_value = None
         self.res_val = None
 
     def df_simple_sampler(self,
@@ -531,6 +532,24 @@ class Ortho_Stats:
             out_df = pd.concat([q_a_sam_conc_df, out_df])
         self.inter_df_stats = pd.merge(self.inter_df_stats, out_df)
 
+    def df_perm(self,
+                e_value):
+        """Returns ... from two vertexes shuffled given number of times using
+        pandas.Series.sample method on series selected from DataFrame passed
+        into Ortho_Stats class.
+
+        Args:
+            e_value (int): number of shuffling actions to perform   .
+        """
+        DMF_sr = self.inter_df_stats[["Query_SMF", "Array_SMF", "DMF"]]
+        sim_prof_sr = self.inter_df_stats["Profiles_similarity_score"]
+        for i in range(e_value):
+            DMF_sr = DMF_sr.sample(len(DMF_sr))
+            sim_prof_sr = sim_prof_sr.sample(len(sim_prof_sr))
+        DMF_sr.index = range(len(DMF_sr))
+        sim_prof_sr.index = range(len(sim_prof_sr))
+        self.inter_df_stats = pd.concat([DMF_sr, sim_prof_sr], axis=1)
+
     def df_num_prop(self,
                     in_prof_sim_lev):
         """Returns Ortho_Stats.tot_inter_num (int),
@@ -550,8 +569,8 @@ class Ortho_Stats:
                              self.inter_df_stats["Query_SMF"]) &\
                             (self.inter_df_stats["DMF"] <\
                              self.inter_df_stats["Array_SMF"])
-        sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
-                                               in_prof_sim_lev)
+        sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] ==\
+                         in_prof_sim_lev)
         self.tot_inter_num = len(self.inter_df_stats)
         self.DMF_positive_num = len(self.inter_df_stats[positive_DMF_bool])
         self.DMF_negative_num = len(self.inter_df_stats[negative_DMF_bool])
@@ -559,7 +578,7 @@ class Ortho_Stats:
         self.res_val = len(self.inter_df_stats[positive_DMF_bool & sim_prof_bool])
 
     def e_val_calc(self):
-        """Returns Ortho_Stats.e_value (int) whick is an expected number of
+        """Returns Ortho_Stats.e_value (int) which is an expected number of
         interactions with positive DMF and similar gene profiles by chance.
         """
         self.e_value = (self.DMF_positive_num * self.sim_prof_num) /\
