@@ -490,65 +490,60 @@ class Ortho_Stats:
     properties.
     """
     def __init__(self,
+                 query_species_Genome,
+                 gene_profiles_Genome,
                  inter_df_Ortho_Interactions):
+        self.query_species_stats = query_species_Genome
         self.inter_df_stats = inter_df_Ortho_Interactions
+        self.gene_profiles_stats = gene_profiles_Genome
         self.tot_inter_num = None
         self.DMF_positive_num = None
         self.DMF_negative_num = None
         self.sim_prof_num = None
         self.e_value = None
-        self.p_value = None
         self.res_val = None
+        self.res_perm_val = []
 
-    def df_simple_sampler(self,
-                          in_size):
-        """Returns Ortho_Stats.inter_df_stats (pandas.DataFrame) reduced to a
-        given size using pandas.DataFrame.sample method on the whole DataFrame
-        at once.
+    def df_selector(self,
+                    DMF_pos = True):
+        positive_DMF_bool = (self.inter_df_stats["DMF"] >\
+                             self.inter_df_stats["Query_SMF"]) &\
+                            (self.inter_df_stats["DMF"] >\
+                             self.inter_df_stats["Array_SMF"])
+        negative_DMF_bool = (self.inter_df_stats["DMF"] <\
+                             self.inter_df_stats["Query_SMF"]) &\
+                            (self.inter_df_stats["DMF"] <\
+                             self.inter_df_stats["Array_SMF"])
+        if DMF_pos == True:
+            self.inter_df_stats = self.inter_df_stats[positive_DMF_bool]
+        else:
+            self.inter_df_stats = self.inter_df_stats[negative_DMF_bool]
 
-        Args:
-            in_size (int): desired size of the sampled Ortho_Stats.inter_df_stats
-            (pandas.DataFrame)
-        """
-        self.inter_df_stats = self.inter_df_stats.sample(in_size)
-
-    def df_indep_sampler(self,
-                         in_size):
-        """Returns Ortho_Stats.inter_df_stats (pandas.DataFrame) reduced to a
-        given size using pandas.DataFrame.sample method on the gene names
-        independently.
-
-        Args:
-            in_size (int): desired size of the sampled Ortho_Stats.inter_df_stats
-            (pandas.DataFrame)
-        """
-        out_df = pd.DataFrame()
-        while len(out_df) < in_size:
-            q_g_names_sam_ser = self.inter_df_stats["Query_gene_name"].sample(in_size)
-            a_g_names_sam_ser = self.inter_df_stats["Array_gene_name"].sample(in_size)
-            q_a_sam_conc_df = pd.concat([q_g_names_sam_ser,
-                                         a_g_names_sam_ser],
-                                        axis=1).dropna()
-            out_df = pd.concat([q_a_sam_conc_df, out_df])
-        self.inter_df_stats = pd.merge(self.inter_df_stats, out_df)
-
-    def df_perm(self,
-                e_value):
-        """Returns ... from two vertexes shuffled given number of times using
-        pandas.Series.sample method on series selected from DataFrame passed
-        into Ortho_Stats class.
-
-        Args:
-            e_value (int): number of shuffling actions to perform   .
-        """
-        DMF_sr = self.inter_df_stats[["Query_SMF", "Array_SMF", "DMF"]]
-        sim_prof_sr = self.inter_df_stats["Profiles_similarity_score"]
+    def prof_perm(self,
+                  e_value,
+                  in_prof_sim_lev):
         for i in range(e_value):
-            DMF_sr = DMF_sr.sample(len(DMF_sr))
-            sim_prof_sr = sim_prof_sr.sample(len(sim_prof_sr))
-        DMF_sr.index = range(len(DMF_sr))
-        sim_prof_sr.index = range(len(sim_prof_sr))
-        self.inter_df_stats = pd.concat([DMF_sr, sim_prof_sr], axis=1)
+            temp_score_list = []
+            q_temp_df = self.inter_df_stats[["Query_gene_name", "Query_gene_profile"]]
+            a_temp_df = self.inter_df_stats[["Array_gene_name", "Array_gene_profile"]]
+            q_temp_perm_df = q_temp_df.sample(len(q_temp_df))
+            a_temp_perm_df = a_temp_df.sample(len(a_temp_df))
+            q_temp_perm_df.index = range(len(q_temp_perm_df))
+            a_temp_perm_df.index = range(len(a_temp_perm_df))
+            qa_temp_perm_df = pd.concat([q_temp_perm_df, a_temp_perm_df], axis=1)
+            for ii in qa_temp_perm_df.itertuples():
+                temp_score_list.append(df_qa_names_2_prof_score([getattr(ii, "Query_gene_name"),
+                                                                 getattr(ii, "Array_gene_name")],
+                                                                self.gene_profiles_stats))
+            temp_score_df = pd.DataFrame(temp_score_list,
+                                         index=qa_temp_perm_df.index,
+                                         columns=["Profiles_similarity_score"])
+            qa_temp_perm_score_df = pd.concat([qa_temp_perm_df, temp_score_df],
+                                               axis=1)
+            sim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] >=\
+                                                   in_prof_sim_lev)
+            sim_prof_perm_num = len(qa_temp_perm_score_df[sim_prof_bool])
+            self.res_perm_val.append(sim_prof_perm_num)
 
     def df_num_prop(self,
                     in_prof_sim_lev):
@@ -569,7 +564,7 @@ class Ortho_Stats:
                              self.inter_df_stats["Query_SMF"]) &\
                             (self.inter_df_stats["DMF"] <\
                              self.inter_df_stats["Array_SMF"])
-        sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] ==\
+        sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
                          in_prof_sim_lev)
         self.tot_inter_num = len(self.inter_df_stats)
         self.DMF_positive_num = len(self.inter_df_stats[positive_DMF_bool])
