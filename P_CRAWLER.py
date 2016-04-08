@@ -559,7 +559,6 @@ class Ortho_Stats:
             not
         """
         for i in range(e_value):
-            prog_perc(i, e_value)
             temp_score_list = []
             q_temp_df = self.inter_df_stats[["Query_gene_name", "Query_gene_profile"]]
             a_temp_df = self.inter_df_stats[["Array_gene_name", "Array_gene_profile"]]
