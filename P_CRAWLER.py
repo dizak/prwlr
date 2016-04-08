@@ -31,7 +31,7 @@ def hash_prog(in_item,
               in_iterbl):
     tot_len = len(in_iterbl)
     ten_perc = tot_len / 10
-    if i % ten_perc == 0:
+    if in_item % ten_perc == 0:
         sys.stdout.write("#")
         sys.stdout.flush()
 
