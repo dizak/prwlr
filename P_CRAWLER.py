@@ -27,12 +27,13 @@ def prog_perc(in_item,
                                      len(in_iterbl)))
     sys.stdout.flush()
 
-def hash_prog(in_item,
-              in_iterbl):
+def sign_prog(in_item,
+              in_iterbl,
+              in_size, in_sign="#"):
     tot_len = len(in_iterbl)
-    ten_perc = tot_len / 10
+    sign_size = float(tot_len / in_size)
     if in_item % ten_perc == 0:
-        sys.stdout.write("#")
+        sys.stdout.write(in_sign)
         sys.stdout.flush()
 
 def all_possible_combinations_counter(in_int_set,
