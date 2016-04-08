@@ -5,7 +5,6 @@
 ###############################################################################
 
 __author__ = "Dariusz Izak"
-__version__ = "0.13.0.0"
 
 import lxml.etree as et
 import pandas as pd
@@ -13,6 +12,19 @@ import re
 import math
 import argparse
 import glob
+import sys
+
+def prog_perc(in_item, in_iterbl):
+    """Display progres of iterable as percent. Uses carriage return.
+
+    Args:
+        in_item: current iteration product
+        in_iterbl: iterable
+    """
+    pos = in_iterbl.index(in_item)
+    sys.stdout.write("{0}%\r".format(pos * 100 /\
+                                     len(in_iterbl)))
+    sys.stdout.flush()
 
 def all_possible_combinations_counter(in_int_set,
                                       in_int_subset):
@@ -189,7 +201,7 @@ class Genome:
 
     def parse_fasta(self,
                     in_file_name):
-        """Returns Genome.genes (list of dicts) and Genome.ref_name.
+        """Return Genome.genes (list of dicts) and Genome.ref_name.
         Genome.genes hold GN gene id, yeast gene id, protein id, heading,
         description and sequence from parsed (multifasta) for each gene.
 
@@ -236,7 +248,7 @@ class Genome:
 
     def parse_xmls(self,
                    in_file_names):
-        """Returns Genome.query_species (list of strs) and appends
+        """Return Genome.query_species (list of strs) and appends
         Genomes.genes with key:value entries of organisms that have orthologs
         for each gene from parsed (list) of OrthoXMLs. The file list is
         supposed to work with glob.
@@ -244,8 +256,9 @@ class Genome:
         Args:
             in_file_names (list of strs): OrthoXML files list to parse
         """
+        counter = 0
         for i in in_file_names:
-            print "processing {0}".format(i)
+            print "\nprocessing {0}".format(i)
             with open(i, "r") as xml_fin:
                 tree = et.parse(xml_fin)
             root = tree.getroot()
@@ -261,6 +274,7 @@ class Genome:
                 query_species_orthologs = root[1][0][0]
             self.query_species.append(str(query_species_tax_name)[:-1])
             for ii in self.genes:
+                prog_perc(ii, self.genes)
                 for iii in query_species_orthologs[:]:
                     if ii["prot_id"] == iii.attrib["protId"]:
                         if "orthologs" in ii:
@@ -278,7 +292,7 @@ class Genome:
     def parse_orthologous_groups_csv(self,
                                      in_file_name,
                                      in_col_name):
-        """Returns Genome.query_species (list of strs) and appends
+        """Return Genome.query_species (list of strs) and appends
         Genomes.genes with key:value entries of organisms that have orthologs
         for each gene from parsed ortho-finder csv.
 
@@ -299,10 +313,13 @@ class Genome:
                 pass
             else:
                 self.query_species.append(str(i).split(".")[:-1][0])
+        print "parsing reference organism ortho groups...".format()
         for i in self.orthologous_groups_df[in_col_name].iteritems():
             temp_dict_list_1.append({i[0]: map(lambda x: x.split("|"),
                                                str(i[1]).split(", "))})
+        print "processing reference organism ortho groups..".format()
         for i in temp_dict_list_1:
+            prog_perc(i, temp_dict_list_1)
             temp_ortho_group_str = str(i.keys()[0])
             temp_prot_id_list = []
             temp_yeast_gene_id_list = []
@@ -318,7 +335,9 @@ class Genome:
                            "prot_id": temp_prot_id_list,
                            "yeast_gene_id": temp_yeast_gene_id_list}
             self.orthologous_groups_dict.append(temp_dict_1)
+        print "appending reference organism genes db...".format()
         for i in self.genes:
+            prog_perc(i, self.genes)
             for ii in self.orthologous_groups_dict:
                 if i["prot_id"] in ii["prot_id"]:
                     org_temp_str_list = []
@@ -332,7 +351,7 @@ class Genome:
                                      for e in org_temp_str_list}}
 
     def no_orthologs_genes_remover(self):
-        """Returns Genome.empty_genes (list of dicts) and Genome.ortho_genes
+        """Return Genome.empty_genes (list of dicts) and Genome.ortho_genes
         (list of dicts) by iterating over Genome.genes (list of dicts).
         Discrimination based on presence/absence of <orthologs> key.
         """
@@ -343,7 +362,7 @@ class Genome:
                 self.ortho_genes.append(i)
 
     def profiler(self, id_type = "prot_id"):
-        """Returns Genome.gene_profiles (list of tuples) by iterating over
+        """Return Genome.gene_profiles (list of tuples) by iterating over
         Genome.query_species (tuple of str) Genome.ortho_genes (list of dicts)
         <orthologs><organism> values. +/- signs sequence resembles
         Genome.query_species order.
@@ -381,7 +400,7 @@ class Ortho_Interactions():
                       in_file_name,
                       p_value = float(0.05),
                       DMF_type = "neutral"):
-        """Returns Ortho_Interactions.interact_df (pandas.DataFrame) from
+        """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
         parsed <csv> file. The minimal filtration is based of a given p-value
         and presence of DMF value. Further filtration results in DMF
         higher/lower than both SMFs.
@@ -396,6 +415,7 @@ class Ortho_Interactions():
                             neutral  -> DMF not <None> (default)
                             raw      -> no filter
         """
+        print "reading in interactions csv...".format()
         csv_df = pd.read_csv(in_file_name)
         positive_DMF_bool = (csv_df["DMF"] > csv_df["Query_SMF"]) &\
                             (csv_df["DMF"] > csv_df["Array_SMF"]) &\
@@ -405,6 +425,7 @@ class Ortho_Interactions():
                             (csv_df["p-value"] <= p_value)
         neutral_DMF_bool = (csv_df["DMF"].isnull() == False) &\
                            (csv_df["p-value"] <= p_value)
+        print "selecting data...".format()
         if DMF_type == "positive":
             self.interact_df = csv_df[positive_DMF_bool]
         elif DMF_type == "negative":
@@ -418,7 +439,7 @@ class Ortho_Interactions():
 
     def df_profiles_and_score_appender(self,
                                        profiles_df = True):
-        """Returns Ortho_Interactions.interact_df appended by concatenated
+        """Return Ortho_Interactions.interact_df appended by concatenated
         Genome.gene_profiles (list of tuples), Genome.gene_profiles similarity
         score (float), Genome.genes(list of dicts) gene descriptors. Optionally
         appends with Genome.gene_profiles array browsable by organism's name.
@@ -502,10 +523,17 @@ class Ortho_Stats:
         self.sim_prof_num = None
         self.e_value = None
         self.res_val = None
-        self.res_perm_val = []
+        self.sim_perm_val = []
+        self.unsim_perm_val = []
+        self.mir_perm_val = []
 
     def df_selector(self,
                     DMF_pos = True):
+        """Return pandas DataFrame selected to chosen DMF type (bool).
+
+        Args:
+            DMF_pos (bool): selects only positive DMF type. Default.
+        """
         positive_DMF_bool = (self.inter_df_stats["DMF"] >\
                              self.inter_df_stats["Query_SMF"]) &\
                             (self.inter_df_stats["DMF"] >\
@@ -522,7 +550,16 @@ class Ortho_Stats:
     def prof_perm(self,
                   e_value,
                   in_prof_sim_lev):
+        """Return lists of number of different types of profiles scores, each
+        generated from shuffled pandas DataFrame.
+
+        Args:
+            e_value (int): number of times to shuffle the pandas DataFrame
+            in_prof_sim_lev(int): treshold for assuming profiles as similar or
+            not
+        """
         for i in range(e_value):
+            prog_perc(i, e_value)
             temp_score_list = []
             q_temp_df = self.inter_df_stats[["Query_gene_name", "Query_gene_profile"]]
             a_temp_df = self.inter_df_stats[["Array_gene_name", "Array_gene_profile"]]
@@ -541,13 +578,21 @@ class Ortho_Stats:
             qa_temp_perm_score_df = pd.concat([qa_temp_perm_df, temp_score_df],
                                                axis=1)
             sim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] >=\
-                                                   in_prof_sim_lev)
+                             in_prof_sim_lev)
+            unsim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] <\
+                               in_prof_sim_lev) &\
+                              (qa_temp_perm_score_df["Profiles_similarity_score"] > 0)
+            mir_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] == 0)
             sim_prof_perm_num = len(qa_temp_perm_score_df[sim_prof_bool])
-            self.res_perm_val.append(sim_prof_perm_num)
+            unsim_prof_perm_num = len(qa_temp_perm_score_df[unsim_prof_bool])
+            mir_prof_perm_num = len(qa_temp_perm_score_df[mir_prof_bool])
+            self.sim_perm_val.append(sim_prof_perm_num)
+            self.unsim_perm_val.append(unsim_prof_perm_num)
+            self.mir_perm_val.append(mir_prof_perm_num)
 
     def df_num_prop(self,
                     in_prof_sim_lev):
-        """Returns Ortho_Stats.tot_inter_num (int),
+        """Return Ortho_Stats.tot_inter_num (int),
         Ortho_Stats.DMF_positive_num (int),
         Ortho_Stats.DMF_negative_num (int),
         Ortho_Stats.sim_prof_num (int).
@@ -573,7 +618,7 @@ class Ortho_Stats:
         self.res_val = len(self.inter_df_stats[positive_DMF_bool & sim_prof_bool])
 
     def e_val_calc(self):
-        """Returns Ortho_Stats.e_value (int) which is an expected number of
+        """Return Ortho_Stats.e_value (int) which is an expected number of
         interactions with positive DMF and similar gene profiles by chance.
         """
         self.e_value = (self.DMF_positive_num * self.sim_prof_num) /\
