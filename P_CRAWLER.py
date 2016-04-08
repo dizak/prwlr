@@ -14,7 +14,8 @@ import argparse
 import glob
 import sys
 
-def prog_perc(in_item, in_iterbl):
+def prog_perc(in_item,
+              in_iterbl):
     """Display progres of iterable as percent. Uses carriage return.
 
     Args:
@@ -25,6 +26,15 @@ def prog_perc(in_item, in_iterbl):
     sys.stdout.write("{0}%\r".format(pos * 100 /\
                                      len(in_iterbl)))
     sys.stdout.flush()
+
+def sign_prog(in_item,
+              in_iterbl,
+              in_size, in_sign="#"):
+    tot_len = len(in_iterbl)
+    sign_size = float(tot_len / in_size)
+    if in_item % sign_size == 0:
+        sys.stdout.write(in_sign)
+        sys.stdout.flush()
 
 def all_possible_combinations_counter(in_int_set,
                                       in_int_subset):
