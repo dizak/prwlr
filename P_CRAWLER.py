@@ -32,7 +32,7 @@ def sign_prog(in_item,
               in_size, in_sign="#"):
     tot_len = len(in_iterbl)
     sign_size = float(tot_len / in_size)
-    if in_item % ten_perc == 0:
+    if in_item % sign_size == 0:
         sys.stdout.write(in_sign)
         sys.stdout.flush()
 
