@@ -14,7 +14,8 @@ import argparse
 import glob
 import sys
 
-def prog_perc(in_item, in_iterbl):
+def prog_perc(in_item,
+              in_iterbl):
     """Display progres of iterable as percent. Uses carriage return.
 
     Args:
@@ -25,6 +26,14 @@ def prog_perc(in_item, in_iterbl):
     sys.stdout.write("{0}%\r".format(pos * 100 /\
                                      len(in_iterbl)))
     sys.stdout.flush()
+
+def hash_prog(in_item,
+              in_iterbl):
+    tot_len = len(in_iterbl)
+    ten_perc = tot_len / 10
+    if i % ten_perc == 0:
+        sys.stdout.write("#")
+        sys.stdout.flush()
 
 def all_possible_combinations_counter(in_int_set,
                                       in_int_subset):
@@ -559,7 +568,6 @@ class Ortho_Stats:
             not
         """
         for i in range(e_value):
-            prog_perc(i, e_value)
             temp_score_list = []
             q_temp_df = self.inter_df_stats[["Query_gene_name", "Query_gene_profile"]]
             a_temp_df = self.inter_df_stats[["Array_gene_name", "Array_gene_profile"]]
