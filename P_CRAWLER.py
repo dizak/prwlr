@@ -14,12 +14,13 @@ import argparse
 import glob
 import sys
 
-def prog_perc(in_item,
+def perc_prog(in_item,
               in_iterbl):
-    """Display progres of iterable as percent. Uses carriage return.
+    """Display progress of iterable as percent. Uses carriage return. Works in
+    the terminal only.
 
     Args:
-        in_item: current iteration product
+        in_item: current iteration element
         in_iterbl: iterable
     """
     pos = in_iterbl.index(in_item)
@@ -30,6 +31,17 @@ def prog_perc(in_item,
 def sign_prog(in_item,
               in_iterbl,
               in_size, in_sign="#"):
+    """Display progress of iterable as bar.
+
+    Args:
+        in_item: current iteration element
+        in_iterbl: iterable
+        in_size: total number of signs in completed bar.
+    """
+    if in_size > len(in_iterbl):
+        in_size = len(in_iterbl)
+    else:
+        pass
     tot_len = len(in_iterbl)
     sign_size = float(tot_len / in_size)
     if in_item % sign_size == 0:
@@ -284,7 +296,7 @@ class Genome:
                 query_species_orthologs = root[1][0][0]
             self.query_species.append(str(query_species_tax_name)[:-1])
             for ii in self.genes:
-                prog_perc(ii, self.genes)
+                perc_prog(ii, self.genes)
                 for iii in query_species_orthologs[:]:
                     if ii["prot_id"] == iii.attrib["protId"]:
                         if "orthologs" in ii:
@@ -329,7 +341,7 @@ class Genome:
                                                str(i[1]).split(", "))})
         print "processing reference organism ortho groups..".format()
         for i in temp_dict_list_1:
-            prog_perc(i, temp_dict_list_1)
+            perc_prog(i, temp_dict_list_1)
             temp_ortho_group_str = str(i.keys()[0])
             temp_prot_id_list = []
             temp_yeast_gene_id_list = []
@@ -347,7 +359,7 @@ class Genome:
             self.orthologous_groups_dict.append(temp_dict_1)
         print "appending reference organism genes db...".format()
         for i in self.genes:
-            prog_perc(i, self.genes)
+            perc_prog(i, self.genes)
             for ii in self.orthologous_groups_dict:
                 if i["prot_id"] in ii["prot_id"]:
                     org_temp_str_list = []
@@ -569,6 +581,7 @@ class Ortho_Stats:
             not
         """
         for i in range(e_value):
+            sign_prog(i, range(e_value), 100, in_sign="|")
             temp_score_list = []
             q_temp_df = self.inter_df_stats[["Query_gene_name", "Query_gene_profile"]]
             a_temp_df = self.inter_df_stats[["Array_gene_name", "Array_gene_profile"]]
