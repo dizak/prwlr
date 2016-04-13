@@ -495,27 +495,18 @@ class Ortho_Interactions():
                                            gene_profile_finder_by_name(i[1],
                                                                        self.gene_profiles_inter,
                                                                        conc = True)])
-#        conc_qa_prof_temp_list = [[gene_profile_finder_by_name(ii[0],
-#                                   self.gene_profiles_inter,
-#                                   conc = True),
-#                                   gene_profile_finder_by_name(ii[1],
-#                                   self.gene_profiles_inter,
-#                                   conc = True)]
-#                                  for ii in [[getattr(i, "Query_gene_name"),
-#                                              getattr(i, "Array_gene_name")]
-#                                  for i in self.interact_df.itertuples()]]
         print "\npreparing descriptors of query genes...".format()
-        q_gene_head_temp_list = [gene_finder_by_attrib("GN_gene_id",
-                                                       getattr(i, "Query_gene_name"),
-                                                       "description",
-                                                       self.genes_inter)
-                                 for i in self.interact_df.itertuples()]
+        for i in self.interact_df.itertuples():
+            q_gene_head_temp_list.append(gene_finder_by_attrib("GN_gene_id",
+                                                               getattr(i, "Query_gene_name"),
+                                                               "description",
+                                                               self.genes_inter))
         print "\npreparing descriptors of array genes...".format()
-        a_gene_head_temp_list = [gene_finder_by_attrib("GN_gene_id",
-                                                       getattr(i, "Array_gene_name"),
-                                                       "description",
-                                                       self.genes_inter)
-                                 for i in self.interact_df.itertuples()]
+        for i in self.interact_df.itertuples():
+            a_gene_head_temp_list.append(gene_finder_by_attrib("GN_gene_id",
+                                                               getattr(i, "Array_gene_profile"),
+                                                               "description",
+                                                               self.genes_inter))
         print "\ncreating temporary dataframes...".format()
         prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
                                           index = self.interact_df.index,
