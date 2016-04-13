@@ -472,26 +472,38 @@ class Ortho_Interactions():
             profiles_df (bool): appends with Genome.gene_profiles array when
             <True> (default). Removes <None> rows
         """
-        temp_list_1 = []
+        qa_attrib_temp_list = []
         prof_score_temp_list = []
-        print "\nscoring profiles similarity...".format()
+        conc_qa_prof_temp_list = []
+        q_gene_head_temp_list = []
+        a_gene_head_temp_list = []
+        print "\ncreating attributes list...".format()
         for i in self.interact_df.itertuples():
-            temp_list_1.append([getattr(i, "Query_gene_name"),
-                                getattr(i, "Array_gene_name")])
-        for i in temp_list_1:
-            sign_prog(i, temp_list_1)
+            qa_attrib_temp_list.append([getattr(i, "Query_gene_name"),
+                                        getattr(i, "Array_gene_name")])
+        print "\nscoring profiles similarity...".format()
+        for i in qa_attrib_temp_list:
+            sign_prog(i, qa_attrib_temp_list)
             prof_score_temp_list.append(df_qa_names_2_prof_score(i,
                                                                  self.gene_profiles_inter))
         print "\nconcatenating profiles...".format()
-        conc_qa_prof_temp_list = [[gene_profile_finder_by_name(ii[0],
-                                   self.gene_profiles_inter,
-                                   conc = True),
-                                   gene_profile_finder_by_name(ii[1],
-                                   self.gene_profiles_inter,
-                                   conc = True)]
-                                  for ii in [[getattr(i, "Query_gene_name"),
-                                              getattr(i, "Array_gene_name")]
-                                  for i in self.interact_df.itertuples()]]
+        for i in qa_attrib_temp_list:
+            sign_prog(i, qa_attrib_temp_list)
+            conc_qa_prof_temp_list.append([gene_profile_finder_by_name(i[0],
+                                                                       self.gene_profiles_inter,
+                                                                       conc = True),
+                                           gene_profile_finder_by_name(i[1],
+                                                                       self.gene_profiles_inter,
+                                                                       conc = True)])
+#        conc_qa_prof_temp_list = [[gene_profile_finder_by_name(ii[0],
+#                                   self.gene_profiles_inter,
+#                                   conc = True),
+#                                   gene_profile_finder_by_name(ii[1],
+#                                   self.gene_profiles_inter,
+#                                   conc = True)]
+#                                  for ii in [[getattr(i, "Query_gene_name"),
+#                                              getattr(i, "Array_gene_name")]
+#                                  for i in self.interact_df.itertuples()]]
         print "\npreparing descriptors of query genes...".format()
         q_gene_head_temp_list = [gene_finder_by_attrib("GN_gene_id",
                                                        getattr(i, "Query_gene_name"),
