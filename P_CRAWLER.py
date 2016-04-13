@@ -472,11 +472,13 @@ class Ortho_Interactions():
             profiles_df (bool): appends with Genome.gene_profiles array when
             <True> (default). Removes <None> rows
         """
+        print "\nscoring profiles similarity...".format()
         prof_score_temp_list = [df_qa_names_2_prof_score(ii,
                                                          self.gene_profiles_inter)
                                 for ii in [[getattr(i, "Query_gene_name"),
                                             getattr(i, "Array_gene_name")]
                                 for i in self.interact_df.itertuples()]]
+        print "\nconcatenating profiles...".format()
         conc_qa_prof_temp_list = [[gene_profile_finder_by_name(ii[0],
                                    self.gene_profiles_inter,
                                    conc = True),
@@ -486,16 +488,19 @@ class Ortho_Interactions():
                                   for ii in [[getattr(i, "Query_gene_name"),
                                               getattr(i, "Array_gene_name")]
                                   for i in self.interact_df.itertuples()]]
+        print "\npreparing descriptors of query genes...".format()
         q_gene_head_temp_list = [gene_finder_by_attrib("GN_gene_id",
                                                        getattr(i, "Query_gene_name"),
                                                        "description",
                                                        self.genes_inter)
                                  for i in self.interact_df.itertuples()]
+        print "\npreparing descriptors of array genes...".format()
         a_gene_head_temp_list = [gene_finder_by_attrib("GN_gene_id",
                                                        getattr(i, "Array_gene_name"),
                                                        "description",
                                                        self.genes_inter)
                                  for i in self.interact_df.itertuples()]
+        print "\ncreating temporary dataframes...".format()
         prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
                                           index = self.interact_df.index,
                                           columns = ["Profiles_similarity_score"])
@@ -508,6 +513,7 @@ class Ortho_Interactions():
         a_gene_head_temp_df = pd.DataFrame(a_gene_head_temp_list,
                                            index = self.interact_df.index,
                                            columns = ["Array_gene_description"])
+        print "\nconcatenating dataframes...".format()
         self.interact_df = pd.concat([self.interact_df,
                                       prof_score_temp_df,
                                       conc_q_a_prof_temp_df,
@@ -515,6 +521,7 @@ class Ortho_Interactions():
                                       a_gene_head_temp_df],
                                       axis = 1)
         if profiles_df == True:
+            print "\nappending with sign-per-column profiles...".format()
             cols_query_temp_list = ["Query_gene_name"] + list(self.query_species_inter)
             cols_array_temp_list = ["Array_gene_name"] + list(self.query_species_inter)
             sep_prof_temp_df = pd.DataFrame(self.gene_profiles_inter,
@@ -583,7 +590,7 @@ class Ortho_Stats:
             not
         """
         for i in range(e_value):
-            sign_prog(i, range(e_value), 100, in_sign="|")
+            sign_prog(i, range(e_value))
             temp_score_list = []
             q_temp_df = self.inter_df_stats[["Query_gene_name", "Query_gene_profile"]]
             a_temp_df = self.inter_df_stats[["Array_gene_name", "Array_gene_profile"]]
