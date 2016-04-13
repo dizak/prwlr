@@ -30,13 +30,15 @@ def perc_prog(in_item,
 
 def sign_prog(in_item,
               in_iterbl,
-              in_size, in_sign="#"):
+              in_size = 50,
+              in_sign="|"):
     """Display progress of iterable as bar.
 
     Args:
         in_item: current iteration element
         in_iterbl: iterable
-        in_size: total number of signs in completed bar.
+        in_size: total number of signs in completed bar. Equals number of
+        iterations when argument higher than total number of iterations.
     """
     if in_size > len(in_iterbl):
         in_size = len(in_iterbl)
@@ -44,7 +46,7 @@ def sign_prog(in_item,
         pass
     tot_len = len(in_iterbl)
     sign_size = float(tot_len / in_size)
-    if in_item % sign_size == 0:
+    if in_iterbl.index(in_item) % sign_size == 0:
         sys.stdout.write(in_sign)
         sys.stdout.flush()
 
@@ -296,7 +298,7 @@ class Genome:
                 query_species_orthologs = root[1][0][0]
             self.query_species.append(str(query_species_tax_name)[:-1])
             for ii in self.genes:
-                perc_prog(ii, self.genes)
+                sign_prog(ii, range(len(self.genes)))
                 for iii in query_species_orthologs[:]:
                     if ii["prot_id"] == iii.attrib["protId"]:
                         if "orthologs" in ii:
@@ -335,13 +337,13 @@ class Genome:
                 pass
             else:
                 self.query_species.append(str(i).split(".")[:-1][0])
-        print "parsing reference organism ortho groups...".format()
+        print "\nparsing reference organism ortho groups...".format()
         for i in self.orthologous_groups_df[in_col_name].iteritems():
             temp_dict_list_1.append({i[0]: map(lambda x: x.split("|"),
                                                str(i[1]).split(", "))})
-        print "processing reference organism ortho groups..".format()
+        print "\nprocessing reference organism ortho groups..".format()
         for i in temp_dict_list_1:
-            perc_prog(i, temp_dict_list_1)
+            sign_prog(i, temp_dict_list_1)
             temp_ortho_group_str = str(i.keys()[0])
             temp_prot_id_list = []
             temp_yeast_gene_id_list = []
@@ -357,9 +359,9 @@ class Genome:
                            "prot_id": temp_prot_id_list,
                            "yeast_gene_id": temp_yeast_gene_id_list}
             self.orthologous_groups_dict.append(temp_dict_1)
-        print "appending reference organism genes db...".format()
+        print "\nappending reference organism genes db...".format()
         for i in self.genes:
-            perc_prog(i, self.genes)
+            sign_prog(i, self.genes)
             for ii in self.orthologous_groups_dict:
                 if i["prot_id"] in ii["prot_id"]:
                     org_temp_str_list = []
@@ -437,7 +439,7 @@ class Ortho_Interactions():
                             neutral  -> DMF not <None> (default)
                             raw      -> no filter
         """
-        print "reading in interactions csv...".format()
+        print "\nreading in interactions csv...".format()
         csv_df = pd.read_csv(in_file_name)
         positive_DMF_bool = (csv_df["DMF"] > csv_df["Query_SMF"]) &\
                             (csv_df["DMF"] > csv_df["Array_SMF"]) &\
@@ -447,7 +449,7 @@ class Ortho_Interactions():
                             (csv_df["p-value"] <= p_value)
         neutral_DMF_bool = (csv_df["DMF"].isnull() == False) &\
                            (csv_df["p-value"] <= p_value)
-        print "selecting data...".format()
+        print "\nselecting data...".format()
         if DMF_type == "positive":
             self.interact_df = csv_df[positive_DMF_bool]
         elif DMF_type == "negative":
