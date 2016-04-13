@@ -472,12 +472,16 @@ class Ortho_Interactions():
             profiles_df (bool): appends with Genome.gene_profiles array when
             <True> (default). Removes <None> rows
         """
+        temp_list_1 = []
+        prof_score_temp_list = []
         print "\nscoring profiles similarity...".format()
-        prof_score_temp_list = [df_qa_names_2_prof_score(ii,
-                                                         self.gene_profiles_inter)
-                                for ii in [[getattr(i, "Query_gene_name"),
-                                            getattr(i, "Array_gene_name")]
-                                for i in self.interact_df.itertuples()]]
+        for i in self.interact_df.itertuples():
+            temp_list_1.append([getattr(i, "Query_gene_name"),
+                                getattr(i, "Array_gene_name")])
+        for i in temp_list_1:
+            sign_prog(i, temp_list_1)
+            prof_score_temp_list.append(df_qa_names_2_prof_score(i,
+                                                                 self.gene_profiles_inter))
         print "\nconcatenating profiles...".format()
         conc_qa_prof_temp_list = [[gene_profile_finder_by_name(ii[0],
                                    self.gene_profiles_inter,
