@@ -553,10 +553,10 @@ class Ortho_Stats:
         self.DMF_negative_num = None
         self.sim_prof_num = None
         self.e_value = None
-        self.res_val = None
         self.sim_perm_val = []
         self.unsim_perm_val = []
         self.mir_perm_val = []
+        self.test_last_df_test = None
 
     def df_selector(self,
                     DMF_pos = True):
@@ -608,6 +608,7 @@ class Ortho_Stats:
                                          columns=["Profiles_similarity_score"])
             qa_temp_perm_score_df = pd.concat([qa_temp_perm_df, temp_score_df],
                                                axis=1)
+            self.test_last_df_test = qa_temp_perm_score_df
             sim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] >=\
                              in_prof_sim_lev)
             unsim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] <\
@@ -642,11 +643,16 @@ class Ortho_Stats:
                              self.inter_df_stats["Array_SMF"])
         sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
                          in_prof_sim_lev)
+        unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] <\
+                           in_prof_sim_lev) &\
+                          (self.inter_df_stats["Profiles_similarity_score"] > 0)
+        mir_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] == 0)
         self.tot_inter_num = len(self.inter_df_stats)
         self.DMF_positive_num = len(self.inter_df_stats[positive_DMF_bool])
         self.DMF_negative_num = len(self.inter_df_stats[negative_DMF_bool])
         self.sim_prof_num = len(self.inter_df_stats[sim_prof_bool])
-        self.res_val = len(self.inter_df_stats[positive_DMF_bool & sim_prof_bool])
+        self.unsim_prof_num = len(self.inter_df_stats[unsim_prof_bool])
+        self.mir_prof_num = len(self.inter_df_stats[mir_prof_bool])
 
     def e_val_calc(self):
         """Return Ortho_Stats.e_value (int) which is an expected number of
