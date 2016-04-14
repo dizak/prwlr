@@ -1,9 +1,5 @@
 #! /usr/bin/env python
 
-###############################################################################
-#make profiles insensitive to id type
-###############################################################################
-
 __author__ = "Dariusz Izak"
 
 import lxml.etree as et
