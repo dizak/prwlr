@@ -504,7 +504,7 @@ class Ortho_Interactions():
         print "\npreparing descriptors of array genes...".format()
         for i in self.interact_df.itertuples():
             a_gene_head_temp_list.append(gene_finder_by_attrib("GN_gene_id",
-                                                               getattr(i, "Array_gene_profile"),
+                                                               getattr(i, "Array_gene_name"),
                                                                "description",
                                                                self.genes_inter))
         print "\ncreating temporary dataframes...".format()
