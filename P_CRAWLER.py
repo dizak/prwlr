@@ -396,7 +396,7 @@ class Genome:
                     temp_list.append("-")
             self.gene_profiles.append(tuple(temp_list))
 
-class Ortho_Interactions():
+class Ortho_Interactions:
     """Holds data about gene interactions array extracted from (csv) file.
     Merges these data with Genome.gene_profiles (list of tuples) and
     Genome.genes (list of dicts) selected values.
