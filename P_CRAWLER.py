@@ -527,6 +527,16 @@ class Ortho_Interactions:
                                       q_gene_head_temp_df,
                                       a_gene_head_temp_df],
                                       axis = 1)
+        print "\nappending with bioprocesses info...".format()
+        self.interact_df = pd.merge(self.interact_df,
+                                    self.bio_proc_df,
+                                    left_on = "Query_gene_name",
+                                    right_on = "Gene_name")
+        self.interact_df = pd.merge(self.interact_df,
+                                    self.bio_proc_df,
+                                    left_on = "Array_gene_name",
+                                    right_on = "Gene_name",
+                                    suffixes=('_query', '_array'))
         if profiles_df == True:
             print "\nappending with sign-per-column profiles...".format()
             cols_query_temp_list = ["Query_gene_name"] + list(self.query_species_inter)
