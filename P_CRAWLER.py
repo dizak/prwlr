@@ -459,8 +459,7 @@ class Ortho_Interactions:
 
     def parse_bioprocesses(self,
                            in_file_name):
-        csv_df = pd.read_csv(in_file_name)
-        self.bio_proc_df
+         self.bio_proc_df = pd.read_excel(in_file_name)
 
     def df_profiles_and_score_appender(self,
                                        profiles_df = True):
