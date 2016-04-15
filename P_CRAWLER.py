@@ -462,6 +462,7 @@ class Ortho_Interactions:
          self.bio_proc_df = pd.read_excel(in_file_name)
 
     def df_profiles_and_score_appender(self,
+                                       bio_proc = True,
                                        profiles_df = True):
         """Return Ortho_Interactions.interact_df appended by concatenated
         Genome.gene_profiles (list of tuples), Genome.gene_profiles similarity
@@ -527,16 +528,19 @@ class Ortho_Interactions:
                                       q_gene_head_temp_df,
                                       a_gene_head_temp_df],
                                       axis = 1)
-        print "\nappending with bioprocesses info...".format()
-        self.interact_df = pd.merge(self.interact_df,
-                                    self.bio_proc_df,
-                                    left_on = "Query_gene_name",
-                                    right_on = "Gene_name")
-        self.interact_df = pd.merge(self.interact_df,
-                                    self.bio_proc_df,
-                                    left_on = "Array_gene_name",
-                                    right_on = "Gene_name",
-                                    suffixes=('_query', '_array'))
+        if bio_proc == True:
+            print "\nappending with bioprocesses info...".format()
+            self.interact_df = pd.merge(self.interact_df,
+                                        self.bio_proc_df,
+                                        left_on = "Query_gene_name",
+                                        right_on = "Gene_name")
+            self.interact_df = pd.merge(self.interact_df,
+                                        self.bio_proc_df,
+                                        left_on = "Array_gene_name",
+                                        right_on = "Gene_name",
+                                        suffixes=('_query', '_array'))
+        else:
+            pass
         if profiles_df == True:
             print "\nappending with sign-per-column profiles...".format()
             cols_query_temp_list = ["Query_gene_name"] + list(self.query_species_inter)
