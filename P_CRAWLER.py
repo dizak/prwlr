@@ -538,8 +538,7 @@ class Ortho_Interactions:
             self.interact_df = pd.merge(self.interact_df,
                                         self.bio_proc_df,
                                         left_on = "Array_gene_name",
-                                        right_on = "Gene_name",
-                                        suffixes=('_query', '_array'))
+                                        right_on = "Gene_name")
 #            self.interact_df.drop(self.interact_df["Gene_name"])
         else:
             pass
