@@ -191,19 +191,13 @@ class Genome:
         ref_name (str): reference organism's name
         query_species (list of strs) = organisms having orthologs with
         reference organism
-
         genes (list of dicts): key: values of the genes from parsed
         (multifasta) and their orthologs
-
         orthologous_groups_df (df): pandas DataFrame of ortho-finder csv
-
         orthologous_groups_dict (list of dicts): data extracted from
         orthologous_groups_df for convenience
-
         empty_genes (list of dicts): genes without orthologs
-
         ortho_genes (list of dicts): genes with orthologs
-
         gene_profiles (list of tuples): each profile contains gene name and +/-
         signs for presence/absence of ortholog in organism from
         Genome.query_species. Order is kept by holding data in tuples
@@ -403,9 +397,7 @@ class Ortho_Interactions:
 
     Attribs:
         query_species_Genome (tuple of strs): passed from Genome
-
         genes_Genome (list of dicts): passed from Genome
-
         gene_profiles_Genome (list of tuples): passed from Genome
     """
     def __init__(self,
@@ -419,45 +411,70 @@ class Ortho_Interactions:
     def parse_sgadata(self,
                       in_file_name,
                       p_value = float(0.05),
-                      DMF_type = "neutral"):
+                      DMF_type = "neutral",
+                      excel = False,
+                      in_sep = ","):
         """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
         parsed <csv> file. The minimal filtration is based of a given p-value
         and presence of DMF value. Further filtration results in DMF
         higher/lower than both SMFs.
 
         Args:
-            in_file_name (str): name of (csv) file to parse
-
+            in_file_name (str): name of file to parse
             p_value (float): maximum p-value for filtering
-
             DMF_type (str): positive -> DMF > both SMFs
                             negative -> DMF < both SMFs
                             neutral  -> DMF not <None> (default)
                             raw      -> no filter
+            excel (bool): pandas.read_excel when <True>. pandas.read_csv when
+            <False> (default).
+            in_sep (str): separator for pandas.read_csv method
         """
         print "\nreading in interactions csv...".format()
-        csv_df = pd.read_csv(in_file_name)
-        positive_DMF_bool = (csv_df["DMF"] > csv_df["Query_SMF"]) &\
-                            (csv_df["DMF"] > csv_df["Array_SMF"]) &\
-                            (csv_df["p-value"] <= p_value)
-        negative_DMF_bool = (csv_df["DMF"] < csv_df["Query_SMF"]) &\
-                            (csv_df["DMF"] < csv_df["Array_SMF"]) &\
-                            (csv_df["p-value"] <= p_value)
-        neutral_DMF_bool = (csv_df["DMF"].isnull() == False) &\
-                           (csv_df["p-value"] <= p_value)
+        if excel == False:
+            sga_df = pd.read_csv(in_file_name, sep = in_sep)
+        else:
+            sga_df = pd.read_excel(in_file_name)
+        positive_DMF_bool = (sga_df["DMF"] > sga_df["Query_SMF"]) &\
+                            (sga_df["DMF"] > sga_df["Array_SMF"]) &\
+                            (sga_df["p-value"] <= p_value)
+        negative_DMF_bool = (sga_df["DMF"] < sga_df["Query_SMF"]) &\
+                            (sga_df["DMF"] < sga_df["Array_SMF"]) &\
+                            (sga_df["p-value"] <= p_value)
+        neutral_DMF_bool = (sga_df["DMF"].isnull() == False) &\
+                           (sga_df["p-value"] <= p_value)
         print "\nselecting data...".format()
         if DMF_type == "positive":
-            self.interact_df = csv_df[positive_DMF_bool]
+            self.interact_df = sga_df[positive_DMF_bool]
         elif DMF_type == "negative":
-            self.interact_df = csv_df[negative_DMF_bool]
+            self.interact_df = sga_df[negative_DMF_bool]
         elif DMF_type == "neutral":
-            self.interact_df = csv_df[neutral_DMF_bool]
+            self.interact_df = sga_df[neutral_DMF_bool]
         elif DMF_type == "raw":
-            self.interact_df = csv_df
+            self.interact_df = sga_df
         else:
             pass
 
+    def parse_bioprocesses(self,
+                           in_file_name,
+                           excel = False,
+                           in_sep = ","):
+        """Return Ortho_Interactions.bio_proc_df (pandas.DataFrame) from parsed
+        <csv> or <xls> file.
+
+        Args:
+            in_file_name (str): name of file to parse
+            excel (bool): pandas.read_excel when <True>. pandas.read_csv when
+            <False> (default).
+            in_sep (str): separator for pandas.read_csv method
+        """
+        if excel == False:
+            self.bio_proc_df = pd.read_csv(in_file_name, sep = in_sep)
+        else:
+            self.bio_proc_df = pd.read_excel(in_file_name)
+
     def df_profiles_and_score_appender(self,
+                                       bio_proc = True,
                                        profiles_df = True):
         """Return Ortho_Interactions.interact_df appended by concatenated
         Genome.gene_profiles (list of tuples), Genome.gene_profiles similarity
@@ -465,6 +482,8 @@ class Ortho_Interactions:
         appends with Genome.gene_profiles array browsable by organism's name.
 
         Args:
+            bio_proc (bool): appends with Ortho_Interactions.bio_proc_df array
+            when <True> (default)
             profiles_df (bool): appends with Genome.gene_profiles array when
             <True> (default). Removes <None> rows
         """
@@ -523,6 +542,24 @@ class Ortho_Interactions:
                                       q_gene_head_temp_df,
                                       a_gene_head_temp_df],
                                       axis = 1)
+        if bio_proc == True:
+            print "\nappending with bioprocesses info...".format()
+            self.interact_df = pd.merge(self.interact_df,
+                                        self.bio_proc_df,
+                                        left_on = "Query_gene_name",
+                                        right_on = "Gene_name",
+                                        how = "left")
+            self.interact_df = pd.merge(self.interact_df,
+                                        self.bio_proc_df,
+                                        left_on = "Array_gene_name",
+                                        right_on = "Gene_name",
+                                        how = "left",
+                                        suffixes=("_query", "_array"))
+            self.interact_df.drop(["Gene_name_query", "Gene_name_array"],
+                                  axis = 1,
+                                  inplace = True)
+        else:
+            pass
         if profiles_df == True:
             print "\nappending with sign-per-column profiles...".format()
             cols_query_temp_list = ["Query_gene_name"] + list(self.query_species_inter)
