@@ -492,6 +492,7 @@ class Ortho_Interactions:
         conc_qa_prof_temp_list = []
         q_gene_head_temp_list = []
         a_gene_head_temp_list = []
+        bio_proc_temp_list = []
         print "\ncreating attributes list...".format()
         for i in self.interact_df.itertuples():
             qa_attrib_temp_list.append([getattr(i, "Query_gene_name"),
@@ -558,6 +559,21 @@ class Ortho_Interactions:
             self.interact_df.drop(["Gene_name_query", "Gene_name_array"],
                                   axis = 1,
                                   inplace = True)
+            for i in self.interact_df.itertuples():
+                if getattr(i, "Process_query") == getattr(i, "Process_array"):
+                    if getattr(i, "Process_query") == "unknown" or\
+                       getattr(i, "Process_query") == "unknown":
+                        bio_proc_temp_list.append("unknown")
+                    else:
+                        bio_proc_temp_list.append("identical")
+                else:
+                    bio_proc_temp_list.append("different")
+            bio_proc_temp_df = pd.DataFrame(bio_proc_temp_list,
+                                            index = self.interact_df.index,
+                                            columns = ["Bioprocesses_similarity"])
+            self.interact_df = pd.concat([self.interact_df,
+                                          bio_proc_temp_df],
+                                         axis = 1)
         else:
             pass
         if profiles_df == True:
