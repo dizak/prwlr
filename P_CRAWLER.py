@@ -555,8 +555,9 @@ class Ortho_Interactions:
                                         right_on = "Gene_name",
                                         how = "left",
                                         suffixes=("_query", "_array"))
-            self.interact_df.drop(self.interact_df["Gene_name_query",
-                                                   "Gene_name_array"])
+            self.interact_df.drop(["Gene_name_query", "Gene_name_array"],
+                                  axis = 1,
+                                  inplace = True)
         else:
             pass
         if profiles_df == True:
