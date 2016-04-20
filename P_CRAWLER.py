@@ -577,6 +577,9 @@ class Ortho_Interactions:
         else:
             pass
 
+        def profs_filter(self):
+            pass
+
 class Ortho_Stats:
     """Calculates and holds data about interactions array statistical
     properties.
