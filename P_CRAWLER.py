@@ -616,7 +616,8 @@ class Ortho_Stats:
 
     def df_selector(self,
                     DMF_pos = True,
-                    no_flat = True):
+                    no_flat = True,
+                    ident_proc = True):
         """Return pandas DataFrame selected to chosen DMF type (bool).
 
         Args:
@@ -638,6 +639,10 @@ class Ortho_Stats:
                                "+" * len(self.query_species_stats))
         no_flat_min_a_bool = (self.inter_df_stats["Array_gene_profile"] !=\
                                "-" * len(self.query_species_stats))
+        iden_proc_bool = (self.inter_df_stats["Bioprocesses_similarity"] ==\
+                           "identical")
+        diff_proc_bool = (self.inter_df_stats["Bioprocesses_similarity"] ==\
+                          "different")
         if DMF_pos == True:
             self.inter_df_stats = self.inter_df_stats[positive_DMF_bool]
         else:
@@ -649,6 +654,10 @@ class Ortho_Stats:
             self.inter_df_stats = self.inter_df_stats[no_flat_min_a_bool]
         else:
             pass
+        if ident_proc == True:
+            self.inter_df_stats = self.inter_df_stats[iden_proc_bool]
+        else:
+            self.inter_df_stats = self.inter_df_stats[diff_proc_bool]
 
     def prof_perm(self,
                   e_value,
