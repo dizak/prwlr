@@ -577,9 +577,6 @@ class Ortho_Interactions:
         else:
             pass
 
-        def profs_filter(self):
-            pass
-
 class Ortho_Stats:
     """Calculates and holds data about interactions array statistical
     properties.
@@ -602,7 +599,8 @@ class Ortho_Stats:
         self.test_last_df_test = None
 
     def df_selector(self,
-                    DMF_pos = True):
+                    DMF_pos = True,
+                    no_flat = True):
         """Return pandas DataFrame selected to chosen DMF type (bool).
 
         Args:
@@ -616,10 +614,25 @@ class Ortho_Stats:
                              self.inter_df_stats["Query_SMF"]) &\
                             (self.inter_df_stats["DMF"] <\
                              self.inter_df_stats["Array_SMF"])
+        no_flat_plu_q_bool = (self.inter_df_stats["Query_gene_profile"] !=\
+                               "+" * len(self.query_species_stats))
+        no_flat_min_q_bool = (self.inter_df_stats["Query_gene_profile"] !=\
+                               "-" * len(self.query_species_stats))
+        no_flat_plu_a_bool = (self.inter_df_stats["Array_gene_profile"] !=\
+                               "+" * len(self.query_species_stats))
+        no_flat_min_a_bool = (self.inter_df_stats["Array_gene_profile"] !=\
+                               "-" * len(self.query_species_stats))
         if DMF_pos == True:
             self.inter_df_stats = self.inter_df_stats[positive_DMF_bool]
         else:
             self.inter_df_stats = self.inter_df_stats[negative_DMF_bool]
+        if no_flat == True:
+            self.inter_df_stats = self.inter_df_stats[no_flat_plu_q_bool]
+            self.inter_df_stats = self.inter_df_stats[no_flat_min_q_bool]
+            self.inter_df_stats = self.inter_df_stats[no_flat_plu_a_bool]
+            self.inter_df_stats = self.inter_df_stats[no_flat_min_a_bool]
+        else:
+            pass
 
     def prof_perm(self,
                   e_value,
