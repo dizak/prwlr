@@ -615,13 +615,13 @@ class Ortho_Stats:
         self.test_last_df_test = None
 
     def df_selector(self,
-                    DMF_pos = True,
+                    DMF = "positive",
                     no_flat = True,
-                    ident_proc = True):
+                    process = "identical"):
         """Return pandas DataFrame selected to chosen DMF type (bool).
 
         Args:
-            DMF_pos (bool): selects only positive DMF type. Default.
+            DMF (bool): selects only positive DMF type. Default.
         """
         positive_DMF_bool = (self.inter_df_stats["DMF"] >\
                              self.inter_df_stats["Query_SMF"]) &\
@@ -643,10 +643,12 @@ class Ortho_Stats:
                            "identical")
         diff_proc_bool = (self.inter_df_stats["Bioprocesses_similarity"] ==\
                           "different")
-        if DMF_pos == True:
+        if DMF == "positive":
             self.inter_df_stats = self.inter_df_stats[positive_DMF_bool]
-        else:
+        elif DMF == "negative":
             self.inter_df_stats = self.inter_df_stats[negative_DMF_bool]
+        else:
+            pass
         if no_flat == True:
             self.inter_df_stats = self.inter_df_stats[no_flat_plu_q_bool]
             self.inter_df_stats = self.inter_df_stats[no_flat_min_q_bool]
@@ -654,10 +656,12 @@ class Ortho_Stats:
             self.inter_df_stats = self.inter_df_stats[no_flat_min_a_bool]
         else:
             pass
-        if ident_proc == True:
+        if process == "identical":
             self.inter_df_stats = self.inter_df_stats[iden_proc_bool]
-        else:
+        elif process == "different":
             self.inter_df_stats = self.inter_df_stats[diff_proc_bool]
+        else:
+            pass
 
     def prof_perm(self,
                   e_value,
