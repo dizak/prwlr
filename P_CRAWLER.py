@@ -399,6 +399,9 @@ class Ortho_Interactions:
         query_species_Genome (tuple of strs): passed from Genome
         genes_Genome (list of dicts): passed from Genome
         gene_profiles_Genome (list of tuples): passed from Genome
+        interact_df (pandas.DataFrame): holds data about interactions from
+        parsed csv file. Can be appended with
+        Ortho_Interactions.df_profiles_and_score_appender
     """
     def __init__(self,
                  query_species_Genome,
@@ -407,6 +410,8 @@ class Ortho_Interactions:
         self.query_species_inter = query_species_Genome
         self.genes_inter = genes_Genome
         self.gene_profiles_inter = gene_profiles_Genome
+        self.interact_df = None
+        self.bio_proc_df = None
 
     def parse_sgadata(self,
                       in_file_name,
