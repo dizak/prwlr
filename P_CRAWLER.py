@@ -752,6 +752,53 @@ class Ortho_Stats:
         self.e_value = (self.DMF_positive_num * self.sim_prof_num) /\
                         self.tot_inter_num
 
+class KEGG_API:
+    """Provides connectivity with the KEGG database.
+    """
+    def __init__(self,
+                 home,
+                 operations,
+                 databases,
+                 organisms,
+                 id_conversions):
+        self.home = home
+        self.operations = operations
+        self.databases = databases
+        self.organisms = organisms
+        self.id_conversions = id_conversions
+        self.id_conversions_tbl = None
+
+    def get_id_conv_tbl(self,
+                        source_id_type,
+                        organism,
+                        out_file_name):
+        """Get genes or proteins IDs to KEGG IDs convertion table in
+        pandas.DataFrame format.
+
+        Args:
+            source_id_type (str): determines type of the source IDs
+            organism (str): determines name of the organism bounded to the source
+            IDs
+        """
+        url = "{0}/{1}/{2}/{3}".format(self.home,
+                                       self.operations["conv_2_outside_ids"],
+                                       self.id_conversions[source_id_type],
+                                       self.organisms[organism])
+        r = rq.get(url)
+        with open(out_file_name, "w") as fout:
+            fout.write(r.content)
+        self.id_conversions_df = pd.read_csv(out_file_name,
+                                              names = ["source_id",
+                                                       "kegg_id"],
+                                              header = None,
+                                              sep = "\t")
+        self.id_conversions_df.replace({"{0}:".format(self.organisms[organism]): ""},
+                                       regex=True,
+                                       inplace=True)
+        self.id_conversions_df.replace({"{0}:".format(self.id_conversions[source_id_type]): ""},
+                                       regex=True,
+                                       inplace=True)
+
 def main():
     pass
 
