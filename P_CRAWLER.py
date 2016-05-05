@@ -9,6 +9,7 @@ import math
 import argparse
 import glob
 import sys
+import requests as rq
 
 def perc_prog(in_item,
               in_iterbl):
