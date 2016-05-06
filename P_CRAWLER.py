@@ -855,13 +855,29 @@ class KEGG_API:
                                               header = None,
                                               sep = "\t")
         organism_ser = self.organisms[self.organisms.description.str.contains(organism)]
-        org_id = str(organism_ser.kegg_org_id.to_string(index = False, header = False))
+        org_id = str(organism_ser.kegg_org_id.to_string(index = False,
+                                                        header = False))
         self.id_conversions_df.replace({"{0}:".format(org_id): ""},
                                        regex=True,
                                        inplace=True)
         self.id_conversions_df.replace({"{0}:".format(self.id_conversions[source_id_type]): ""},
                                        regex=True,
                                        inplace=True)
+
+    def get_org_db_X_ref(self,
+                         organism,
+                         target_db,
+                         out_file_name):
+        organism_ser = self.organisms[self.organisms.description.str.contains(organism)]
+        org_id = str(organism_ser.kegg_org_id.to_string(index = False,
+                                                        header = False))
+        url = "{0}/{1}/{2}/{3}".format(self.home,
+                                       self.operations["find_X_ref"],
+                                       self.databases[target_db],
+                                       org_id)
+        r = rq.get(url)
+        with open(out_file_name, "w") as fout:
+            fout.write(r.content)
 
 def main():
     pass
