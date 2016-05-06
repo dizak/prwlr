@@ -755,44 +755,108 @@ class Ortho_Stats:
 class KEGG_API:
     """Provides connectivity with the KEGG database.
     """
-    def __init__(self,
-                 home,
-                 operations,
-                 databases,
-                 organisms,
-                 id_conversions):
-        self.home = home
-        self.operations = operations
-        self.databases = databases
-        self.organisms = organisms
-        self.id_conversions = id_conversions
+    def __init__(self):
+        self.home = "http://rest.kegg.jp"
+        self.operations = {"db_statistics": "info",
+                           "list_entry_ids": "list",
+                           "find_by_keyword": "find",
+                           "get_by_entry_no": "get",
+                           "conv_2_outside_ids": "conv",
+                           "find_X_ref": "link"}
+        self.databases = {"pathway": "path",
+                          "brite": "br",
+                          "module": "md",
+                          "orthology": "ko",
+                          "genome": "genome",
+                          "genomes": "gn",
+                          "ligand": "ligand",
+                          "compound": "cpd",
+                          "glycan": "gl",
+                          "reaction": "rn",
+                          "rpair": "rp",
+                          "rclass": "rc",
+                          "enzyme": "ec",
+                          "disease": "ds",
+                          "drug": "dr",
+                          "dgroup": "dg",
+                          "environ": "ev"}
+        self.organisms = None
+        self.id_conversions = {"ncbi_gene": "ncbi-geneid",
+                               "ncbi_prot": "ncbi-proteinid",
+                               "uniprot": "uniprot",
+                               "kegg_id": "genes"}
         self.id_conversions_tbl = None
+
+    def get_organisms_ids(self,
+                          out_file_name,
+                          skip_dwnld = False):
+        """Get KEGG's organisms' IDs, genomes IDs and definitions. Data are
+        downloaded to a local file and then made into pandas.DataFrame. File
+        can be reused.
+
+        Args:
+            out_file_name (str): name for file to be downloaded
+            skip_dwnld (bool) = read existing file when <True>. Default <False>
+        """
+        if skip_dwnld == True:
+            pass
+        else:
+            url = "{0}/{1}/{2}".format(self.home,
+                                       self.operations["list_entry_ids"],
+                                       self.databases["genome"])
+            r = rq.get(url)
+            with open(out_file_name, "w") as fout:
+                fout.write(r.content)
+        self.organisms = pd.read_csv(out_file_name,
+                                     names = ["genome_id",
+                                              "names",
+                                              "description"],
+                                     header=None,
+                                     sep = "\t|;",
+                                     engine = "python")
+        temp_sub_df = self.organisms["names"].str.split(",", expand = True)
+        temp_sub_df.columns = ["kegg_org_id", "name", "taxon_id"]
+        self.organisms.drop("names", axis = 1, inplace = True)
+        self.organisms = pd.concat([self.organisms, temp_sub_df], axis=1)
+        self.organisms.replace({"genome:":""},
+                               regex=True,
+                               inplace=True)
+        self.organisms.dropna(inplace=True)
 
     def get_id_conv_tbl(self,
                         source_id_type,
                         organism,
-                        out_file_name):
+                        out_file_name,
+                        skip_dwnld = False):
         """Get genes or proteins IDs to KEGG IDs convertion table in
-        pandas.DataFrame format.
+        pandas.DataFrame format. Data are downloaded to a local file and then
+        made into pandas.DataFrame. File can be reused.
 
         Args:
             source_id_type (str): determines type of the source IDs
-            organism (str): determines name of the organism bounded to the source
-            IDs
+            organism (str): determines name of the organism bounded to the
+            source IDs
+            out_file_name (str): name for file to be downloaded
+            skip_dwnld (bool) = read existing file when <True>. Default <False>
         """
-        url = "{0}/{1}/{2}/{3}".format(self.home,
-                                       self.operations["conv_2_outside_ids"],
-                                       self.id_conversions[source_id_type],
-                                       self.organisms[organism])
-        r = rq.get(url)
-        with open(out_file_name, "w") as fout:
-            fout.write(r.content)
+        if skip_dwnld == True:
+            pass
+        else:
+            url = "{0}/{1}/{2}/{3}".format(self.home,
+                                           self.operations["conv_2_outside_ids"],
+                                           self.id_conversions[source_id_type],
+                                           self.organisms[organism])
+            r = rq.get(url)
+            with open(out_file_name, "w") as fout:
+                fout.write(r.content)
         self.id_conversions_df = pd.read_csv(out_file_name,
                                               names = ["source_id",
                                                        "kegg_id"],
                                               header = None,
                                               sep = "\t")
-        self.id_conversions_df.replace({"{0}:".format(self.organisms[organism]): ""},
+        organism_ser = self.organisms[self.organisms.description.str.contains(organism)]
+        org_id = str(organism_ser.kegg_org_id.to_string(index = False, header = False))
+        self.id_conversions_df.replace({"{0}:".format(org_id): ""},
                                        regex=True,
                                        inplace=True)
         self.id_conversions_df.replace({"{0}:".format(self.id_conversions[source_id_type]): ""},
