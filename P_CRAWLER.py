@@ -753,7 +753,9 @@ class Ortho_Stats:
                         self.tot_inter_num
 
 class KEGG_API:
-    """Provides connectivity with the KEGG database.
+    """Provides connectivity with the KEGG database. Functions ending with <tbl>
+    download files provided by KEGG but DO NOT modify them. Modifications
+    needed for data processing are made on pandas.DataFrame.
     """
     def __init__(self):
         self.home = "http://rest.kegg.jp"
@@ -780,12 +782,13 @@ class KEGG_API:
                           "drug": "dr",
                           "dgroup": "dg",
                           "environ": "ev"}
-        self.organisms = None
+        self.organisms_df = None
         self.id_conversions = {"ncbi_gene": "ncbi-geneid",
                                "ncbi_prot": "ncbi-proteinid",
                                "uniprot": "uniprot",
                                "kegg_id": "genes"}
-        self.id_conversions_tbl = None
+        self.id_conversions_df = None
+        self.get_org_db_X_ref_df = None
 
     def get_organisms_ids(self,
                           out_file_name,
@@ -807,27 +810,35 @@ class KEGG_API:
             r = rq.get(url)
             with open(out_file_name, "w") as fout:
                 fout.write(r.content)
-        self.organisms = pd.read_csv(out_file_name,
+        self.organisms_df = pd.read_csv(out_file_name,
                                      names = ["genome_id",
                                               "names",
                                               "description"],
                                      header=None,
                                      sep = "\t|;",
                                      engine = "python")
-        temp_sub_df = self.organisms["names"].str.split(",", expand = True)
+        temp_sub_df = self.organisms_df["names"].str.split(",", expand = True)
         temp_sub_df.columns = ["kegg_org_id", "name", "taxon_id"]
-        self.organisms.drop("names", axis = 1, inplace = True)
-        self.organisms = pd.concat([self.organisms, temp_sub_df], axis=1)
-        self.organisms.replace({"genome:":""},
+        self.organisms_df.drop("names", axis = 1, inplace = True)
+        self.organisms_df = pd.concat([self.organisms_df, temp_sub_df], axis=1)
+        self.organisms_df.replace({"genome:":""},
                                regex=True,
                                inplace=True)
-        self.organisms.dropna(inplace=True)
+        self.organisms_df.dropna(inplace=True)
+
+    def org_name_2_kegg_id(self,
+                           organism):
+        organism_ser = self.organisms_df[self.organisms_df.description.str.contains(organism)]
+        org_id = str(organism_ser.kegg_org_id.to_string(index = False,
+                                                        header = False))
+        return org_id
 
     def get_id_conv_tbl(self,
                         source_id_type,
                         organism,
                         out_file_name,
-                        skip_dwnld = False):
+                        skip_dwnld = False,
+                        strip_pref = True):
         """Get genes or proteins IDs to KEGG IDs convertion table in
         pandas.DataFrame format. Data are downloaded to a local file and then
         made into pandas.DataFrame. File can be reused.
@@ -839,45 +850,76 @@ class KEGG_API:
             out_file_name (str): name for file to be downloaded
             skip_dwnld (bool) = read existing file when <True>. Default <False>
         """
+        org_id = self.org_name_2_kegg_id(organism)
         if skip_dwnld == True:
             pass
         else:
             url = "{0}/{1}/{2}/{3}".format(self.home,
                                            self.operations["conv_2_outside_ids"],
                                            self.id_conversions[source_id_type],
-                                           self.organisms[organism])
+                                           org_id)
             r = rq.get(url)
             with open(out_file_name, "w") as fout:
                 fout.write(r.content)
         self.id_conversions_df = pd.read_csv(out_file_name,
-                                              names = ["source_id",
+                                              names = [source_id_type,
                                                        "kegg_id"],
                                               header = None,
                                               sep = "\t")
-        organism_ser = self.organisms[self.organisms.description.str.contains(organism)]
-        org_id = str(organism_ser.kegg_org_id.to_string(index = False,
-                                                        header = False))
-        self.id_conversions_df.replace({"{0}:".format(org_id): ""},
-                                       regex=True,
-                                       inplace=True)
-        self.id_conversions_df.replace({"{0}:".format(self.id_conversions[source_id_type]): ""},
-                                       regex=True,
-                                       inplace=True)
+        if strip_pref == True:
+            self.id_conversions_df.replace({"{0}:".format(org_id): ""},
+                                           regex=True,
+                                           inplace=True)
+            self.id_conversions_df.replace({"{0}:".format(self.id_conversions[source_id_type]): ""},
+                                           regex=True,
+                                           inplace=True)
+        else:
+            pass
 
     def get_org_db_X_ref(self,
                          organism,
                          target_db,
-                         out_file_name):
-        organism_ser = self.organisms[self.organisms.description.str.contains(organism)]
-        org_id = str(organism_ser.kegg_org_id.to_string(index = False,
-                                                        header = False))
-        url = "{0}/{1}/{2}/{3}".format(self.home,
-                                       self.operations["find_X_ref"],
-                                       self.databases[target_db],
-                                       org_id)
-        r = rq.get(url)
-        with open(out_file_name, "w") as fout:
-            fout.write(r.content)
+                         out_file_name,
+                         skip_dwnld = False,
+                         strip_pref = True):
+        """Get desired KEGG's databse entries linked with all the genes from
+        given organism. Data are downloaded to a local file and then made into
+        pandas.DataFrame. File can be reused.
+
+        Args:
+            organism (str): organism name. Provide whitespace-separated full
+            species name. Uses pandas.series.str.contains method.
+            targed_db (str): dict key for KEGG_API.databases of desired
+            database.
+            out_file_name (str): name for file to be downloaded
+            skip_dwnld (bool) = read existing file when <True>. Default <False>
+        """
+        org_id = self.org_name_2_kegg_id(organism)
+        if skip_dwnld == True:
+            pass
+        else:
+            url = "{0}/{1}/{2}/{3}".format(self.home,
+                                           self.operations["find_X_ref"],
+                                           self.databases[target_db],
+                                           org_id)
+            r = rq.get(url)
+            with open(out_file_name, "w") as fout:
+                fout.write(r.content)
+        self.org_db_X_ref_df = pd.read_csv(out_file_name,
+                                           names = ["ORF_id", "kegg_id"],
+                                           header=None,
+                                           sep = "\t")
+        if strip_pref == True:
+            self.org_db_X_ref_df.replace({"{0}:".format(org_id): ""},
+                                         regex = True,
+                                         inplace = True)
+            self.org_db_X_ref_df.replace({"{0}:".format(self.databases["orthology"]): ""},
+                                         regex=True,
+                                         inplace=True)
+        else:
+            pass
+
+
 
 def main():
     pass
