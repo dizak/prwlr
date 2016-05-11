@@ -912,7 +912,7 @@ class KEGG_API:
                          out_file_name,
                          skip_dwnld = False,
                          strip_pref = True):
-        """Get desired KEGG's databse entries linked with all the genes from
+        """Get desired KEGG's database entries linked with all the genes from
         given organism. Data are downloaded to a local file and then made into
         pandas.DataFrame. File can be reused.
 
@@ -950,10 +950,15 @@ class KEGG_API:
             pass
 
     def get_ortho_db_entries(self,
-                             out_file_name,
-                             test_number):
+                             out_file_name):
+        """Get full information about ortho groups by entries from
+        org_ortho_db_X_ref_df and download them into a local file.
+
+        Args:
+            out_file_name (str): name for file to be downloaded
+        """
         counter = 0
-        entries = self.org_db_X_ref_df["kegg_id"][:test_number]
+        entries = self.org_db_X_ref_df["kegg_id"]
         for i in entries:
             counter += 1
             sign_prog_counter(counter, entries)
