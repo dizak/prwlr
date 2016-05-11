@@ -28,8 +28,9 @@ def perc_prog(in_item,
 def sign_prog(in_item,
               in_iterbl,
               in_size = 50,
-              in_sign="|"):
-    """Display progress of iterable as bar.
+              in_sign = "|"):
+    """Display progress of iterable as bar. Iterable must support built-in
+    index method.
 
     Args:
         in_item: current iteration element
@@ -44,6 +45,35 @@ def sign_prog(in_item,
     tot_len = len(in_iterbl)
     sign_size = float(tot_len / in_size)
     if in_iterbl.index(in_item) % sign_size == 0:
+        sys.stdout.write(in_sign)
+        sys.stdout.flush()
+
+def sign_prog_counter(in_counter,
+                      in_iterbl,
+                      in_size = 50,
+                      in_sign = "|"):
+    """Display progress of iterable as bar. For each iteration a counter must
+    be provided and then passed as an argument.
+
+    Args:
+        in_counter: current iteration element
+        in_iterbl: iterable
+        in_size: total number of signs in completed bar. Equals number of
+        iterations when argument higher than total number of iterations.
+    Examples:
+        >>> counter = 0
+        >>> for i in range(100):
+                counter += 1
+                sign_prog_counter(counter, range(100))
+        ||||||||||||||||||||||||||||||||||||||||||||||||||
+    """
+    if in_size > len(in_iterbl):
+        in_size = len(in_iterbl)
+    else:
+        pass
+    tot_len = len(in_iterbl)
+    sign_size = float(tot_len / in_size)
+    if in_counter % sign_size == 0:
         sys.stdout.write(in_sign)
         sys.stdout.flush()
 
@@ -919,13 +949,20 @@ class KEGG_API:
         else:
             pass
 
-    def get_org_gene_list_ortho_db_entry(self,
-                                         entry_no):
-        url = "{0}/{1}/{2}".format(self.home,
-                        self.operations["get_by_entry_no"],
-                        entry_no)
-        res = rq.get(url)
-        return res
+    def get_ortho_db_entries(self,
+                             out_file_name,
+                             test_number):
+        counter = 0
+        entries = self.org_db_X_ref_df["kegg_id"][:test_number]
+        for i in entries:
+            counter += 1
+            sign_prog_counter(counter, entries)
+            url = "{0}/{1}/{2}".format(self.home,
+                                       self.operations["get_by_entry_no"],
+                                       i)
+            res = rq.get(url)
+            with open(out_file_name, "a") as fout:
+                fout.write(res.content)
 
 def main():
     pass
