@@ -807,9 +807,9 @@ class KEGG_API:
             url = "{0}/{1}/{2}".format(self.home,
                                        self.operations["list_entry_ids"],
                                        self.databases["genome"])
-            r = rq.get(url)
+            res = rq.get(url)
             with open(out_file_name, "w") as fout:
-                fout.write(r.content)
+                fout.write(res.content)
         self.organisms_df = pd.read_csv(out_file_name,
                                      names = ["genome_id",
                                               "names",
@@ -858,9 +858,9 @@ class KEGG_API:
                                            self.operations["conv_2_outside_ids"],
                                            self.id_conversions[source_id_type],
                                            org_id)
-            r = rq.get(url)
+            res = rq.get(url)
             with open(out_file_name, "w") as fout:
-                fout.write(r.content)
+                fout.write(res.content)
         self.id_conversions_df = pd.read_csv(out_file_name,
                                               names = [source_id_type,
                                                        "kegg_id"],
@@ -902,9 +902,9 @@ class KEGG_API:
                                            self.operations["find_X_ref"],
                                            self.databases[target_db],
                                            org_id)
-            r = rq.get(url)
+            res = rq.get(url)
             with open(out_file_name, "w") as fout:
-                fout.write(r.content)
+                fout.write(res.content)
         self.org_db_X_ref_df = pd.read_csv(out_file_name,
                                            names = ["ORF_id", "kegg_id"],
                                            header=None,
@@ -919,7 +919,13 @@ class KEGG_API:
         else:
             pass
 
-
+    def get_org_gene_list_ortho_db_entry(self,
+                                         entry_no):
+        url = "{0}/{1}/{2}".format(self.home,
+                        self.operations["get_by_entry_no"],
+                        entry_no)
+        res = rq.get(url)
+        return res
 
 def main():
     pass
