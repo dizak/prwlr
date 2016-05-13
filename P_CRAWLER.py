@@ -213,6 +213,21 @@ def df_qa_names_2_prof_score(in_genes_pair,
     else:
         return simple_profiles_scorer(gene_profile_1, gene_profile_2)
 
+def text_blk_2_dict(in_str_1,
+                    in_str_2,
+                    in_text_blk):
+    out_dict = {}
+    res = re.compile("{0}.+{1}".format(in_str_1,
+                                       in_str_2),
+                     re.DOTALL).findall(in_text_blk)
+    res_rep = res[0].replace(in_str_1, "").replace(in_str_2, "")
+    res_spl = res_rep.split("\n")
+    res_strip = [i.strip() for i in res_spl]
+    res_clean = [i for i in res_strip if len(i) > 0]
+    res_spl_2 = [i.split(" ") for i in res_clean]
+    [out_dict.update({i[0]: " ".join(i[2:])}) for i in res_spl_2]
+    return out_dict
+
 class Genome:
     """Holds data about the reference organism genome extracted from its
     proteome (multifasta) and its genes orthologs (OrthoXML, ortho-finder csv).
@@ -240,6 +255,7 @@ class Genome:
         self.genes = []
         self.orthologous_groups_df = None
         self.orthologous_groups_dict = []
+        self.KO_list = []
         self.empty_genes = []
         self.ortho_genes = []
         self.gene_profiles = []
@@ -394,6 +410,41 @@ class Genome:
                                      {e:
                                      {"ortho_group_number": ii["ortho_group_number"]}\
                                      for e in org_temp_str_list}}
+
+    def parse_KO_db(self,
+                    in_file_name):
+        with open(in_file_name, "r") as fin:
+            file_str = fin.read()
+            entries_list = file_str.split("///")
+        for i in entries_list:
+            entry_dict = {}
+            pathway_dict = {}
+            entry = re.compile("ENTRY.+").findall(i)
+            entry_dict["entry"] = entry
+            name = re.compile("NAME.+").findall(i)
+            entry_dict["name"] = name
+            definition = re.compile("DEFINITION.+").findall(i)
+            entry_dict["definition"] = definition
+            pathway = text_blk_2_dict("PATHWAY", "MODULE", i)
+            entry_dict["pathway"] = pathway
+            module = text_blk_2_dict("MODULE", "DISEASE", i)
+            entry_dict["module"] = module
+            dblinks = text_blk_2_dict("DBLINKS", "GENES", i)
+            entry_dict["dblinks"] = dblinks
+            genes = text_blk_2_dict("GENES", "REFERENCE", i)
+            entry_dict["genes"] = genes
+            reference = re.compile("REFERNCE.+").findall(i)
+            entry_dict["reference"] = reference
+            authors = re.compile("AUTHORS.+").findall(i)
+            entry_dict["authors"] = authors
+            title = re.compile("TITLE.+").findall(i)
+            entry_dict["title"] = title
+            journal = re.compile("JOURNAL.+").findall(i)
+            entry_dict["journal"] = journal
+            sequence = re.compile("SEQUENCE.+").findall(i)
+            entry_dict["sequence"] = sequence
+            self.KO_list.append(entry_dict)
+
 
     def no_orthologs_genes_remover(self):
         """Return Genome.empty_genes (list of dicts) and Genome.ortho_genes
