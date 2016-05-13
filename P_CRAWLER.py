@@ -215,17 +215,23 @@ def df_qa_names_2_prof_score(in_genes_pair,
 
 def text_blk_2_dict(in_str_1,
                     in_str_2,
-                    in_text_blk):
+                    in_text_blk,
+                    char_spl = " ",
+                    single_value = True):
     out_dict = {}
     res = re.compile("{0}.+{1}".format(in_str_1,
                                        in_str_2),
                      re.DOTALL).findall(in_text_blk)
     res_rep = res[0].replace(in_str_1, "").replace(in_str_2, "")
-    res_spl = res_rep.split("\n")
-    res_strip = [i.strip() for i in res_spl]
+    res_newl_spl = res_rep.split("\n")
+    res_strip = [i.strip() for i in res_newl_spl]
     res_clean = [i for i in res_strip if len(i) > 0]
-    res_spl_2 = [i.split(" ") for i in res_clean]
-    [out_dict.update({i[0]: " ".join(i[2:])}) for i in res_spl_2]
+    res_char_spl = [i.split(char_spl) for i in res_clean]
+    print res_char_spl
+    if single_value == True:
+        [out_dict.update({i[0]: str(i[1])}) for i in res_char_spl]
+    else:
+        [out_dict.update({i[0]: i[1:]}) for i in res_char_spl]
     return out_dict
 
 class Genome:
