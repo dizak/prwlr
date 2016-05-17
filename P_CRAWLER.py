@@ -185,11 +185,6 @@ def simple_profiles_scorer(in_gene_profile_1,
         in_gene_profile_1: the first profile to compare
         in_gene_profile_2: the second profile to compare
     """
-#    score = 0
-#    for i in range(1, len(in_gene_profile_1)):
-#        if in_gene_profile_1[i] == in_gene_profile_2[i]:
-#            score += 1
-#    return score
     return (in_gene_profile_1 == in_gene_profile_2).sum()
 
 def df_qa_names_2_prof_score(in_genes_pair,
