@@ -213,6 +213,27 @@ def df_qa_names_2_prof_score(in_genes_pair,
     else:
         return simple_profiles_scorer(gene_profile_1, gene_profile_2)
 
+def text_blk_2_dict(in_str_1,
+                    in_str_2,
+                    in_text_blk,
+                    char_spl = " ",
+                    single_value = True):
+    out_dict = {}
+    res = re.compile("{0}.+{1}".format(in_str_1,
+                                       in_str_2),
+                     re.DOTALL).findall(in_text_blk)
+    res_rep = res[0].replace(in_str_1, "").replace(in_str_2, "")
+    res_newl_spl = res_rep.split("\n")
+    res_strip = [i.strip() for i in res_newl_spl]
+    res_clean = [i for i in res_strip if len(i) > 0]
+    res_char_spl = [i.split(char_spl) for i in res_clean]
+    print res_char_spl
+    if single_value == True:
+        [out_dict.update({i[0]: str(i[1])}) for i in res_char_spl]
+    else:
+        [out_dict.update({i[0]: i[1:]}) for i in res_char_spl]
+    return out_dict
+
 class Genome:
     """Holds data about the reference organism genome extracted from its
     proteome (multifasta) and its genes orthologs (OrthoXML, ortho-finder csv).
@@ -240,6 +261,7 @@ class Genome:
         self.genes = []
         self.orthologous_groups_df = None
         self.orthologous_groups_dict = []
+        self.KO_list = []
         self.empty_genes = []
         self.ortho_genes = []
         self.gene_profiles = []
@@ -394,6 +416,41 @@ class Genome:
                                      {e:
                                      {"ortho_group_number": ii["ortho_group_number"]}\
                                      for e in org_temp_str_list}}
+
+    def parse_KO_db(self,
+                    in_file_name):
+        with open(in_file_name, "r") as fin:
+            file_str = fin.read()
+            entries_list = file_str.split("///")
+        for i in entries_list:
+            entry_dict = {}
+            pathway_dict = {}
+            entry = re.compile("ENTRY.+").findall(i)
+            entry_dict["entry"] = entry
+            name = re.compile("NAME.+").findall(i)
+            entry_dict["name"] = name
+            definition = re.compile("DEFINITION.+").findall(i)
+            entry_dict["definition"] = definition
+            pathway = text_blk_2_dict("PATHWAY", "MODULE", i)
+            entry_dict["pathway"] = pathway
+            module = text_blk_2_dict("MODULE", "DISEASE", i)
+            entry_dict["module"] = module
+            dblinks = text_blk_2_dict("DBLINKS", "GENES", i)
+            entry_dict["dblinks"] = dblinks
+            genes = text_blk_2_dict("GENES", "REFERENCE", i)
+            entry_dict["genes"] = genes
+            reference = re.compile("REFERNCE.+").findall(i)
+            entry_dict["reference"] = reference
+            authors = re.compile("AUTHORS.+").findall(i)
+            entry_dict["authors"] = authors
+            title = re.compile("TITLE.+").findall(i)
+            entry_dict["title"] = title
+            journal = re.compile("JOURNAL.+").findall(i)
+            entry_dict["journal"] = journal
+            sequence = re.compile("SEQUENCE.+").findall(i)
+            entry_dict["sequence"] = sequence
+            self.KO_list.append(entry_dict)
+
 
     def no_orthologs_genes_remover(self):
         """Return Genome.empty_genes (list of dicts) and Genome.ortho_genes
@@ -649,6 +706,7 @@ class Ortho_Stats:
         self.unsim_perm_val = []
         self.mir_perm_val = []
         self.test_last_df_test = None
+        self.permuted_profs_df = None
 
     def df_selector(self,
                     DMF = "positive",
@@ -743,6 +801,26 @@ class Ortho_Stats:
             self.unsim_perm_val.append(unsim_prof_perm_num)
             self.mir_perm_val.append(mir_prof_perm_num)
 
+    def prof_perm_2(self,
+                    e_value):
+        for i in e_value:
+            sign_prog(i, range(e_value))
+            q_prof_temp_df = self.inter_df_stats["Query_gene_profile"]
+            a_prof_temp_df = self.inter_df_stats["Array_gene_profile"]
+            q_drop_prof_temp_df = self.inter_df_stats.drop("Query_gene_profile",
+                                                           axis = 1,
+                                                           inplace = True)
+            a_drop_prof_temp_df = self.inter_df_stats.drop("Array_gene_profile",
+                                                           axis = 1,
+                                                           inplace = True)
+            q_prof_perm_temp_df = q_prof_temp_df.sample(len(q_prof_temp_df))
+            a_prof_perm_temp_df = a_prof_temp_df.sample(len(a_prof_temp_df))
+            q_prof_perm_temp_df.index = range(len(q_prof_perm_temp_df))
+            a_prof_perm_temp_df.index = range(len(a_prof_perm_temp_df))
+            self.permuted_profs_df = pd.concat([q_prof_perm_temp_df,
+                                                a_prof_perm_temp_df],
+                                               axis = 1)
+
     def df_num_prop(self,
                     in_prof_sim_lev):
         """Return Ortho_Stats.tot_inter_num (int),
@@ -751,7 +829,7 @@ class Ortho_Stats:
         Ortho_Stats.sim_prof_num (int).
 
         Args:
-            in_prof_sim_lev (int): defines minimal Genome.gene_profiles in
+            in_prof_sim_lev (int): definges minimal Genome.gene_profiles in
             Ortho_Stats.inter_df_stats similarity treshold
         """
         positive_DMF_bool = (self.inter_df_stats["DMF"] >\
