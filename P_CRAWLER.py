@@ -10,6 +10,7 @@ import argparse
 import glob
 import sys
 import requests as rq
+import numpy as np
 
 def perc_prog(in_item,
               in_iterbl):
@@ -156,7 +157,7 @@ def gene_profile_finder_by_name(in_gene_name,
                                         conc = False)
         '---+-+-++--+++--+++'
     """
-    for i in set(in_all_gene_profiles):
+    for i in in_all_gene_profiles:
         if in_gene_name == i[0]:
             if conc == True:
                 return "".join(i[1:])
@@ -184,11 +185,12 @@ def simple_profiles_scorer(in_gene_profile_1,
         in_gene_profile_1: the first profile to compare
         in_gene_profile_2: the second profile to compare
     """
-    score = 0
-    for i in range(1, len(in_gene_profile_1)):
-        if in_gene_profile_1[i] == in_gene_profile_2[i]:
-            score += 1
-    return score
+#    score = 0
+#    for i in range(1, len(in_gene_profile_1)):
+#        if in_gene_profile_1[i] == in_gene_profile_2[i]:
+#            score += 1
+#    return score
+    return (in_gene_profile_1 == in_gene_profile_2).sum()
 
 def df_qa_names_2_prof_score(in_genes_pair,
                              in_all_gene_profiles):
@@ -419,7 +421,7 @@ class Genome:
                     temp_list.append("+")
                 else:
                     temp_list.append("-")
-            self.gene_profiles.append(tuple(temp_list))
+            self.gene_profiles.append(np.array(temp_list))
 
 class Ortho_Interactions:
     """Holds data about gene interactions array extracted from (csv) file.
