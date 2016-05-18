@@ -535,14 +535,13 @@ class Ortho_Interactions:
         prof_score_temp_list = pt.multiprocessing.ProcessingPool().map(lambda x: df_qa_names_2_prof_score(x, self.gene_profiles_inter),
                                                                        qa_attrib_temp_list)
         print "\nconcatenating profiles...".format()
-        for i in qa_attrib_temp_list:
-            sign_prog(i, qa_attrib_temp_list)
-            conc_qa_prof_temp_list.append([gene_profile_finder_by_name(i[0],
-                                                                       self.gene_profiles_inter,
-                                                                       conc = True),
-                                           gene_profile_finder_by_name(i[1],
-                                                                       self.gene_profiles_inter,
-                                                                       conc = True)])
+        conc_qa_prof_temp_list = pt.multiprocessing.ProcessingPool().map(lambda x: [gene_profile_finder_by_name(x[0],
+                                                                                                                self.gene_profiles_inter,
+                                                                                                                conc = True),
+                                                                                    gene_profile_finder_by_name(x[1],
+                                                                                                                self.gene_profiles_inter,
+                                                                                                                conc = True)],
+                                                                         qa_attrib_temp_list)
         print "\npreparing descriptors of query genes...".format()
         for i in self.interact_df.itertuples():
             q_gene_head_temp_list.append(gene_finder_by_attrib("GN_gene_id",
