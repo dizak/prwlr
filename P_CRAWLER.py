@@ -410,13 +410,13 @@ class Genome:
         Genome.query_species order.
         """
         for i in self.ortho_genes:
-            temp_list = [i[id_type]]
+            temp_arr = np.array([i[id_type]])
             for ii in self.query_species:
                 if ii in i["orthologs"]["organism"]:
-                    temp_list.append("+")
+                    np.append(temp_arr, "+")
                 else:
-                    temp_list.append("-")
-            self.gene_profiles.append(np.array(temp_list))
+                    np.append(temp_arr, "-")
+            self.gene_profiles.append(temp_arr)
 
 class Ortho_Interactions:
     """Holds data about gene interactions array extracted from (csv) file.
