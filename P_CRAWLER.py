@@ -647,9 +647,7 @@ class Ortho_Stats:
         self.DMF_negative_num = None
         self.sim_prof_num = None
         self.e_value = None
-        self.sim_perm_val = []
-        self.unsim_perm_val = []
-        self.mir_perm_val = []
+        self.perm_results = None
         self.test_last_df_test = None
 
     def df_selector(self,
@@ -712,8 +710,7 @@ class Ortho_Stats:
             in_prof_sim_lev(int): treshold for assuming profiles as similar or
             not
         """
-        for i in range(e_value):
-            sign_prog(i, range(e_value))
+        def f(in_iter):
             temp_score_list = []
             q_temp_df = self.inter_df_stats[["Query_gene_name", "Query_gene_profile"]]
             a_temp_df = self.inter_df_stats[["Array_gene_name", "Array_gene_profile"]]
@@ -731,7 +728,6 @@ class Ortho_Stats:
                                          columns=["Profiles_similarity_score"])
             qa_temp_perm_score_df = pd.concat([qa_temp_perm_df, temp_score_df],
                                                axis=1)
-            self.test_last_df_test = qa_temp_perm_score_df
             sim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] >=\
                              in_prof_sim_lev)
             unsim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] <\
@@ -741,9 +737,12 @@ class Ortho_Stats:
             sim_prof_perm_num = len(qa_temp_perm_score_df[sim_prof_bool])
             unsim_prof_perm_num = len(qa_temp_perm_score_df[unsim_prof_bool])
             mir_prof_perm_num = len(qa_temp_perm_score_df[mir_prof_bool])
-            self.sim_perm_val.append(sim_prof_perm_num)
-            self.unsim_perm_val.append(unsim_prof_perm_num)
-            self.mir_perm_val.append(mir_prof_perm_num)
+            return {"similar": sim_prof_perm_num,
+                    "unsimilar": unsim_prof_perm_num,
+                    "mirror": mir_prof_perm_num,
+                    "iteration": in_iter + 1}
+        perm_results_temp_dict = ptmp.ProcessingPool().map(f, range(e_value))
+        self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
     def df_num_prop(self,
                     in_prof_sim_lev):
