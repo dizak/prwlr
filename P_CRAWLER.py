@@ -413,9 +413,9 @@ class Genome:
             temp_arr = np.array([i[id_type]])
             for ii in self.query_species:
                 if ii in i["orthologs"]["organism"]:
-                    np.append(temp_arr, "+")
+                    temp_arr = np.append(temp_arr, "+")
                 else:
-                    np.append(temp_arr, "-")
+                    temp_arr = np.append(temp_arr, "-")
             self.gene_profiles.append(temp_arr)
 
 class Ortho_Interactions:
