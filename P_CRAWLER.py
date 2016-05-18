@@ -532,10 +532,8 @@ class Ortho_Interactions:
             qa_attrib_temp_list.append([getattr(i, "Query_gene_name"),
                                         getattr(i, "Array_gene_name")])
         print "\nscoring profiles similarity...".format()
-        for i in qa_attrib_temp_list:
-            sign_prog(i, qa_attrib_temp_list)
-            prof_score_temp_list.append(df_qa_names_2_prof_score(i,
-                                                                 self.gene_profiles_inter))
+        prof_score_temp_list = pt.multiprocessing.ProcessingPool().map(lambda x: df_qa_names_2_prof_score(x, self.gene_profiles_inter),
+                                                                       qa_attrib_temp_list)
         print "\nconcatenating profiles...".format()
         for i in qa_attrib_temp_list:
             sign_prog(i, qa_attrib_temp_list)
