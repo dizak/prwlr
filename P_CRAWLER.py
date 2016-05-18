@@ -524,6 +524,8 @@ class Ortho_Interactions:
         qa_attrib_temp_list = []
         prof_score_temp_list = []
         conc_qa_prof_temp_list = []
+        q_gene_name_temp_list = []
+        a_gene_name_temp_list = []
         q_gene_head_temp_list = []
         a_gene_head_temp_list = []
         bio_proc_temp_list = []
@@ -544,16 +546,20 @@ class Ortho_Interactions:
                                                                          qa_attrib_temp_list)
         print "\npreparing descriptors of query genes...".format()
         for i in self.interact_df.itertuples():
-            q_gene_head_temp_list.append(gene_finder_by_attrib("GN_gene_id",
-                                                               getattr(i, "Query_gene_name"),
-                                                               "description",
-                                                               self.genes_inter))
+            q_gene_name_temp_list.append(getattr(i, "Query_gene_name"))
+        q_gene_head_temp_list = pt.multiprocessing.ProcessingPool().map(lambda x: gene_finder_by_attrib("GN_gene_id",
+                                                                                                        x,
+                                                                                                        "description",
+                                                                                                        self.genes_inter),
+                                                                        q_gene_name_temp_list)
         print "\npreparing descriptors of array genes...".format()
         for i in self.interact_df.itertuples():
-            a_gene_head_temp_list.append(gene_finder_by_attrib("GN_gene_id",
-                                                               getattr(i, "Array_gene_name"),
-                                                               "description",
-                                                               self.genes_inter))
+            a_gene_name_temp_list.append(getattr(i, "Array_gene_name"))
+        a_gene_head_temp_list = pt.multiprocessing.ProcessingPool().map(lambda x: gene_finder_by_attrib("GN_gene_id",
+                                                                                                        x,
+                                                                                                        "description",
+                                                                                                        self.genes_inter),
+                                                                        a_gene_name_temp_list)
         print "\ncreating temporary dataframes...".format()
         prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
                                           index = self.interact_df.index,
