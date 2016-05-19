@@ -222,7 +222,9 @@ def text_blk_2_dict(in_str_1,
     res = re.compile("{0}.+{1}".format(in_str_1,
                                        in_str_2),
                      re.DOTALL).findall(in_text_blk)
+    print "res\n\n\n{}".format(res)
     res_rep = res[0].replace(in_str_1, "").replace(in_str_2, "")
+    print "res_rep\n\n\n{}".format(res_rep)
     res_newl_spl = res_rep.split("\n")
     res_strip = [i.strip() for i in res_newl_spl]
     res_clean = [i for i in res_strip if len(i) > 0]
@@ -232,7 +234,7 @@ def text_blk_2_dict(in_str_1,
         [out_dict.update({i[0]: str(i[1])}) for i in res_char_spl]
     else:
         [out_dict.update({i[0]: i[1:]}) for i in res_char_spl]
-    return out_dict
+    print out_dict
 
 class Genome:
     """Holds data about the reference organism genome extracted from its
@@ -425,30 +427,40 @@ class Genome:
         for i in entries_list:
             entry_dict = {}
             pathway_dict = {}
-            entry = re.compile("ENTRY.+").findall(i)
-            entry_dict["entry"] = entry
-            name = re.compile("NAME.+").findall(i)
-            entry_dict["name"] = name
-            definition = re.compile("DEFINITION.+").findall(i)
-            entry_dict["definition"] = definition
-            pathway = text_blk_2_dict("PATHWAY", "MODULE", i)
-            entry_dict["pathway"] = pathway
-            module = text_blk_2_dict("MODULE", "DISEASE", i)
-            entry_dict["module"] = module
-            dblinks = text_blk_2_dict("DBLINKS", "GENES", i)
-            entry_dict["dblinks"] = dblinks
-            genes = text_blk_2_dict("GENES", "REFERENCE", i)
-            entry_dict["genes"] = genes
-            reference = re.compile("REFERNCE.+").findall(i)
-            entry_dict["reference"] = reference
-            authors = re.compile("AUTHORS.+").findall(i)
-            entry_dict["authors"] = authors
-            title = re.compile("TITLE.+").findall(i)
-            entry_dict["title"] = title
-            journal = re.compile("JOURNAL.+").findall(i)
-            entry_dict["journal"] = journal
-            sequence = re.compile("SEQUENCE.+").findall(i)
-            entry_dict["sequence"] = sequence
+            entry = re.findall("ENTRY.+", i)
+            if len(entry) > 0:
+                entry_dict["entry"] = entry[0].replace("ENTRY", "").replace("KO", "").strip()
+            name = re.findall("NAME.+", i)
+            if len(name) > 0:
+                entry_dict["name"] = name[0].replace("NAME", "").strip()
+            definition = re.findall("DEFINITION.+", i)
+            if len(definition):
+                entry_dict["definition"] = definition[0].replace("DEFINITION", "").strip()
+            reference = re.findall("REFERENCE.+", i)
+            if len(reference) > 0:
+                entry_dict["reference"] = reference[0].replace("REFERENCE", "").strip()
+            authors = re.findall("AUTHORS.+", i)
+            if len(authors) > 0:
+                entry_dict["authors"] = authors[0].replace("AUTHORS", "").strip()
+            title = re.findall("TITLE.+", i)
+            if len(title) > 0:
+                entry_dict["title"] = title[0].replace("TITLE", "").strip()
+            journal = re.findall("JOURNAL.+", i)
+            if len(journal) > 0:
+                entry_dict["journal"] = journal[0].replace("JOURNAL", "").strip()
+            sequence = re.findall("SEQUENCE.+", i)
+            if len(sequence) > 0:
+                entry_dict["sequence"] = sequence[0].replace("SEQUENCE", "").replace("[", "").replace("]", "").strip()
+#            pathway = text_blk_2_dict("PATHWAY", "MODULE", str(i), "  ")
+#            entry_dict["pathway"] = pathway
+#            module = text_blk_2_dict("MODULE", "DISEASE", i)
+#            entry_dict["module"] = module
+#            dblinks = text_blk_2_dict("DBLINKS", "GENES", i)
+#            entry_dict["dblinks"] = dblinks
+#            genes = text_blk_2_dict("GENES", "REFERENCE", i)
+#            entry_dict["genes"] = genes
+            else:
+                pass
             self.KO_list.append(entry_dict)
 
 
