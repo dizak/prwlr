@@ -399,7 +399,7 @@ class Genome:
         with open(in_file_name, "r") as fin:
             file_str = fin.read()
             entries_list = file_str.split("///")
-        for i in entries_list:
+        def f(i):
             entry_dict = {}
             pathway_dict = {}
             entry = re.findall("ENTRY.+", i)
@@ -442,7 +442,8 @@ class Genome:
                         orgs.append(i)
                 entry_dict["genes"] = genes
                 entry_dict["orgs"] = orgs
-            self.KO_list.append(entry_dict)
+            return entry_dict
+        self.KO_list = ptmp.ProcessingPool().map(f, entries_list)
 
 
     def no_orthologs_genes_remover(self):
