@@ -437,8 +437,11 @@ class Genome:
                 orgs = []
                 genes = []
                 for i in orgs_n_genes:
-                    orgs.append(i.split(": ")[0])
-                    genes.append(i.split(": ")[1])
+                    try:
+                        orgs.append(i.split(": ")[0])
+                        genes.append(i.split(": ")[1])
+                    except:
+                        orgs.append(i)
                 entry_dict["genes"] = genes
                 entry_dict["orgs"] = orgs
             self.KO_list.append(entry_dict)
