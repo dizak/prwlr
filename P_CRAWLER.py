@@ -238,6 +238,7 @@ class Genome:
         self.genes = []
         self.orthologous_groups_df = None
         self.orthologous_groups_dict = []
+        self.KO_list = []
         self.empty_genes = []
         self.ortho_genes = []
         self.gene_profiles = []
@@ -392,6 +393,57 @@ class Genome:
                                      {e:
                                      {"ortho_group_number": ii["ortho_group_number"]}\
                                      for e in org_temp_str_list}}
+
+    def parse_KO_db(self,
+                    in_file_name):
+        with open(in_file_name, "r") as fin:
+            file_str = fin.read()
+            entries_list = file_str.split("///")
+        for i in entries_list:
+            entry_dict = {}
+            pathway_dict = {}
+            entry = re.findall("ENTRY.+", i)
+            if len(entry) > 0:
+                entry_dict["entry"] = entry[0].replace("ENTRY", "").replace("KO", "").strip()
+            name = re.findall("NAME.+", i)
+            if len(name) > 0:
+                entry_dict["name"] = name[0].replace("NAME", "").strip()
+            definition = re.findall("DEFINITION.+", i)
+            if len(definition):
+                entry_dict["definition"] = definition[0].replace("DEFINITION", "").strip()
+            reference = re.findall("REFERENCE.+", i)
+            if len(reference) > 0:
+                entry_dict["reference"] = reference[0].replace("REFERENCE", "").strip()
+            authors = re.findall("AUTHORS.+", i)
+            if len(authors) > 0:
+                entry_dict["authors"] = authors[0].replace("AUTHORS", "").strip()
+            title = re.findall("TITLE.+", i)
+            if len(title) > 0:
+                entry_dict["title"] = title[0].replace("TITLE", "").strip()
+            journal = re.findall("JOURNAL.+", i)
+            if len(journal) > 0:
+                entry_dict["journal"] = journal[0].replace("JOURNAL", "").strip()
+            sequence = re.findall("SEQUENCE.+", i)
+            if len(sequence) > 0:
+                entry_dict["sequence"] = sequence[0].replace("SEQUENCE", "").replace("[", "").replace("]", "").strip()
+            genes_blk_comp = re.compile("GENES.+\n^\s+\w{3}:\s.+^\w", re.DOTALL|re.MULTILINE)
+            genes_blk_list = genes_blk_comp.findall(i)
+            re.purge()
+            if len(genes_blk_list) > 0:
+                genes_blk_str = genes_blk_list[0]
+                orgs_n_genes = re.findall("\w{3}:.+", genes_blk_str)
+                orgs = []
+                genes = []
+                for i in orgs_n_genes:
+                    try:
+                        orgs.append(i.split(": ")[0])
+                        genes.append(i.split(": ")[1])
+                    except:
+                        orgs.append(i)
+                entry_dict["genes"] = genes
+                entry_dict["orgs"] = orgs
+            self.KO_list.append(entry_dict)
+
 
     def no_orthologs_genes_remover(self):
         """Return Genome.empty_genes (list of dicts) and Genome.ortho_genes
