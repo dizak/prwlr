@@ -213,29 +213,6 @@ def df_qa_names_2_prof_score(in_genes_pair,
     else:
         return simple_profiles_scorer(gene_profile_1, gene_profile_2)
 
-def text_blk_2_dict(in_str_1,
-                    in_str_2,
-                    in_text_blk,
-                    char_spl = " ",
-                    single_value = True):
-    out_dict = {}
-    res = re.compile("{0}.+{1}".format(in_str_1,
-                                       in_str_2),
-                     re.DOTALL).findall(in_text_blk)
-    print "res\n\n\n{}".format(res)
-    res_rep = res[0].replace(in_str_1, "").replace(in_str_2, "")
-    print "res_rep\n\n\n{}".format(res_rep)
-    res_newl_spl = res_rep.split("\n")
-    res_strip = [i.strip() for i in res_newl_spl]
-    res_clean = [i for i in res_strip if len(i) > 0]
-    res_char_spl = [i.split(char_spl) for i in res_clean]
-    print res_char_spl
-    if single_value == True:
-        [out_dict.update({i[0]: str(i[1])}) for i in res_char_spl]
-    else:
-        [out_dict.update({i[0]: i[1:]}) for i in res_char_spl]
-    print out_dict
-
 class Genome:
     """Holds data about the reference organism genome extracted from its
     proteome (multifasta) and its genes orthologs (OrthoXML, ortho-finder csv).
@@ -424,7 +401,7 @@ class Genome:
         with open(in_file_name, "r") as fin:
             file_str = fin.read()
             entries_list = file_str.split("///")
-        for i in entries_list:
+        for i in entries_list[:2]:
             entry_dict = {}
             pathway_dict = {}
             entry = re.findall("ENTRY.+", i)
@@ -451,6 +428,21 @@ class Genome:
             sequence = re.findall("SEQUENCE.+", i)
             if len(sequence) > 0:
                 entry_dict["sequence"] = sequence[0].replace("SEQUENCE", "").replace("[", "").replace("]", "").strip()
+            genes_blk_comp = re.compile("GENES.+\n^\s+\w{3}:\s.+^\w", re.DOTALL|re.MULTILINE)
+            genes_blk_list = genes_blk_comp.findall(i)
+            re.purge()
+            if len(genes_blk_list) > 0:
+                genes_blk_str = genes_blk_list[0]
+                orgs_n_genes = re.findall("\w{3}:.+", genes_blk_str)
+                orgs = []
+                genes = []
+                for i in orgs_n_genes:
+                    orgs.append(i.split(": ")[0])
+                    genes.append(i.split(": ")[1])
+                entry_dict["genes"] = np.array(genes)
+                entry_dict["orgs"] = orgs
+
+
 #            pathway = text_blk_2_dict("PATHWAY", "MODULE", str(i), "  ")
 #            entry_dict["pathway"] = pathway
 #            module = text_blk_2_dict("MODULE", "DISEASE", i)
@@ -459,8 +451,6 @@ class Genome:
 #            entry_dict["dblinks"] = dblinks
 #            genes = text_blk_2_dict("GENES", "REFERENCE", i)
 #            entry_dict["genes"] = genes
-            else:
-                pass
             self.KO_list.append(entry_dict)
 
 
