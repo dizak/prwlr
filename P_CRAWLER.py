@@ -401,7 +401,7 @@ class Genome:
         with open(in_file_name, "r") as fin:
             file_str = fin.read()
             entries_list = file_str.split("///")
-        for i in entries_list[:2]:
+        for i in entries_list:
             entry_dict = {}
             pathway_dict = {}
             entry = re.findall("ENTRY.+", i)
@@ -441,16 +441,6 @@ class Genome:
                     genes.append(i.split(": ")[1])
                 entry_dict["genes"] = genes
                 entry_dict["orgs"] = orgs
-
-
-#            pathway = text_blk_2_dict("PATHWAY", "MODULE", str(i), "  ")
-#            entry_dict["pathway"] = pathway
-#            module = text_blk_2_dict("MODULE", "DISEASE", i)
-#            entry_dict["module"] = module
-#            dblinks = text_blk_2_dict("DBLINKS", "GENES", i)
-#            entry_dict["dblinks"] = dblinks
-#            genes = text_blk_2_dict("GENES", "REFERENCE", i)
-#            entry_dict["genes"] = genes
             self.KO_list.append(entry_dict)
 
 
