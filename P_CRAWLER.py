@@ -803,7 +803,7 @@ class Ortho_Stats:
 
     def prof_perm_2(self,
                     e_value):
-        for i in e_value:
+        for i in range(e_value):
             sign_prog(i, range(e_value))
             q_prof_temp_df = self.inter_df_stats["Query_gene_profile"]
             a_prof_temp_df = self.inter_df_stats["Array_gene_profile"]
