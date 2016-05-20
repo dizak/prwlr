@@ -439,7 +439,7 @@ class Genome:
                 for i in orgs_n_genes:
                     orgs.append(i.split(": ")[0])
                     genes.append(i.split(": ")[1])
-                entry_dict["genes"] = np.array(genes)
+                entry_dict["genes"] = genes
                 entry_dict["orgs"] = orgs
 
 
