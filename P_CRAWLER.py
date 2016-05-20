@@ -445,7 +445,6 @@ class Genome:
             return entry_dict
         self.KO_list = ptmp.ProcessingPool().map(f, entries_list)
 
-
     def no_orthologs_genes_remover(self):
         """Return Genome.empty_genes (list of dicts) and Genome.ortho_genes
         (list of dicts) by iterating over Genome.genes (list of dicts).
@@ -702,6 +701,7 @@ class Ortho_Stats:
         self.e_value = None
         self.perm_results = None
         self.test_last_df_test = None
+        self.permuted_profs_df = None
 
     def df_selector(self,
                     DMF = "positive",
@@ -797,6 +797,26 @@ class Ortho_Stats:
         perm_results_temp_dict = ptmp.ProcessingPool().map(f, range(e_value))
         self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
+    def prof_perm_2(self,
+                    e_value):
+        for i in range(e_value):
+            sign_prog(i, range(e_value))
+            q_prof_temp_df = self.inter_df_stats["Query_gene_profile"]
+            a_prof_temp_df = self.inter_df_stats["Array_gene_profile"]
+            q_drop_prof_temp_df = self.inter_df_stats.drop("Query_gene_profile",
+                                                           axis = 1,
+                                                           inplace = True)
+            a_drop_prof_temp_df = self.inter_df_stats.drop("Array_gene_profile",
+                                                           axis = 1,
+                                                           inplace = True)
+            q_prof_perm_temp_df = q_prof_temp_df.sample(len(q_prof_temp_df))
+            a_prof_perm_temp_df = a_prof_temp_df.sample(len(a_prof_temp_df))
+            q_prof_perm_temp_df.index = range(len(q_prof_perm_temp_df))
+            a_prof_perm_temp_df.index = range(len(a_prof_perm_temp_df))
+            self.permuted_profs_df = pd.concat([q_prof_perm_temp_df,
+                                                a_prof_perm_temp_df],
+                                               axis = 1)
+
     def df_num_prop(self,
                     in_prof_sim_lev):
         """Return Ortho_Stats.tot_inter_num (int),
@@ -805,7 +825,7 @@ class Ortho_Stats:
         Ortho_Stats.sim_prof_num (int).
 
         Args:
-            in_prof_sim_lev (int): defines minimal Genome.gene_profiles in
+            in_prof_sim_lev (int): definges minimal Genome.gene_profiles in
             Ortho_Stats.inter_df_stats similarity treshold
         """
         positive_DMF_bool = (self.inter_df_stats["DMF"] >\
