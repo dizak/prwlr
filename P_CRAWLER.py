@@ -803,19 +803,19 @@ class Ortho_Stats:
             sign_prog(i, range(e_value))
             q_prof_temp_df = self.inter_df_stats["Query_gene_profile"]
             a_prof_temp_df = self.inter_df_stats["Array_gene_profile"]
-            q_drop_prof_temp_df = self.inter_df_stats.drop("Query_gene_profile",
-                                                           axis = 1,
-                                                           inplace = True)
-            a_drop_prof_temp_df = self.inter_df_stats.drop("Array_gene_profile",
-                                                           axis = 1,
-                                                           inplace = True)
+            drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
+                                                          "Array_gene_profile"],
+                                                           axis = 1)
             q_prof_perm_temp_df = q_prof_temp_df.sample(len(q_prof_temp_df))
             a_prof_perm_temp_df = a_prof_temp_df.sample(len(a_prof_temp_df))
             q_prof_perm_temp_df.index = range(len(q_prof_perm_temp_df))
             a_prof_perm_temp_df.index = range(len(a_prof_perm_temp_df))
-            self.permuted_profs_df = pd.concat([q_prof_perm_temp_df,
-                                                a_prof_perm_temp_df],
-                                               axis = 1)
+            permuted_df = pd.concat([drop_prof_temp_df,
+                                     q_prof_perm_temp_df,
+                                     a_prof_perm_temp_df],
+                                    axis = 1)
+            self.permuted_profs_df = permuted_df
+
 
     def df_num_prop(self,
                     in_prof_sim_lev):
