@@ -183,8 +183,10 @@ def simple_profiles_scorer(in_gene_profile_1,
     profiles. Score equal zero means the profiles are mirrors.
 
     Args:
-        in_gene_profile_1: the first profile to compare
-        in_gene_profile_2: the second profile to compare
+        in_gene_profile_1 (numpy.array): the first profile to compare. MUST be
+        generated from list. MUST NOT contain gene name.
+        in_gene_profile_2 (numpy.array): the second profile to compare. MUST be
+        generated from list. MUST NOT contain gene name.
     """
     return (in_gene_profile_1 == in_gene_profile_2).sum()
 
@@ -751,11 +753,12 @@ class Ortho_Stats:
         else:
             pass
 
-    def prof_perm(self,
-                  e_value,
-                  in_prof_sim_lev):
-        """Return lists of number of different types of profiles scores, each
-        generated from shuffled pandas DataFrame.
+    def names_perm(self,
+                   e_value,
+                   in_prof_sim_lev):
+        """Return pandas.DataFrame of number of different types of profiles scores, each
+        generated from pandas DataFrame in which genes names were permuted. It is
+        an equivalent of creating completely new, random network.
 
         Args:
             e_value (int): number of times to shuffle the pandas DataFrame
@@ -796,9 +799,14 @@ class Ortho_Stats:
         perm_results_temp_dict = ptmp.ProcessingPool().map(f, range(e_value))
         self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
-    def prof_perm_2(self,
-                    e_value,
-                    in_prof_sim_lev):
+    def prof_perm(self,
+                  e_value,
+                  in_prof_sim_lev):
+        """Return pandas.DataFrame of number of different types of profiles scores,
+        ech generated from pandas.DataFrame in which gene profiles were permuted but
+        NOT the rest of the data. It is an equivalent of permuting parameters in
+        the interactions network without changing the network's topology.
+        """
         q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
         def f(in_iter):
