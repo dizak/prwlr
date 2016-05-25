@@ -701,7 +701,6 @@ class Ortho_Stats:
         self.e_value = None
         self.perm_results = None
         self.test_last_df_test = None
-        self.permuted_profs_df = None
 
     def df_selector(self,
                     DMF = "positive",
@@ -798,16 +797,18 @@ class Ortho_Stats:
         self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
     def prof_perm_2(self,
-                    e_value):
-        temp_score_list = []
+                    e_value,
+                    in_prof_sim_lev):
         q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
         for i in range(e_value):
+            temp_score_list = []
             sign_prog(i, range(e_value))
             q_prof_temp_df = self.inter_df_stats["Query_gene_profile"]
             a_prof_temp_df = self.inter_df_stats["Array_gene_profile"]
             drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
-                                                          "Array_gene_profile"] +\
+                                                          "Array_gene_profile",
+                                                          "Profiles_similarity_score"] +\
                                                          q_sign_per_col_profs_cols +\
                                                          a_sign_per_col_profs_cols,
                                                          axis = 1)
@@ -825,10 +826,23 @@ class Ortho_Stats:
             temp_score_df = pd.DataFrame(temp_score_list,
                                          index=permuted_df.index,
                                          columns=["Profiles_similarity_score"])
-            self.permuted_profs_df = pd.concat([permuted_df,
-                                                temp_score_df],
-                                               axis = 1)
-
+            permuted_profs_df = pd.concat([permuted_df,
+                                          temp_score_df],
+                                          axis = 1)
+            sim_prof_bool = (permuted_profs_df["Profiles_similarity_score"] >=\
+                             in_prof_sim_lev)
+            unsim_prof_bool = (permuted_profs_df["Profiles_similarity_score"] <\
+                               in_prof_sim_lev) &\
+                              (permuted_profs_df["Profiles_similarity_score"] > 0)
+            mir_prof_bool = (permuted_profs_df["Profiles_similarity_score"] == 0)
+            sim_prof_perm_num = len(permuted_profs_df[sim_prof_bool])
+            unsim_prof_perm_num = len(permuted_profs_df[unsim_prof_bool])
+            mir_prof_perm_num = len(permuted_profs_df[mir_prof_bool])
+            out_dict =  {"similar": sim_prof_perm_num,
+                    "unsimilar": unsim_prof_perm_num,
+                    "mirror": mir_prof_perm_num,
+                    "iteration": i + 1}
+        self.perm_results = out_dict
 
     def df_num_prop(self,
                     in_prof_sim_lev):
