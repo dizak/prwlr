@@ -820,8 +820,8 @@ class Ortho_Stats:
                                      a_prof_perm_temp_df],
                                     axis = 1)
             for ii in permuted_df.itertuples():
-                temp_score_list.append([simple_profiles_scorer(np.array(getattr(ii, "Query_gene_profile")),
-                                                               np.array(getattr(ii, "Array_gene_profile")))])
+                temp_score_list.append([simple_profiles_scorer(np.array(list(getattr(ii, "Query_gene_profile"))),
+                                                               np.array(list(getattr(ii, "Array_gene_profile"))))])
             temp_score_df = pd.DataFrame(temp_score_list,
                                          index=permuted_df.index,
                                          columns=["Profiles_similarity_score"])
