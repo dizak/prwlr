@@ -799,13 +799,18 @@ class Ortho_Stats:
 
     def prof_perm_2(self,
                     e_value):
+        temp_score_list = []
+        q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
+        a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
         for i in range(e_value):
             sign_prog(i, range(e_value))
             q_prof_temp_df = self.inter_df_stats["Query_gene_profile"]
             a_prof_temp_df = self.inter_df_stats["Array_gene_profile"]
             drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
-                                                          "Array_gene_profile"],
-                                                           axis = 1)
+                                                          "Array_gene_profile"] +\
+                                                         q_sign_per_col_profs_cols +\
+                                                         a_sign_per_col_profs_cols,
+                                                         axis = 1)
             q_prof_perm_temp_df = q_prof_temp_df.sample(len(q_prof_temp_df))
             a_prof_perm_temp_df = a_prof_temp_df.sample(len(a_prof_temp_df))
             q_prof_perm_temp_df.index = range(len(q_prof_perm_temp_df))
@@ -814,7 +819,15 @@ class Ortho_Stats:
                                      q_prof_perm_temp_df,
                                      a_prof_perm_temp_df],
                                     axis = 1)
-            self.permuted_profs_df = permuted_df
+            for ii in permuted_df.itertuples():
+                temp_score_list.append([simple_profiles_scorer(np.array(getattr(ii, "Query_gene_profile")),
+                                                               np.array(getattr(ii, "Array_gene_profile")))])
+            temp_score_df = pd.DataFrame(temp_score_list,
+                                         index=permuted_df.index,
+                                         columns=["Profiles_similarity_score"])
+            self.permuted_profs_df = pd.concat([permuted_df,
+                                                temp_score_df],
+                                               axis = 1)
 
 
     def df_num_prop(self,
