@@ -849,7 +849,7 @@ class Ortho_Stats:
                     "unsimilar": unsim_prof_perm_num,
                     "mirror": mir_prof_perm_num,
                     "iteration": in_iter + 1}
-        perm_results_temp_dict = ptmp.ProcessingPool().map(f, range(e_value))
+        perm_results_temp_dict = map(f, range(e_value))
         self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
     def df_num_prop(self,
