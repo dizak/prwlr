@@ -799,59 +799,6 @@ class Ortho_Stats:
         perm_results_temp_dict = ptmp.ProcessingPool().map(f, range(e_value))
         self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
-    def prof_perm(self,
-                  e_value,
-                  in_prof_sim_lev):
-        """Return pandas.DataFrame of number of different types of profiles scores,
-        ech generated from pandas.DataFrame in which gene profiles were permuted but
-        NOT the rest of the data. It is an equivalent of permuting parameters in
-        the interactions network without changing the network's topology.
-        """
-        q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
-        a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
-        def f(in_iter):
-            temp_score_list = []
-            q_prof_temp_df = self.inter_df_stats["Query_gene_profile"]
-            a_prof_temp_df = self.inter_df_stats["Array_gene_profile"]
-            drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
-                                                          "Array_gene_profile",
-                                                          "Profiles_similarity_score"] +\
-                                                         q_sign_per_col_profs_cols +\
-                                                         a_sign_per_col_profs_cols,
-                                                         axis = 1)
-            q_prof_perm_temp_df = q_prof_temp_df.sample(len(q_prof_temp_df))
-            a_prof_perm_temp_df = a_prof_temp_df.sample(len(a_prof_temp_df))
-            q_prof_perm_temp_df.index = range(len(q_prof_perm_temp_df))
-            a_prof_perm_temp_df.index = range(len(a_prof_perm_temp_df))
-            permuted_df = pd.concat([drop_prof_temp_df,
-                                     q_prof_perm_temp_df,
-                                     a_prof_perm_temp_df],
-                                    axis = 1)
-            for ii in permuted_df.itertuples():
-                temp_score_list.append([simple_profiles_scorer(np.array(list(getattr(ii, "Query_gene_profile"))),
-                                                               np.array(list(getattr(ii, "Array_gene_profile"))))])
-            temp_score_df = pd.DataFrame(temp_score_list,
-                                         index=permuted_df.index,
-                                         columns=["Profiles_similarity_score"])
-            permuted_profs_df = pd.concat([permuted_df,
-                                          temp_score_df],
-                                          axis = 1)
-            sim_prof_bool = (permuted_profs_df["Profiles_similarity_score"] >=\
-                             in_prof_sim_lev)
-            unsim_prof_bool = (permuted_profs_df["Profiles_similarity_score"] <\
-                               in_prof_sim_lev) &\
-                              (permuted_profs_df["Profiles_similarity_score"] > 0)
-            mir_prof_bool = (permuted_profs_df["Profiles_similarity_score"] == 0)
-            sim_prof_perm_num = len(permuted_profs_df[sim_prof_bool])
-            unsim_prof_perm_num = len(permuted_profs_df[unsim_prof_bool])
-            mir_prof_perm_num = len(permuted_profs_df[mir_prof_bool])
-            return {"similar": sim_prof_perm_num,
-                    "unsimilar": unsim_prof_perm_num,
-                    "mirror": mir_prof_perm_num,
-                    "iteration": in_iter + 1}
-        perm_results_temp_dict = map(f, range(e_value))
-        self.perm_results = pd.DataFrame(perm_results_temp_dict)
-
     def df_num_prop(self,
                     in_prof_sim_lev):
         """Return Ortho_Stats.tot_inter_num (int),
