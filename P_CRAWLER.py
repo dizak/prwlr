@@ -801,9 +801,8 @@ class Ortho_Stats:
                     in_prof_sim_lev):
         q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
-        for i in range(e_value):
+        def f(in_iter):
             temp_score_list = []
-            sign_prog(i, range(e_value))
             q_prof_temp_df = self.inter_df_stats["Query_gene_profile"]
             a_prof_temp_df = self.inter_df_stats["Array_gene_profile"]
             drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
@@ -838,11 +837,12 @@ class Ortho_Stats:
             sim_prof_perm_num = len(permuted_profs_df[sim_prof_bool])
             unsim_prof_perm_num = len(permuted_profs_df[unsim_prof_bool])
             mir_prof_perm_num = len(permuted_profs_df[mir_prof_bool])
-            out_dict =  {"similar": sim_prof_perm_num,
+            return {"similar": sim_prof_perm_num,
                     "unsimilar": unsim_prof_perm_num,
                     "mirror": mir_prof_perm_num,
-                    "iteration": i + 1}
-        self.perm_results = out_dict
+                    "iteration": in_iter + 1}
+        perm_results_temp_dict = ptmp.ProcessingPool().map(f, range(e_value))
+        self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
     def df_num_prop(self,
                     in_prof_sim_lev):
