@@ -711,7 +711,11 @@ class Ortho_Stats:
         """Return pandas DataFrame selected to chosen DMF type (bool).
 
         Args:
-            DMF (bool): selects only positive DMF type. Default.
+            DMF (str): selects DMF type. Possible: <positive>, <negative> or
+            omit DMF selection. Default: <positive>
+            no_flat (bool): eliminates mirrors when selected. Default <True>
+            process (str): selects bioprocesses similarity. Possible: <identical>,
+            "different". Default: <identical>
         """
         positive_DMF_bool = (self.inter_df_stats["DMF"] >\
                              self.inter_df_stats["Query_SMF"]) &\
