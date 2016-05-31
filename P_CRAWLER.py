@@ -709,7 +709,9 @@ class Ortho_Stats:
     def df_selector(self,
                     DMF = "positive",
                     no_flat = True,
-                    process = "identical"):
+                    process = "identical",
+                    profiles = None,
+                    prof_sim_lev = None):
         """Return pandas DataFrame selected to chosen DMF type (bool).
 
         Args:
@@ -739,6 +741,13 @@ class Ortho_Stats:
                            "identical")
         diff_proc_bool = (self.inter_df_stats["Bioprocesses_similarity"] ==\
                           "different")
+        if profiles != None:
+            sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
+                             in_prof_sim_lev)
+            unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
+                               in_prof_sim_lev)
+        else:
+            pass
         if DMF == "positive":
             self.inter_df_stats = self.inter_df_stats[positive_DMF_bool]
         elif DMF == "negative":
@@ -756,6 +765,12 @@ class Ortho_Stats:
             self.inter_df_stats = self.inter_df_stats[iden_proc_bool]
         elif process == "different":
             self.inter_df_stats = self.inter_df_stats[diff_proc_bool]
+        else:
+            pass
+        if profiles == "similar":
+            self.inter_df_stats[sim_prof_bool]
+        elif profiles == "unsimilar":
+            self.inter_df_stats[unsim_prof_bool]
         else:
             pass
 
