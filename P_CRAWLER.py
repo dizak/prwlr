@@ -12,6 +12,8 @@ import sys
 import requests as rq
 import numpy as np
 import pathos.multiprocessing as ptmp
+import networkx as nx
+import matplotlib.pyplot as plt
 
 def perc_prog(in_item,
               in_iterbl):
