@@ -874,16 +874,22 @@ class Ortho_Stats:
         self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
     def prof_perm_no_topo(self):
+        self.gene_profs_perm_arr_list = []
         gene_profs_names = [i[0] for i in self.gene_profiles_stats]
         gene_profs_profs = [i[1:] for i in self.gene_profiles_stats]
         gene_profs_names_ser = pd.Series(gene_profs_names)
         gene_profs_profs_ser = pd.Series(gene_profs_profs)
         gene_profs_names_ser_perm = gene_profs_names_ser.sample(len(gene_profs_names_ser))
         gene_profs_names_ser_perm.index = range(len(gene_profs_names_ser_perm))
-        self.gene_profs_perm = pd.concat([gene_profs_names_ser_perm,
+        self.gene_profs_perm_df = pd.concat([gene_profs_names_ser_perm,
                                           gene_profs_profs_ser],
                                          axis = 1)
-        self.gene_profs_perm.columns = ["perm_names", "profiles"]
+        self.gene_profs_perm_df.columns = ["perm_names", "profiles"]
+        for i in self.gene_profs_perm_df.itertuples():
+            name_arr = np.array(getattr(i, "perm_names"))
+            full_arr = np.append(name_arr, getattr(i, "profiles"))
+            self.gene_profs_perm_arr_list.append(full_arr)
+
 
     def df_num_prop(self,
                     in_prof_sim_lev):
