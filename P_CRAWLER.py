@@ -874,22 +874,56 @@ class Ortho_Stats:
         self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
     def prof_perm_no_topo(self):
+        """Return a new Ortho_Stats.inter_df_stats which was stripped from
+        gene_profiles data and then appended with gene_profiles againg using
+        a permuted gene_profiles list.
+        """
         self.gene_profs_perm_arr_list = []
+        prof_score_temp_list = []
+        prof_score_temp_list = []
+        qa_attrib_temp_list = []
+        print "stripping an existing DataFrame..."
+        q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
+        a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
+        drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
+                                                      "Array_gene_profile",
+                                                      "Profiles_similarity_score"] +\
+                                                     q_sign_per_col_profs_cols +\
+                                                     a_sign_per_col_profs_cols,
+                                                     axis = 1)
+        print "splitting names and profiles from gene_profiles"
         gene_profs_names = [i[0] for i in self.gene_profiles_stats]
         gene_profs_profs = [i[1:] for i in self.gene_profiles_stats]
         gene_profs_names_ser = pd.Series(gene_profs_names)
         gene_profs_profs_ser = pd.Series(gene_profs_profs)
+        print "permuting gene_profiles names"
         gene_profs_names_ser_perm = gene_profs_names_ser.sample(len(gene_profs_names_ser))
         gene_profs_names_ser_perm.index = range(len(gene_profs_names_ser_perm))
         self.gene_profs_perm_df = pd.concat([gene_profs_names_ser_perm,
-                                          gene_profs_profs_ser],
-                                         axis = 1)
+                                             gene_profs_profs_ser],
+                                            axis = 1)
         self.gene_profs_perm_df.columns = ["perm_names", "profiles"]
         for i in self.gene_profs_perm_df.itertuples():
             name_arr = np.array(getattr(i, "perm_names"))
             full_arr = np.append(name_arr, getattr(i, "profiles"))
             self.gene_profs_perm_arr_list.append(full_arr)
-
+        print "gene_profiles were recreated with permuted profiles"
+        print "creating attribute list"
+        for i in drop_prof_temp_df.itertuples():
+            qa_attrib_temp_list.append([getattr(i, "Query_gene_name"),
+                                        getattr(i, "Array_gene_name")])
+        print "scoring profiles similarity"
+        for i in qa_attrib_temp_list:
+            prof_score_temp_list.append(df_qa_names_2_prof_score(i,
+                                                                 self.gene_profs_perm_arr_list))
+        print "creating score temp df"
+        prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
+                                          index = drop_prof_temp_df.index,
+                                          columns = ["Profiles similarity_score"])
+        print "concatenating dfs"
+        self.no_topo_perm = pd.concat([drop_prof_temp_df,
+                                       prof_score_temp_df],
+                                      axis = 1)
 
     def df_num_prop(self,
                     in_prof_sim_lev):
