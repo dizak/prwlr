@@ -882,6 +882,7 @@ class Ortho_Stats:
         prof_score_temp_list = []
         prof_score_temp_list = []
         qa_attrib_temp_list = []
+        conc_qa_prof_temp_list = []
         print "stripping an existing DataFrame..."
         q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
@@ -912,16 +913,27 @@ class Ortho_Stats:
         for i in drop_prof_temp_df.itertuples():
             qa_attrib_temp_list.append([getattr(i, "Query_gene_name"),
                                         getattr(i, "Array_gene_name")])
-        print "scoring profiles similarity"
+        print "scoring and concatenating profiles similarity"
         for i in qa_attrib_temp_list:
             prof_score_temp_list.append(df_qa_names_2_prof_score(i,
                                                                  self.gene_profs_perm_arr_list))
+            conc_qa_prof_temp_list.append([gene_profile_finder_by_name(i[0],
+                                                                       self.gene_profs_perm_arr_list,
+                                                                       conc = True),
+                                           gene_profile_finder_by_name(i[1],
+                                                                       self.gene_profs_perm_arr_list,
+                                                                       conc = True)])
         print "creating score temp df"
         prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
                                           index = drop_prof_temp_df.index,
                                           columns = ["Profiles similarity_score"])
+        print "creating profiles temp df"
+        profs_pairs_temp_df = pd.DataFrame(conc_qa_prof_temp_list,
+                                           index = drop_prof_temp_df.index,
+                                           columns = ["Query_gene_profile", "Array_gene_profile"])
         print "concatenating dfs"
         self.no_topo_perm = pd.concat([drop_prof_temp_df,
+                                       profs_pairs_temp_df,
                                        prof_score_temp_df],
                                       axis = 1)
 
