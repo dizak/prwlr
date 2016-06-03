@@ -873,7 +873,8 @@ class Ortho_Stats:
         perm_results_temp_dict = ptmp.ProcessingPool().map(f, range(e_value))
         self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
-    def prof_perm_no_topo(self):
+    def prof_perm_no_topo(self,
+                          in_prof_sim_lev):
         """Return a new Ortho_Stats.inter_df_stats which was stripped from
         gene_profiles data and then appended with gene_profiles againg using
         a permuted gene_profiles list.
@@ -926,7 +927,7 @@ class Ortho_Stats:
         print "creating score temp df"
         prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
                                           index = drop_prof_temp_df.index,
-                                          columns = ["Profiles similarity_score"])
+                                          columns = ["Profiles_similarity_score"])
         print "creating profiles temp df"
         profs_pairs_temp_df = pd.DataFrame(conc_qa_prof_temp_list,
                                            index = drop_prof_temp_df.index,
@@ -936,6 +937,18 @@ class Ortho_Stats:
                                        profs_pairs_temp_df,
                                        prof_score_temp_df],
                                       axis = 1)
+        sim_prof_bool = (self.no_topo_perm["Profiles_similarity_score"] >=\
+                         in_prof_sim_lev)
+        unsim_prof_bool = (self.no_topo_perm["Profiles_similarity_score"] <\
+                           in_prof_sim_lev) &\
+                          (self.no_topo_perm["Profiles_similarity_score"] > 0)
+        mir_prof_bool = (self.no_topo_perm["Profiles_similarity_score"] == 0)
+        sim_prof_perm_num = len(self.no_topo_perm[sim_prof_bool])
+        unsim_prof_perm_num = len(self.no_topo_perm[unsim_prof_bool])
+        mir_prof_perm_num = len(self.no_topo_perm[mir_prof_bool])
+        self.res_dict = {"similar": sim_prof_perm_num,
+                         "unsimilar": unsim_prof_perm_num,
+                         "mirror": mir_prof_perm_num}
 
     def df_num_prop(self,
                     in_prof_sim_lev):
