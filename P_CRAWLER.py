@@ -852,9 +852,9 @@ class Ortho_Stats:
         perm_results_temp_dict = ptmp.ProcessingPool().map(f, range(e_value))
         self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
-    def prof_perm(self,
-                  e_value,
-                  in_prof_sim_lev):
+    def prof_cols_perm(self,
+                       e_value,
+                       in_prof_sim_lev):
         """Return pandas.DataFrame of number of different types of profiles scores,
         ech generated from pandas.DataFrame in which gene profiles were permuted but
         NOT the rest of the data. It is an equivalent of permuting parameters in
@@ -911,9 +911,9 @@ class Ortho_Stats:
         perm_results_temp_dict = ptmp.ProcessingPool().map(f, range(e_value))
         self.perm_results = pd.DataFrame(perm_results_temp_dict)
 
-    def prof_perm_no_topo(self,
-                          e_value,
-                          in_prof_sim_lev):
+    def prof_arr_perm(self,
+                      e_value,
+                      in_prof_sim_lev):
         """Return a new Ortho_Stats.inter_df_stats which was stripped from
         gene_profiles data and then appended with gene_profiles again using
         a permuted gene_profiles list.
@@ -923,10 +923,9 @@ class Ortho_Stats:
             in_prof_sim_lev(int): treshold for assuming profiles as similar or
             not
         """
-        self.no_topo_results = []
+        self.prof_arr_perm_results = []
         def f(in_iter):
             self.gene_profs_perm_arr_list = []
-            prof_score_temp_list = []
             prof_score_temp_list = []
             qa_attrib_temp_list = []
             conc_qa_prof_temp_list = []
@@ -997,7 +996,7 @@ class Ortho_Stats:
                     "mirror": mir_prof_perm_num,
                     "iteration": in_iter + 1}
         no_topo_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
-        self.no_topo_results = pd.DataFrame(no_topo_results_temp)
+        self.prof_arr_perm_results = pd.DataFrame(no_topo_results_temp)
 
     def nx_draw(self,
                 save_2_file = False,
