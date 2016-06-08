@@ -881,7 +881,7 @@ class Ortho_Stats:
         a permuted gene_profiles list.
         """
         self.no_topo_results = []
-        for i in range(e_value):
+        def f(in_iter):
             self.gene_profs_perm_arr_list = []
             prof_score_temp_list = []
             prof_score_temp_list = []
@@ -949,10 +949,12 @@ class Ortho_Stats:
             sim_prof_perm_num = len(self.no_topo_perm[sim_prof_bool])
             unsim_prof_perm_num = len(self.no_topo_perm[unsim_prof_bool])
             mir_prof_perm_num = len(self.no_topo_perm[mir_prof_bool])
-            self.res_dict = {"similar": sim_prof_perm_num,
-                             "unsimilar": unsim_prof_perm_num,
-                             "mirror": mir_prof_perm_num}
-            self.no_topo_results.append(self.res_dict)
+            return {"similar": sim_prof_perm_num,
+                    "unsimilar": unsim_prof_perm_num,
+                    "mirror": mir_prof_perm_num,
+                    "iteration": in_iter + 1}
+        no_topo_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
+        self.no_topo_results = pd.DataFrame(no_topo_results_temp)
 
     def df_num_prop(self,
                     in_prof_sim_lev):
