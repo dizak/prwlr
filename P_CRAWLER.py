@@ -858,7 +858,13 @@ class Ortho_Stats:
         """Return pandas.DataFrame of number of different types of profiles scores,
         ech generated from pandas.DataFrame in which gene profiles were permuted but
         NOT the rest of the data. It is an equivalent of permuting parameters in
-        the interactions network without changing the network's topology.
+        the interactions network without changing the network's topology. Gene
+        profiles are shuffled without any key.
+
+        Args:
+            e_value (int): number of times to shuffle the pandas DataFrame
+            in_prof_sim_lev(int): treshold for assuming profiles as similar or
+            not
         """
         q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
@@ -909,8 +915,13 @@ class Ortho_Stats:
                           e_value,
                           in_prof_sim_lev):
         """Return a new Ortho_Stats.inter_df_stats which was stripped from
-        gene_profiles data and then appended with gene_profiles againg using
+        gene_profiles data and then appended with gene_profiles again using
         a permuted gene_profiles list.
+
+        Args:
+            e_value (int): number of times to shuffle the pandas DataFrame
+            in_prof_sim_lev(int): treshold for assuming profiles as similar or
+            not
         """
         self.no_topo_results = []
         def f(in_iter):
