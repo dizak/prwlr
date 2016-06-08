@@ -774,6 +774,38 @@ class Ortho_Stats:
         else:
             pass
 
+    def df_num_prop(self,
+                    in_prof_sim_lev):
+        """Return Ortho_Stats.tot_inter_num (int),
+        Ortho_Stats.DMF_positive_num (int),
+        Ortho_Stats.DMF_negative_num (int),
+        Ortho_Stats.sim_prof_num (int).
+
+        Args:
+            in_prof_sim_lev (int): definges minimal Genome.gene_profiles in
+            Ortho_Stats.inter_df_stats similarity treshold
+        """
+        positive_DMF_bool = (self.inter_df_stats["DMF"] >\
+                             self.inter_df_stats["Query_SMF"]) &\
+                            (self.inter_df_stats["DMF"] >\
+                             self.inter_df_stats["Array_SMF"])
+        negative_DMF_bool = (self.inter_df_stats["DMF"] <\
+                             self.inter_df_stats["Query_SMF"]) &\
+                            (self.inter_df_stats["DMF"] <\
+                             self.inter_df_stats["Array_SMF"])
+        sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
+                         in_prof_sim_lev)
+        unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] <\
+                           in_prof_sim_lev) &\
+                          (self.inter_df_stats["Profiles_similarity_score"] > 0)
+        mir_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] == 0)
+        self.tot_inter_num = len(self.inter_df_stats)
+        self.DMF_positive_num = len(self.inter_df_stats[positive_DMF_bool])
+        self.DMF_negative_num = len(self.inter_df_stats[negative_DMF_bool])
+        self.sim_prof_num = len(self.inter_df_stats[sim_prof_bool])
+        self.unsim_prof_num = len(self.inter_df_stats[unsim_prof_bool])
+        self.mir_prof_num = len(self.inter_df_stats[mir_prof_bool])
+
     def names_perm(self,
                    e_value,
                    in_prof_sim_lev):
@@ -955,38 +987,6 @@ class Ortho_Stats:
                     "iteration": in_iter + 1}
         no_topo_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
         self.no_topo_results = pd.DataFrame(no_topo_results_temp)
-
-    def df_num_prop(self,
-                    in_prof_sim_lev):
-        """Return Ortho_Stats.tot_inter_num (int),
-        Ortho_Stats.DMF_positive_num (int),
-        Ortho_Stats.DMF_negative_num (int),
-        Ortho_Stats.sim_prof_num (int).
-
-        Args:
-            in_prof_sim_lev (int): definges minimal Genome.gene_profiles in
-            Ortho_Stats.inter_df_stats similarity treshold
-        """
-        positive_DMF_bool = (self.inter_df_stats["DMF"] >\
-                             self.inter_df_stats["Query_SMF"]) &\
-                            (self.inter_df_stats["DMF"] >\
-                             self.inter_df_stats["Array_SMF"])
-        negative_DMF_bool = (self.inter_df_stats["DMF"] <\
-                             self.inter_df_stats["Query_SMF"]) &\
-                            (self.inter_df_stats["DMF"] <\
-                             self.inter_df_stats["Array_SMF"])
-        sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
-                         in_prof_sim_lev)
-        unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] <\
-                           in_prof_sim_lev) &\
-                          (self.inter_df_stats["Profiles_similarity_score"] > 0)
-        mir_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] == 0)
-        self.tot_inter_num = len(self.inter_df_stats)
-        self.DMF_positive_num = len(self.inter_df_stats[positive_DMF_bool])
-        self.DMF_negative_num = len(self.inter_df_stats[negative_DMF_bool])
-        self.sim_prof_num = len(self.inter_df_stats[sim_prof_bool])
-        self.unsim_prof_num = len(self.inter_df_stats[unsim_prof_bool])
-        self.mir_prof_num = len(self.inter_df_stats[mir_prof_bool])
 
     def nx_draw(self,
                 save_2_file = False,
