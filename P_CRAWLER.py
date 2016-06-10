@@ -923,80 +923,71 @@ class Ortho_Stats:
             in_prof_sim_lev(int): treshold for assuming profiles as similar or
             not
         """
-        self.prof_arr_perm_results = []
+        print "stripping an existing DataFrame..."
+        q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
+        a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
+        drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
+                                                      "Array_gene_profile",
+                                                      "Profiles_similarity_score"] +\
+                                                     q_sign_per_col_profs_cols +\
+                                                     a_sign_per_col_profs_cols,
+                                                     axis = 1)
         def f(in_iter):
-            self.gene_profs_perm_arr_list = []
+            gene_profs_perm_arr_list = []
             prof_score_temp_list = []
             qa_attrib_temp_list = []
             conc_qa_prof_temp_list = []
-            print "stripping an existing DataFrame..."
-            q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
-            a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
-            drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
-                                                          "Array_gene_profile",
-                                                          "Profiles_similarity_score"] +\
-                                                         q_sign_per_col_profs_cols +\
-                                                         a_sign_per_col_profs_cols,
-                                                         axis = 1)
-            print "splitting names and profiles from gene_profiles"
             gene_profs_names = [i[0] for i in self.gene_profiles_stats]
             gene_profs_profs = [i[1:] for i in self.gene_profiles_stats]
             gene_profs_names_ser = pd.Series(gene_profs_names)
             gene_profs_profs_ser = pd.Series(gene_profs_profs)
-            print "permuting gene_profiles names"
             gene_profs_names_ser_perm = gene_profs_names_ser.sample(len(gene_profs_names_ser))
             gene_profs_names_ser_perm.index = range(len(gene_profs_names_ser_perm))
-            self.gene_profs_perm_df = pd.concat([gene_profs_names_ser_perm,
-                                                 gene_profs_profs_ser],
-                                                axis = 1)
-            self.gene_profs_perm_df.columns = ["perm_names", "profiles"]
-            for i in self.gene_profs_perm_df.itertuples():
+            gene_profs_perm_df = pd.concat([gene_profs_names_ser_perm,
+                                            gene_profs_profs_ser],
+                                           axis = 1)
+            gene_profs_perm_df.columns = ["perm_names", "profiles"]
+            for i in gene_profs_perm_df.itertuples():
                 name_arr = np.array(getattr(i, "perm_names"))
                 full_arr = np.append(name_arr, getattr(i, "profiles"))
-                self.gene_profs_perm_arr_list.append(full_arr)
-            print "gene_profiles were recreated with permuted profiles"
-            print "creating attribute list"
+                gene_profs_perm_arr_list.append(full_arr)
             for i in drop_prof_temp_df.itertuples():
                 qa_attrib_temp_list.append([getattr(i, "Query_gene_name"),
                                             getattr(i, "Array_gene_name")])
-            print "scoring and concatenating profiles similarity"
             for i in qa_attrib_temp_list:
                 prof_score_temp_list.append(df_qa_names_2_prof_score(i,
-                                                                     self.gene_profs_perm_arr_list))
+                                                                     gene_profs_perm_arr_list))
                 conc_qa_prof_temp_list.append([gene_profile_finder_by_name(i[0],
-                                                                           self.gene_profs_perm_arr_list,
+                                                                           gene_profs_perm_arr_list,
                                                                            conc = True),
                                                gene_profile_finder_by_name(i[1],
-                                                                           self.gene_profs_perm_arr_list,
+                                                                           gene_profs_perm_arr_list,
                                                                            conc = True)])
-            print "creating score temp df"
             prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
                                               index = drop_prof_temp_df.index,
                                               columns = ["Profiles_similarity_score"])
-            print "creating profiles temp df"
             profs_pairs_temp_df = pd.DataFrame(conc_qa_prof_temp_list,
                                                index = drop_prof_temp_df.index,
                                                columns = ["Query_gene_profile", "Array_gene_profile"])
-            print "concatenating dfs"
-            self.no_topo_perm = pd.concat([drop_prof_temp_df,
+            permuted_df = pd.concat([drop_prof_temp_df,
                                            profs_pairs_temp_df,
                                            prof_score_temp_df],
                                           axis = 1)
-            sim_prof_bool = (self.no_topo_perm["Profiles_similarity_score"] >=\
+            sim_prof_bool = (permuted_df["Profiles_similarity_score"] >=\
                              in_prof_sim_lev)
-            unsim_prof_bool = (self.no_topo_perm["Profiles_similarity_score"] <\
+            unsim_prof_bool = (permuted_df["Profiles_similarity_score"] <\
                                in_prof_sim_lev) &\
-                              (self.no_topo_perm["Profiles_similarity_score"] > 0)
-            mir_prof_bool = (self.no_topo_perm["Profiles_similarity_score"] == 0)
-            sim_prof_perm_num = len(self.no_topo_perm[sim_prof_bool])
-            unsim_prof_perm_num = len(self.no_topo_perm[unsim_prof_bool])
-            mir_prof_perm_num = len(self.no_topo_perm[mir_prof_bool])
+                              (permuted_df["Profiles_similarity_score"] > 0)
+            mir_prof_bool = (permuted_df["Profiles_similarity_score"] == 0)
+            sim_prof_perm_num = len(permuted_df[sim_prof_bool])
+            unsim_prof_perm_num = len(permuted_df[unsim_prof_bool])
+            mir_prof_perm_num = len(permuted_df[mir_prof_bool])
             return {"similar": sim_prof_perm_num,
                     "unsimilar": unsim_prof_perm_num,
                     "mirror": mir_prof_perm_num,
                     "iteration": in_iter + 1}
-        no_topo_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
-        self.prof_arr_perm_results = pd.DataFrame(no_topo_results_temp)
+        permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
+        self.prof_arr_perm_results = pd.DataFrame(permuted_df_results_temp)
 
     def nx_draw(self,
                 save_2_file = False,
