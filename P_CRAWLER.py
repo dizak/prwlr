@@ -714,6 +714,7 @@ class Ortho_Stats:
         self.num_prop_res = None
         self.e_value = None
         self.perm_results = None
+        self.prof_arr_perm_res_avg = None
 
     def df_selector(self,
                     DMF = "positive",
@@ -932,7 +933,6 @@ class Ortho_Stats:
             in_prof_sim_lev(int): treshold for assuming profiles as similar or
             not
         """
-        print "stripping an existing DataFrame..."
         q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
         drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
@@ -997,6 +997,12 @@ class Ortho_Stats:
                     "iteration": in_iter + 1}
         permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
         self.prof_arr_perm_results = pd.DataFrame(permuted_df_results_temp)
+        self.prof_arr_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_arr_perm_results.mirror) /\
+                                                                   len(self.prof_arr_perm_results),
+                                                "similar_profiles": sum(self.prof_arr_perm_results.similar) /\
+                                                                    len(self.prof_arr_perm_results),
+                                                "unsimilar": sum(self.prof_arr_perm_results.unsimilar) /\
+                                                             len(self.prof_arr_perm_results)})
 
     def nx_draw(self,
                 save_2_file = False,
