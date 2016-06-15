@@ -1210,6 +1210,26 @@ class KEGG_API:
             with open(out_file_name, "a") as fout:
                 fout.write(res.content)
 
+class Ortho_Network:
+    """Calculates and holds data about interactions in form of network,
+    exportable to other software, eg Cytoscape.
+    """
+    def __init__(self,
+                 inter_df):
+        self.inter_df = inter_df
+        self.nwrk = None
+
+    def create_nwrk(self):
+        self.nwrk = nx.from_pandas_dataframe(self.inter_df,
+                                            "Query_gene_name",
+                                            "Array_gene_name")
+
+    def write_nwrk(self,
+                   out_file_format,
+                   out_file_name):
+        if out_file_format.lower() == "graphml":
+            nx.write_graphml(self.nwrk, out_file_name)
+
 def main():
     pass
 
