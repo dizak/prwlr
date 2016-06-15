@@ -687,6 +687,16 @@ class Ortho_Interactions:
         else:
             pass
 
+    def inter_df_read(self,
+                      in_file_name,
+                      in_sep = "\t"):
+        self.interact_df = pd.read_csv(in_file_name, sep = in_sep)
+
+    def inter_df_save(self,
+                      out_file_name,
+                      in_sep = "\t"):
+        self.interact_df.to_csv("{0}.csv".format(out_file_name), sep = in_sep)
+
 class Ortho_Stats:
     """Calculates and holds data about interactions array statistical
     properties.
