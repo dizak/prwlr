@@ -1004,18 +1004,6 @@ class Ortho_Stats:
                                                 "unsimilar": sum(self.prof_arr_perm_results.unsimilar) /\
                                                              len(self.prof_arr_perm_results)})
 
-    def nx_draw(self,
-                save_2_file = False,
-                file_name = "network.png"):
-        graph = nx.from_pandas_dataframe(self.inter_df_stats,
-                                         "Query_gene_name",
-                                         "Array_gene_name")
-        nx.draw_networkx(graph, node_size = 1, with_labels = False)
-        if save_2_file == True:
-            plt.savefig(file_name)
-        else:
-            pass
-
     def e_val_calc(self):
         """Return Ortho_Stats.e_value (int) which is an expected number of
         interactions with positive DMF and similar gene profiles by chance.
@@ -1229,6 +1217,18 @@ class Ortho_Network:
                    out_file_name):
         if out_file_format.lower() == "graphml":
             nx.write_graphml(self.nwrk, out_file_name)
+
+    def draw_nwrk(self,
+                save_2_file = False,
+                file_name = "network.png"):
+        nx.draw_networkx(self.nwrk,
+                         node_size = 1,
+                         with_labels = False)
+        if save_2_file == True:
+            plt.savefig(file_name)
+        else:
+            pass
+
 
 def main():
     pass
