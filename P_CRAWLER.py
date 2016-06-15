@@ -711,13 +711,9 @@ class Ortho_Stats:
         self.query_species_stats = query_species_Genome
         self.inter_df_stats = inter_df_Ortho_Interactions
         self.gene_profiles_stats = gene_profiles_Genome
-        self.tot_inter_num = None
-        self.DMF_positive_num = None
-        self.DMF_negative_num = None
-        self.sim_prof_num = None
+        self.num_prop_res = None
         self.e_value = None
         self.perm_results = None
-        self.test_last_df_test = None
 
     def df_selector(self,
                     DMF = "positive",
@@ -812,12 +808,12 @@ class Ortho_Stats:
                            in_prof_sim_lev) &\
                           (self.inter_df_stats["Profiles_similarity_score"] > 0)
         mir_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] == 0)
-        self.tot_inter_num = len(self.inter_df_stats)
-        self.DMF_positive_num = len(self.inter_df_stats[positive_DMF_bool])
-        self.DMF_negative_num = len(self.inter_df_stats[negative_DMF_bool])
-        self.sim_prof_num = len(self.inter_df_stats[sim_prof_bool])
-        self.unsim_prof_num = len(self.inter_df_stats[unsim_prof_bool])
-        self.mir_prof_num = len(self.inter_df_stats[mir_prof_bool])
+        self.num_prop_res = pd.Series({"total": len(self.inter_df_stats),
+                                       "DMF_positive": len(self.inter_df_stats[positive_DMF_bool]),
+                                       "DMF_negative": len(self.inter_df_stats[negative_DMF_bool]),
+                                       "similar_profiles": len(self.inter_df_stats[sim_prof_bool]),
+                                       "unsimilar_profiles": len(self.inter_df_stats[unsim_prof_bool]),
+                                       "mirror_profiles": len(self.inter_df_stats[mir_prof_bool])})
 
     def names_perm(self,
                    e_value,
