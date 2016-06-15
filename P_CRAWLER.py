@@ -795,12 +795,12 @@ class Ortho_Stats:
                            in_prof_sim_lev) &\
                           (self.inter_df_stats["Profiles_similarity_score"] > 0)
         mir_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] == 0)
-        self.num_prop_res = pd.Series({"total_interactions_number": len(self.inter_df_stats),
-                                        "DMF_positive_number": len(self.inter_df_stats[positive_DMF_bool]),
-                                        "DMF_negative_number": len(self.inter_df_stats[negative_DMF_bool]),
-                                        "similar_profiles_number": len(self.inter_df_stats[sim_prof_bool]),
-                                        "unsimilar_profiles_number": len(self.inter_df_stats[unsim_prof_bool]),
-                                        "mirror_profiles_number": len(self.inter_df_stats[mir_prof_bool])})
+        self.num_prop_res = pd.Series({"total": len(self.inter_df_stats),
+                                       "DMF_positive": len(self.inter_df_stats[positive_DMF_bool]),
+                                       "DMF_negative": len(self.inter_df_stats[negative_DMF_bool]),
+                                       "similar_profiles": len(self.inter_df_stats[sim_prof_bool]),
+                                       "unsimilar_profiles": len(self.inter_df_stats[unsim_prof_bool]),
+                                       "mirror_profiles": len(self.inter_df_stats[mir_prof_bool])})
 
     def names_perm(self,
                    e_value,
