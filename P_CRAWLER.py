@@ -1217,6 +1217,10 @@ class Ortho_Network:
                    out_file_name):
         if out_file_format.lower() == "graphml":
             nx.write_graphml(self.nwrk, out_file_name)
+        elif out_file_format.lower() == "gefx":
+            nx.write_gexf(self.nwrk, out_file_name)
+        elif out_file_format.lower() == "gml":
+            nx.write_gml(self.nwrk, out_file_name)
 
     def draw_nwrk(self,
                 save_2_file = False,
