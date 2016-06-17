@@ -754,7 +754,7 @@ class Ortho_Stats:
         if profiles != None:
             sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
                              prof_sim_lev)
-            unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
+            unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] <\
                                prof_sim_lev)
         else:
             pass
@@ -778,9 +778,9 @@ class Ortho_Stats:
         else:
             pass
         if profiles == "similar":
-            self.inter_df_stats[sim_prof_bool]
+            self.inter_df_stats = self.inter_df_stats[sim_prof_bool]
         elif profiles == "unsimilar":
-            self.inter_df_stats[unsim_prof_bool]
+            self.inter_df_stats = self.inter_df_stats[unsim_prof_bool]
         else:
             pass
 
