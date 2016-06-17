@@ -753,9 +753,9 @@ class Ortho_Stats:
                           "different")
         if profiles != None:
             sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
-                             in_prof_sim_lev)
+                             prof_sim_lev)
             unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
-                               in_prof_sim_lev)
+                               prof_sim_lev)
         else:
             pass
         if DMF == "positive":
