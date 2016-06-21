@@ -1223,10 +1223,15 @@ class Ortho_Network:
             nx.write_gml(self.nwrk, out_file_name)
 
     def draw_nwrk(self,
-                save_2_file = False,
-                file_name = "network.png"):
+                  width = 20,
+                  height = 20,
+                  save_2_file = False,
+                  file_name = "network.png"):
+        plt.figure(figsize = (width, height))
         nx.draw_networkx(self.nwrk,
-                         node_size = 1,
+                         node_size = 10,
+                         node_color = "r",
+                         node_alpha = 0.4,
                          with_labels = False)
         if save_2_file == True:
             plt.savefig(file_name)
