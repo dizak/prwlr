@@ -994,7 +994,8 @@ class Ortho_Stats:
             return {"similar": sim_prof_perm_num,
                     "unsimilar": unsim_prof_perm_num,
                     "mirror": mir_prof_perm_num,
-                    "iteration": in_iter + 1}
+                    "iteration": in_iter + 1,
+                    "dataframe": permuted_df}
         permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
         self.prof_arr_perm_results = pd.DataFrame(permuted_df_results_temp)
         self.prof_arr_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_arr_perm_results.mirror) /\
