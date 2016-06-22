@@ -1226,11 +1226,12 @@ class Ortho_Network:
     def draw_nwrk(self,
                   width = 20,
                   height = 20,
+                  node_size = 5,
                   save_2_file = False,
                   file_name = "network.png"):
         plt.figure(figsize = (width, height))
         nx.draw_networkx(self.nwrk,
-                         node_size = 10,
+                         node_size = node_size,
                          node_color = "r",
                          node_alpha = 0.4,
                          with_labels = False)
