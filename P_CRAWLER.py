@@ -528,8 +528,7 @@ class Ortho_Interactions:
         positive_DMF_bool = (sga_df["DMF"] > sga_df["Query_SMF"]) &\
                             (sga_df["DMF"] > sga_df["Array_SMF"]) &\
                             (sga_df["p-value"] <= p_value)
-        negative_DMF_bool = (sga_df["DMF"] < sga_df["Query_SMF"]) &\
-                            (sga_df["DMF"] < sga_df["Array_SMF"]) &\
+        negative_DMF_bool = -positive_DMF_bool &\
                             (sga_df["p-value"] <= p_value)
         neutral_DMF_bool = (sga_df["DMF"].isnull() == False) &\
                            (sga_df["p-value"] <= p_value)
@@ -735,10 +734,7 @@ class Ortho_Stats:
                              self.inter_df_stats["Query_SMF"]) &\
                             (self.inter_df_stats["DMF"] >\
                              self.inter_df_stats["Array_SMF"])
-        negative_DMF_bool = (self.inter_df_stats["DMF"] <\
-                             self.inter_df_stats["Query_SMF"]) &\
-                            (self.inter_df_stats["DMF"] <\
-                             self.inter_df_stats["Array_SMF"])
+        negative_DMF_bool = -positive_DMF_bool
         no_flat_plu_q_bool = (self.inter_df_stats["Query_gene_profile"] !=\
                                "+" * len(self.query_species_stats))
         no_flat_min_q_bool = (self.inter_df_stats["Query_gene_profile"] !=\
@@ -799,10 +795,7 @@ class Ortho_Stats:
                              self.inter_df_stats["Query_SMF"]) &\
                             (self.inter_df_stats["DMF"] >\
                              self.inter_df_stats["Array_SMF"])
-        negative_DMF_bool = (self.inter_df_stats["DMF"] <\
-                             self.inter_df_stats["Query_SMF"]) &\
-                            (self.inter_df_stats["DMF"] <\
-                             self.inter_df_stats["Array_SMF"])
+        negative_DMF_bool = -positive_DMF_bool
         sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
                          in_prof_sim_lev)
         unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] <\
