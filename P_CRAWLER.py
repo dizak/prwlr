@@ -716,9 +716,10 @@ class Ortho_Stats:
         self.prof_arr_perm_res_avg = None
 
     def df_selector(self,
-                    DMF = "positive",
+                    DMF = "pass",
+                    inter_score = "pass",
                     no_flat = True,
-                    process = "identical",
+                    process = "pass",
                     profiles = None,
                     prof_sim_lev = None):
         """Return pandas DataFrame selected to chosen DMF type (bool).
@@ -735,6 +736,8 @@ class Ortho_Stats:
                             (self.inter_df_stats["DMF"] >\
                              self.inter_df_stats["Array_SMF"])
         negative_DMF_bool = -positive_DMF_bool
+        positive_inter_score_bool = (self.inter_df_stats["Genetic_interaction_score"] > 0)
+        negative_inter_score_bool = (self.inter_df_stats["Genetic_interaction_score"] < 0)
         no_flat_plu_q_bool = (self.inter_df_stats["Query_gene_profile"] !=\
                                "+" * len(self.query_species_stats))
         no_flat_min_q_bool = (self.inter_df_stats["Query_gene_profile"] !=\
@@ -758,6 +761,12 @@ class Ortho_Stats:
             self.inter_df_stats = self.inter_df_stats[positive_DMF_bool]
         elif DMF == "negative":
             self.inter_df_stats = self.inter_df_stats[negative_DMF_bool]
+        else:
+            pass
+        if inter_score == "positive":
+            self.inter_df_stats = self.inter_df_stats[positive_inter_score_bool]
+        elif inter_score == "negative":
+            self.inter_df_stats = self.inter_df_stats[negative_inter_score_bool]
         else:
             pass
         if no_flat == True:
