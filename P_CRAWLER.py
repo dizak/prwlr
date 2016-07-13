@@ -1064,7 +1064,7 @@ class KEGG_API:
 
         Args:
             out_file_name (str): name for file to be downloaded
-            skip_dwnld (bool) = read existing file when <True>. Default <False>
+            skip_dwnld (bool): read existing file when <True>. Default <False>
         """
         if skip_dwnld == True:
             pass
@@ -1098,7 +1098,10 @@ class KEGG_API:
         (natural) biological name. Case-sensitive.
 
         Args:
-            organism = biological organism's name to query against the KEGG's IDs
+            organism (str): biological organism's name to query against
+            the KEGG's IDs
+            assume_1st (bool): return the first item if more than hit when
+            <True> (default)
         """
         org_bool = self.organisms_df.description.str.contains(organism)
         organism_ser = self.organisms_df[org_bool]
