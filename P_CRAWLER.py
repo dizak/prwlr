@@ -1099,10 +1099,17 @@ class KEGG_API:
         Args:
             organism = biological organism's name to query against the KEGG's IDs
         """
-        organism_ser = self.organisms_df[self.organisms_df.description.str.contains(organism)]
-        org_id = str(organism_ser.kegg_org_id.to_string(index = False,
-                                                        header = False))
-        return org_id
+        org_bool = self.organisms_df.description.str.contains(organism)
+        organism_ser = self.organisms_df[org_bool]
+        org_id = organism_ser.kegg_org_id.to_string(index = False,
+                                                    header = False)
+        if len(organism_ser) == 0:
+            print "No record found"
+        elif len(organism_ser) > 1:
+            print "More than one record for this query\n{}".format(organism_ser[["description",
+                                                                                 "kegg_org_id"]])
+        else:
+            return str(org_id)
 
     def get_id_conv_tbl(self,
                         source_id_type,
