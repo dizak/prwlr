@@ -1093,6 +1093,12 @@ class KEGG_API:
 
     def org_name_2_kegg_id(self,
                            organism):
+        """Return KEGG's organisms' IDs (str) when queried  with a regular
+        (natural) biological name. Case-sensitive.
+
+        Args:
+            organism = biological organism's name to query against the KEGG's IDs
+        """
         organism_ser = self.organisms_df[self.organisms_df.description.str.contains(organism)]
         org_id = str(organism_ser.kegg_org_id.to_string(index = False,
                                                         header = False))
