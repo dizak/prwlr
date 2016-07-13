@@ -1092,7 +1092,8 @@ class KEGG_API:
         self.organisms_df.dropna(inplace=True)
 
     def org_name_2_kegg_id(self,
-                           organism):
+                           organism,
+                           assume_1st = True):
         """Return KEGG's organisms' IDs (str) when queried  with a regular
         (natural) biological name. Case-sensitive.
 
@@ -1101,15 +1102,16 @@ class KEGG_API:
         """
         org_bool = self.organisms_df.description.str.contains(organism)
         organism_ser = self.organisms_df[org_bool]
-        org_id = organism_ser.kegg_org_id.to_string(index = False,
-                                                    header = False)
         if len(organism_ser) == 0:
-            print "No record found"
+            print "No record found for {}".format(organism)
         elif len(organism_ser) > 1:
+            if assume_1st == True:
+                return organism_ser.kegg_org_id.iloc[0]
             print "More than one record for this query\n{}".format(organism_ser[["description",
                                                                                  "kegg_org_id"]])
         else:
-            return str(org_id)
+            return str(organism_ser.kegg_org_id.to_string(index = False,
+                                                          header = False))
 
     def get_id_conv_tbl(self,
                         source_id_type,
