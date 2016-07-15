@@ -475,6 +475,16 @@ class Genome:
                     temp_arr = np.append(temp_arr, "-")
             self.gene_profiles.append(temp_arr)
 
+    def KO_list_profiler(self):
+        """Return Genome.KO_list (list of dict) appended with profiles [list].
+        """
+        for i in self.KO_list:
+            if "orgs" in i.keys():
+                profile = ["+" if ii in i["orgs"] else "-" for ii in self.query_species]
+                i["profile"] = profile
+            else:
+                pass
+
 class Ortho_Interactions:
     """Holds data about gene interactions array extracted from (csv) file.
     Merges these data with Genome.gene_profiles (list of tuples) and
