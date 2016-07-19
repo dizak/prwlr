@@ -475,12 +475,18 @@ class Genome:
                     temp_arr = np.append(temp_arr, "-")
             self.gene_profiles.append(temp_arr)
 
-    def KO_list_profiler(self):
+    def KO_list_profiler(self,
+                         species_ids,
+                         profile_list = False):
         """Return Genome.KO_list (list of dict) appended with profiles [list].
         """
         for i in self.KO_list:
             if "orgs" in i.keys():
-                profile = ["+" if ii in i["orgs"] else "-" for ii in self.query_species]
+                profile = ["+" if ii in i["orgs"] else "-" for ii in species_ids]
+                if profile_list == False:
+                    profile = "".join(profile)
+                else:
+                    pass
                 i["profile"] = profile
             else:
                 pass
