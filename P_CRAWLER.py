@@ -1069,7 +1069,7 @@ class KEGG_API:
                                "uniprot": "uniprot",
                                "kegg_id": "genes"}
         self.id_conversions_df = None
-        self.get_org_db_X_ref_df = None
+        self.org_db_X_ref_df = None
 
     def get_organisms_ids(self,
                           out_file_name,
