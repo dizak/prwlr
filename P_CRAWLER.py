@@ -1063,7 +1063,7 @@ class KEGG_API:
                           "drug": "dr",
                           "dgroup": "dg",
                           "environ": "ev"}
-        self.organisms_df = None
+        self.organisms_ids_df = None
         self.id_conversions = {"ncbi_gene": "ncbi-geneid",
                                "ncbi_prot": "ncbi-proteinid",
                                "uniprot": "uniprot",
@@ -1091,21 +1091,21 @@ class KEGG_API:
             res = rq.get(url)
             with open(out_file_name, "w") as fout:
                 fout.write(res.content)
-        self.organisms_df = pd.read_csv(out_file_name,
+        self.organisms_ids_df = pd.read_csv(out_file_name,
                                      names = ["genome_id",
                                               "names",
                                               "description"],
                                      header=None,
                                      sep = "\t|;",
                                      engine = "python")
-        temp_sub_df = self.organisms_df["names"].str.split(",", expand = True)
+        temp_sub_df = self.organisms_ids_df["names"].str.split(",", expand = True)
         temp_sub_df.columns = ["kegg_org_id", "name", "taxon_id"]
-        self.organisms_df.drop("names", axis = 1, inplace = True)
-        self.organisms_df = pd.concat([self.organisms_df, temp_sub_df], axis=1)
-        self.organisms_df.replace({"genome:":""},
+        self.organisms_ids_df.drop("names", axis = 1, inplace = True)
+        self.organisms_ids_df = pd.concat([self.organisms_ids_df, temp_sub_df], axis=1)
+        self.organisms_ids_df.replace({"genome:":""},
                                regex=True,
                                inplace=True)
-        self.organisms_df.dropna(inplace=True)
+        self.organisms_ids_df.dropna(inplace=True)
 
     def org_name_2_kegg_id(self,
                            organism,
@@ -1119,8 +1119,8 @@ class KEGG_API:
             assume_1st (bool): return the first item if more than hit when
             <True> (default)
         """
-        org_bool = self.organisms_df.description.str.contains(organism)
-        organism_ser = self.organisms_df[org_bool]
+        org_bool = self.organisms_ids_df.description.str.contains(organism)
+        organism_ser = self.organisms_ids_df[org_bool]
         if len(organism_ser) == 0:
             print "No record found for {}".format(organism)
         elif len(organism_ser) > 1:
