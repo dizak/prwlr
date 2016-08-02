@@ -477,6 +477,8 @@ class Genome:
 
     def KO_list_profiler(self,
                          species_ids,
+                         remove_empty = True,
+                         upperize_ids = True,
                          profile_list = False):
         """Return Genome.KO_list (list of dict) appended with profiles
         (list of str or str).
@@ -484,7 +486,18 @@ class Genome:
         Args:
             species_ids (list of str): KEGG's IDs (3-letters) of reference
             species upon which are built.
+            remove_empty (bool): remove inplace None types from the species_ids
+            (list) <True> (default)
+            upperize_ids (bool): make the items from the species_ids (list)
+            upper-case as it is in the Genome.KO_list orgs key when <True>
+            (default)
+            profile_list (bool): return each profile as the list of separate
+            "+" or "-" when <True> or as one str when <False> (default)
         """
+        if remove_empty == True:
+            species_ids = [i for i in species_ids if i != None]
+        if upperize_ids == True:
+            species_ids = [i.upper() for i in species_ids]
         for i in self.KO_list:
             if "orgs" in i.keys():
                 profile = ["+" if ii in i["orgs"] else "-" for ii in species_ids]
