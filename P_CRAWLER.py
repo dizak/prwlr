@@ -243,6 +243,7 @@ class Genome:
         self.orthologous_groups_df = None
         self.orthologous_groups_dict = []
         self.KO_list = []
+        self.KO_df = None
         self.empty_genes = []
         self.ortho_genes = []
         self.gene_profiles = []
@@ -479,7 +480,8 @@ class Genome:
                          species_ids,
                          remove_empty = True,
                          upperize_ids = True,
-                         profile_list = False):
+                         profile_list = False,
+                         KO_list_2_df = True):
         """Return Genome.KO_list (list of dict) appended with profiles
         (list of str or str).
 
@@ -493,6 +495,7 @@ class Genome:
             (default)
             profile_list (bool): return each profile as the list of separate
             "+" or "-" when <True> or as one str when <False> (default)
+            KO_list_2_df (bool): convert Genome.KO_list to pandas.DataFrame
         """
         if remove_empty == True:
             species_ids = [i for i in species_ids if i != None]
@@ -508,6 +511,8 @@ class Genome:
                 i["profile"] = profile
             else:
                 pass
+        if KO_list_2_df == True:
+            self.KO_df = pd.DataFrame(self.KO_list)
 
 class Ortho_Interactions:
     """Holds data about gene interactions array extracted from (csv) file.
