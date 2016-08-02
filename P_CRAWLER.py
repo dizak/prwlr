@@ -478,7 +478,12 @@ class Genome:
     def KO_list_profiler(self,
                          species_ids,
                          profile_list = False):
-        """Return Genome.KO_list (list of dict) appended with profiles [list].
+        """Return Genome.KO_list (list of dict) appended with profiles
+        (list of str or str).
+
+        Args:
+            species_ids (list of str): KEGG's IDs (3-letters) of reference
+            species upon which are built.
         """
         for i in self.KO_list:
             if "orgs" in i.keys():
