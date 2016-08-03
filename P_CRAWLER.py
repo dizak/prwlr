@@ -751,6 +751,17 @@ class Ortho_Interactions:
                               axis = 1,
                               inplace = True)
         self.interact_df.dropna(inplace = True)
+        self.interact_df = pd.merge(self.interact_df,
+                                    self.KO_df_inter,
+                                    left_on = "kegg_id_query",
+                                    right_on = "entry",
+                                    how = "left")
+        self.interact_df = pd.merge(self.interact_df,
+                                     self.KO_df_inter,
+                                     left_on = "kegg_id_array",
+                                     right_on = "entry",
+                                     how = "left",
+                                     suffixes=('_query', '_array'))
 
     def bio_proc_appender(self):
         bio_proc_temp_list = []
