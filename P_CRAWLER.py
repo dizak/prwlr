@@ -530,16 +530,19 @@ class Ortho_Interactions:
         columns - ORF name and KO orthology group ID
         interact_df (pandas.DataFrame): holds data about interactions from
         parsed csv file. Can be appended with
-        Ortho_Interactions.gen_based_appender
+        Ortho_Interactions.gen_based_appender or
+        Ortho_Interactions.ko_based_appender
     """
     def __init__(self,
                  query_species_Genome,
                  genes_Genome,
                  gene_profiles_Genome,
+                 KO_df_Genome,
                  org_ortho_db_X_ref_df_KEGG_API):
         self.query_species_inter = query_species_Genome
         self.genes_inter = genes_Genome
         self.gene_profiles_inter = gene_profiles_Genome
+        self.KO_df_inter = KO_df_Genome
         self.ORF_KO_df = org_ortho_db_X_ref_df_KEGG_API
         self.interact_df = None
         self.bio_proc_df = None
@@ -731,6 +734,55 @@ class Ortho_Interactions:
                                         suffixes = ("_query", "_array"))
         else:
             pass
+
+    def KO_based_appender(self):
+        self.interact_df = pd.merge(self.interact_df,
+                                    self.ORF_KO_df,
+                                    left_on = "Query_ORF",
+                                    right_on = "ORF_id",
+                                    how = "left")
+        self.interact_df = pd.merge(self.interact_df,
+                                    self.ORF_KO_df,
+                                    left_on = "Array_ORF",
+                                    right_on = "ORF_id",
+                                    how = "left",
+                                    suffixes = ("_query", "_array"))
+        self.interact_df.drop(["ORF_id_query", "ORF_id_array"],
+                              axis = 1,
+                              inplace = True)
+        self.interact_df.dropna(inplace = True)
+
+    def bio_proc_appender(self):
+        bio_proc_temp_list = []
+        self.interact_df = pd.merge(self.interact_df,
+                                    self.bio_proc_df,
+                                    left_on = "Query_gene_name",
+                                    right_on = "Gene_name",
+                                    how = "left")
+        self.interact_df = pd.merge(self.interact_df,
+                                    self.bio_proc_df,
+                                    left_on = "Array_gene_name",
+                                    right_on = "Gene_name",
+                                    how = "left",
+                                    suffixes=("_query", "_array"))
+        self.interact_df.drop(["Gene_name_query", "Gene_name_array"],
+                              axis = 1,
+                              inplace = True)
+        for i in self.interact_df.itertuples():
+            if getattr(i, "Process_query") == getattr(i, "Process_array"):
+                if getattr(i, "Process_query") == "unknown" or\
+                   getattr(i, "Process_query") == "unknown":
+                    bio_proc_temp_list.append("unknown")
+                else:
+                    bio_proc_temp_list.append("identical")
+            else:
+                bio_proc_temp_list.append("different")
+        bio_proc_temp_df = pd.DataFrame(bio_proc_temp_list,
+                                        index = self.interact_df.index,
+                                        columns = ["Bioprocesses_similarity"])
+        self.interact_df = pd.concat([self.interact_df,
+                                      bio_proc_temp_df],
+                                     axis = 1)
 
     def inter_df_read(self,
                       in_file_name,
