@@ -762,6 +762,7 @@ class Ortho_Interactions:
                                      right_on = "entry",
                                      how = "left",
                                      suffixes=('_query', '_array'))
+        self.interact_df.dropna(inplace = True)
 
     def bio_proc_appender(self):
         bio_proc_temp_list = []
