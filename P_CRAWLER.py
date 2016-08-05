@@ -736,6 +736,7 @@ class Ortho_Interactions:
             pass
 
     def KO_based_appender(self):
+        temp_score_list = []
         self.interact_df = pd.merge(self.interact_df,
                                     self.ORF_KO_df,
                                     left_on = "Query_ORF",
@@ -757,12 +758,23 @@ class Ortho_Interactions:
                                     right_on = "entry",
                                     how = "left")
         self.interact_df = pd.merge(self.interact_df,
-                                     self.KO_df_inter,
-                                     left_on = "kegg_id_array",
-                                     right_on = "entry",
-                                     how = "left",
-                                     suffixes=('_query', '_array'))
+                                    self.KO_df_inter,
+                                    left_on = "kegg_id_array",
+                                    right_on = "entry",
+                                    how = "left",
+                                    suffixes=('_query', '_array'))
         self.interact_df.dropna(inplace = True)
+        for i in self.interact_df.itertuples():
+            prof_1 = np.array(list(getattr(i, "profile_query")))
+            prof_2 = np.array(list(getattr(i, "profile_array")))
+            temp_score_list.append(simple_profiles_scorer(prof_1,
+                                                          prof_2))
+        temp_score_df = pd.DataFrame(temp_score_list,
+                                     index = self.interact_df.index,
+                                     columns = ["Profiles_similarity_score"])
+        self.interact_df = pd.concat([self.interact_df,
+                                    temp_score_df],
+                                    axis = 1)
 
     def bio_proc_appender(self):
         bio_proc_temp_list = []
