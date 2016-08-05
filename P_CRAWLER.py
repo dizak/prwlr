@@ -764,17 +764,20 @@ class Ortho_Interactions:
                                     how = "left",
                                     suffixes=('_query', '_array'))
         self.interact_df.dropna(inplace = True)
+        self.interact_df.rename(columns = {"profile_query": "Query_gene_profile",
+                                           "profile_array": "Array_gene_profile"},
+                                inplace = True)
         for i in self.interact_df.itertuples():
-            prof_1 = np.array(list(getattr(i, "profile_query")))
-            prof_2 = np.array(list(getattr(i, "profile_array")))
+            prof_1 = np.array(list(getattr(i, "Query_gene_profile")))
+            prof_2 = np.array(list(getattr(i, "Array_gene_profile")))
             temp_score_list.append(simple_profiles_scorer(prof_1,
                                                           prof_2))
         temp_score_df = pd.DataFrame(temp_score_list,
                                      index = self.interact_df.index,
                                      columns = ["Profiles_similarity_score"])
         self.interact_df = pd.concat([self.interact_df,
-                                    temp_score_df],
-                                    axis = 1)
+                                     temp_score_df],
+                                     axis = 1)
 
     def bio_proc_appender(self):
         bio_proc_temp_list = []
