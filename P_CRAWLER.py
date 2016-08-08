@@ -1135,6 +1135,9 @@ class Ortho_Stats:
                                                 "unsimilar": sum(self.prof_arr_perm_results.unsimilar) /\
                                                              len(self.prof_arr_perm_results)})
 
+    def KO_profs_perm(self, arg):
+        pass
+
     def e_val_calc(self):
         """Return Ortho_Stats.e_value (int) which is an expected number of
         interactions with positive DMF and similar gene profiles by chance.
