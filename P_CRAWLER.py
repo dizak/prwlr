@@ -1136,7 +1136,18 @@ class Ortho_Stats:
                                                              len(self.prof_arr_perm_results)})
 
     def KO_profs_perm(self, arg):
-        pass
+        q_ORF_prof_df = self.inter_df_stats[["Query_ORF",
+                                             "Query_gene_profile"]]
+        a_ORF_prof_df = self.inter_df_stats[["Array_ORF",
+                                             "Array_gene_profile"]]
+        q_ORF_prof_df.columns = range(len(q_ORF_prof_df.columns))
+        a_ORF_prof_df.columns = range(len(a_ORF_prof_df.columns))
+        stack_prof_df = pc.concat([q_ORF_prof_df,
+                                   a_ORF_prof_df],
+                                  ignore_index = True)
+        stack_prof_df.drop_duplicates(inplace = True)
+        stack_prof_df.columns = ["ORF", "Profile"]
+
 
     def e_val_calc(self):
         """Return Ortho_Stats.e_value (int) which is an expected number of
