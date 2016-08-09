@@ -1109,9 +1109,9 @@ class Ortho_Stats:
                                                index = drop_prof_temp_df.index,
                                                columns = ["Query_gene_profile", "Array_gene_profile"])
             permuted_df = pd.concat([drop_prof_temp_df,
-                                           profs_pairs_temp_df,
-                                           prof_score_temp_df],
-                                          axis = 1)
+                                     profs_pairs_temp_df,
+                                     prof_score_temp_df],
+                                     axis = 1)
             sim_prof_bool = (permuted_df["Profiles_similarity_score"] >=\
                              in_prof_sim_lev)
             unsim_prof_bool = (permuted_df["Profiles_similarity_score"] <\
@@ -1135,18 +1135,25 @@ class Ortho_Stats:
                                                 "unsimilar": sum(self.prof_arr_perm_results.unsimilar) /\
                                                              len(self.prof_arr_perm_results)})
 
-    def KO_profs_perm(self, arg):
+    def KO_profs_perm(self):
         q_ORF_prof_df = self.inter_df_stats[["Query_ORF",
                                              "Query_gene_profile"]]
         a_ORF_prof_df = self.inter_df_stats[["Array_ORF",
                                              "Array_gene_profile"]]
         q_ORF_prof_df.columns = range(len(q_ORF_prof_df.columns))
         a_ORF_prof_df.columns = range(len(a_ORF_prof_df.columns))
-        stack_prof_df = pc.concat([q_ORF_prof_df,
-                                   a_ORF_prof_df],
-                                  ignore_index = True)
-        stack_prof_df.drop_duplicates(inplace = True)
-        stack_prof_df.columns = ["ORF", "Profile"]
+        stack_ORF_prof_df = pd.concat([q_ORF_prof_df,
+                                       a_ORF_prof_df],
+                                      ignore_index = True)
+        stack_ORF_prof_df.drop_duplicates(inplace = True)
+        stack_ORF_prof_df.columns = ["ORF", "Profile"]
+        stack_ORF_prof_df.index = range(len(stack_ORF_prof_df))
+        stack_prof_perm_df = stack_ORF_prof_df.Profile.sample(len(stack_ORF_prof_df))
+        stack_prof_perm_df.index = range(len(stack_prof_perm_df))
+        ORF_prof_perm_df = pd.concat([stack_ORF_prof_df.ORF,
+                                      stack_prof_perm_df],
+                                     axis = 1)
+        self.KO_perm_df = ORF_prof_perm_df
 
 
     def e_val_calc(self):
