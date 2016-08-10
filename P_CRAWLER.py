@@ -861,18 +861,30 @@ class Ortho_Stats:
                     DMF = None,
                     inter_score_min = None,
                     inter_score_max = None,
-                    no_flat = True,
+                    no_flat = False,
                     process = None,
                     profiles = None,
                     prof_sim_lev = None):
-        """Return pandas DataFrame selected to chosen DMF type (bool).
+        """Return filtered Ortho_Stats.interact_df_stats passed from
+        Ortho_Interactions (pandas.DataFrame). For each filter, type <None> to
+        omit.
 
         Args:
             DMF (str): selects DMF type. Possible: <positive>, <negative> or
-            omit DMF selection. Default: <positive>
-            no_flat (bool): eliminates mirrors when selected. Default <True>
+            <None> (omit filter). Default: <None>
+            inter_score_min (float): selects minimum Genetic interactions Score.
+            Default <None>
+            inter_score_max (float): selects minimum Genetic interactions Score.
+            Default <None>
+            no_flat (bool): eliminates mirror profiles. Default <False>
             process (str): selects bioprocesses similarity. Possible: <identical>,
-            "different". Default: <identical>
+            "different" or <None>. Default <None>
+            profiles (str): selects similar or dissimilar profiles. Possible
+            <similar>, <unsimilar> or <None>. Similarity threshold MUST be
+            specified with the prof_sim_lev arg if profiles != <None>.
+            Default <None>.
+            prof_sim_lev (int): defines profiles as similar of dissimilar
+            when above or below this given value
         """
         positive_DMF_bool = (self.inter_df_stats["DMF"] >\
                              self.inter_df_stats["Query_SMF"]) &\
