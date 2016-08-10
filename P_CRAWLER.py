@@ -858,11 +858,11 @@ class Ortho_Stats:
         self.prof_arr_perm_res_avg = None
 
     def df_selector(self,
-                    DMF = "pass",
+                    DMF = None,
                     inter_score_min = None,
                     inter_score_max = None,
                     no_flat = True,
-                    process = "pass",
+                    process = None,
                     profiles = None,
                     prof_sim_lev = None):
         """Return pandas DataFrame selected to chosen DMF type (bool).
