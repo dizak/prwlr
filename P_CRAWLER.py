@@ -1155,56 +1155,65 @@ class Ortho_Stats:
     def KO_profs_perm(self,
                       e_value,
                       in_prof_sim_lev):
-        q_ORF_prof_df = self.inter_df_stats[["Query_ORF",
-                                             "Query_gene_profile"]]
-        a_ORF_prof_df = self.inter_df_stats[["Array_ORF",
-                                             "Array_gene_profile"]]
-        drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
-                                                      "Array_gene_profile",
-                                                      "Profiles_similarity_score"],
-                                                     axis = 1)
-        q_ORF_prof_df.columns = range(len(q_ORF_prof_df.columns))
-        a_ORF_prof_df.columns = range(len(a_ORF_prof_df.columns))
-        stack_ORF_prof_df = pd.concat([q_ORF_prof_df,
-                                       a_ORF_prof_df],
-                                      ignore_index = True)
-        stack_ORF_prof_df.drop_duplicates(inplace = True)
-        stack_ORF_prof_df.columns = ["ORF", "Profile"]
-        stack_ORF_prof_df.index = range(len(stack_ORF_prof_df))
-        stack_prof_perm_df = stack_ORF_prof_df.Profile.sample(len(stack_ORF_prof_df))
-        stack_prof_perm_df.index = range(len(stack_prof_perm_df))
-        ORF_prof_perm_df = pd.concat([stack_ORF_prof_df.ORF,
-                                      stack_prof_perm_df],
-                                     axis = 1)
-        q_merged_df = pd.merge(drop_prof_temp_df,
-                               ORF_prof_perm_df,
-                               left_on = "Query_ORF",
-                               right_on = "ORF",
-                               how = "left")
-        qa_merged_df = pd.merge(q_merged_df,
-                                ORF_prof_perm_df,
-                                left_on = "Array_ORF",
-                                right_on = "ORF",
-                                how = "left",
-                                suffixes=("_query", "_array"))
-        qa_merged_score_df = df_based_profiles_scorer(qa_merged_df,
-                                                      prof_1_col_name = "Profile_query",
-                                                      prof_2_col_name = "Profile_array",
-                                                      score_col_name = "Profiles_similarity_score")
-        sim_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] >=\
-                         in_prof_sim_lev)
-        unsim_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] <\
-                           in_prof_sim_lev) &\
-                          (qa_merged_score_df["Profiles_similarity_score"] > 0)
-        mir_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] == 0)
-        sim_prof_perm_num = len(qa_merged_score_df[sim_prof_bool])
-        unsim_prof_perm_num = len(qa_merged_score_df[unsim_prof_bool])
-        mir_prof_perm_num = len(qa_merged_score_df[mir_prof_bool])
-        self.Result = {"similar": sim_prof_perm_num,
-                       "unsimilar": unsim_prof_perm_num,
-                       "mirror": mir_prof_perm_num,
-                       "dataframe": qa_merged_score_df}
-
+        def f(in_iter):
+            q_ORF_prof_df = self.inter_df_stats[["Query_ORF",
+                                                 "Query_gene_profile"]]
+            a_ORF_prof_df = self.inter_df_stats[["Array_ORF",
+                                                 "Array_gene_profile"]]
+            drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
+                                                          "Array_gene_profile",
+                                                          "Profiles_similarity_score"],
+                                                         axis = 1)
+            q_ORF_prof_df.columns = range(len(q_ORF_prof_df.columns))
+            a_ORF_prof_df.columns = range(len(a_ORF_prof_df.columns))
+            stack_ORF_prof_df = pd.concat([q_ORF_prof_df,
+                                           a_ORF_prof_df],
+                                          ignore_index = True)
+            stack_ORF_prof_df.drop_duplicates(inplace = True)
+            stack_ORF_prof_df.columns = ["ORF", "Profile"]
+            stack_ORF_prof_df.index = range(len(stack_ORF_prof_df))
+            stack_prof_perm_df = stack_ORF_prof_df.Profile.sample(len(stack_ORF_prof_df))
+            stack_prof_perm_df.index = range(len(stack_prof_perm_df))
+            ORF_prof_perm_df = pd.concat([stack_ORF_prof_df.ORF,
+                                          stack_prof_perm_df],
+                                         axis = 1)
+            q_merged_df = pd.merge(drop_prof_temp_df,
+                                   ORF_prof_perm_df,
+                                   left_on = "Query_ORF",
+                                   right_on = "ORF",
+                                   how = "left")
+            qa_merged_df = pd.merge(q_merged_df,
+                                    ORF_prof_perm_df,
+                                    left_on = "Array_ORF",
+                                    right_on = "ORF",
+                                    how = "left",
+                                    suffixes=("_query", "_array"))
+            qa_merged_score_df = df_based_profiles_scorer(qa_merged_df,
+                                                          prof_1_col_name = "Profile_query",
+                                                          prof_2_col_name = "Profile_array",
+                                                          score_col_name = "Profiles_similarity_score")
+            sim_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] >=\
+                             in_prof_sim_lev)
+            unsim_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] <\
+                               in_prof_sim_lev) &\
+                              (qa_merged_score_df["Profiles_similarity_score"] > 0)
+            mir_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] == 0)
+            sim_prof_perm_num = len(qa_merged_score_df[sim_prof_bool])
+            unsim_prof_perm_num = len(qa_merged_score_df[unsim_prof_bool])
+            mir_prof_perm_num = len(qa_merged_score_df[mir_prof_bool])
+            return {"similar": sim_prof_perm_num,
+                    "unsimilar": unsim_prof_perm_num,
+                    "mirror": mir_prof_perm_num,
+                    "iteration": in_iter + 1,
+                    "dataframe": qa_merged_score_df}
+        permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
+        self.prof_KO_perm_results = pd.DataFrame(permuted_df_results_temp)
+        self.prof_KO_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_KO_perm_results.mirror) /\
+                                                                   len(self.prof_KO_perm_results),
+                                                "similar_profiles": sum(self.prof_KO_perm_results.similar) /\
+                                                                    len(self.prof_KO_perm_results),
+                                                "unsimilar": sum(self.prof_KO_perm_results.unsimilar) /\
+                                                             len(self.prof_KO_perm_results)})
 
 
     def e_val_calc(self):
