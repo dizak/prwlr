@@ -1443,21 +1443,39 @@ class KEGG_API:
 
 class Ortho_Network:
     """Calculates and holds data about interactions in form of network,
-    exportable to other software, eg Cytoscape.
+    exportable to other software (e.g. Cytoscape) or drawable by matplotlib.
+
+    Attribs:
+        inter_df (pandas.DataFrame): DataFrame containing genetic interactions
+        nwrk (networkx.Graph): network created upon Ortho_Network.inter_df
     """
     def __init__(self,
                  inter_df):
         self.inter_df = inter_df
         self.nwrk = None
 
-    def create_nwrk(self):
+    def create_nwrk(self,
+                    col_1_name,
+                    col_2_name):
+        """Return Ortho_Network.nwrk upon pandas.DataFrame.
+
+        Args:
+            col_1_name (str): column name to take as nodes
+            col_2_name (str): column name to take as nodes
+        """
         self.nwrk = nx.from_pandas_dataframe(self.inter_df,
-                                            "Query_gene_name",
-                                            "Array_gene_name")
+                                             col_1_name,
+                                             col_2_name)
 
     def write_nwrk(self,
-                   out_file_format,
-                   out_file_name):
+                   out_file_name,
+                   out_file_format):
+        """Write Ortho_Network.nwrk to file readable to other software.
+
+        Args:
+            out_file_name (str): file name to save as
+            out_file_format (str): file format to save as
+        """
         if out_file_format.lower() == "graphml":
             nx.write_graphml(self.nwrk, out_file_name)
         elif out_file_format.lower() == "gefx":
@@ -1468,9 +1486,25 @@ class Ortho_Network:
     def draw_nwrk(self,
                   width = 20,
                   height = 20,
+                  dpi = None,
                   node_size = 5,
                   save_2_file = False,
-                  file_name = "network.png"):
+                  out_file_name = "network.png"):
+        """Return matplotlib.pyplot.figure of Ortho_Network.nwrk and/or write it to
+        <*.png> file.
+
+        Args:
+            width (int): figure width in inches. Set as speciefied in
+            matplotlibrc file when <None>. Default: <20>
+            height (int): figure height in inches. Set as speciefied in
+            matplotlibrc file when <None>. Default: <20>
+            dpi (int): figure resolution. Set as speciefied in
+            matplotlibrc file when <None>. Default: <None>
+            node_size (int): size of the nodes. Default: <5>
+            save_2_file (bool): write to file when <True>. Default: <False>
+            out_file_name (str): file name to save as
+
+        """
         plt.figure(figsize = (width, height))
         nx.draw_networkx(self.nwrk,
                          node_size = node_size,
@@ -1478,7 +1512,8 @@ class Ortho_Network:
                          node_alpha = 0.4,
                          with_labels = False)
         if save_2_file == True:
-            plt.savefig(file_name)
+            plt.savefig(out_file_name,
+                        dpi = dpi)
         else:
             pass
 
