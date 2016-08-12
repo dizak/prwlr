@@ -1406,7 +1406,7 @@ class KEGG_API:
         """Get desired KEGG's database entries linked with all the genes from
         given organism. Data are downloaded to a local file and then made into
         pandas.DataFrame. File can be reused. Necessary for
-        Ortho_Interactions.KO_based_appender.
+        KEGG_API.get_ortho_db_entries and Ortho_Interactions.KO_based_appender.
 
         Args:
             organism (str): organism name. Provide whitespace-separated full
@@ -1446,7 +1446,7 @@ class KEGG_API:
         """Get full information about ortho groups by entries from
         KEGG_API.org_ortho_db_X_ref_df and download them into a local file.
         Necessary for Genome.parse_KO_db. The only func that does NOT convert
-        downloaded file into pandas.DataFrame.
+        downloaded file into pandas.DataFrame. Uses KEGG_API.get_org_db_X_ref_df.
 
         Args:
             out_file_name (str): name for file to be downloaded
