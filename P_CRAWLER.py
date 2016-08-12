@@ -1463,6 +1463,99 @@ class KEGG_API:
             with open(out_file_name, "a") as fout:
                 fout.write(res.content)
 
+class Costanzo_API:
+    """Provides connectivity with the Costanzo's SOM website of the Genetic
+    Landscape of the Cell project, allowing data files download.
+
+    Attribs:
+        home (str): Costanzo's SOM home page address
+        raw (str): raw data link and file name
+        raw_matrix (str): raw data genetic interactions matrix link and file
+        name, Java Treeview format
+        lenient_cutoff (str): p-value < 0.05 cutoff link and file name
+        intermediate_cutoff (str): |genetic interaction score| > 0.08,
+        p-value < 0.05 cutoff link and file name
+        stringent_cutoff (str): genetic interaction score < -0.12,
+        p-value < 0.05 or genetic interaction score > 0.16, p-value < 0.05 link
+        and file name
+        bioprocesses (str): bioprocesses annotations
+        chemical_genomics (str): chemical genomics data
+        query_list (str): query ORFs list
+        array_list (str): array ORFs list
+    """
+
+    def __init__(self):
+        self.home = "http://drygin.ccbr.utoronto.ca/~costanzo2009"
+        self.raw = "sgadata_costanzo2009_rawdata_101120.txt.gz"
+        self.raw_matrix = "sgadata_costanzo2009_rawdata_matrix_101120.txt.gz"
+        self.lenient_cutoff = "sgadata_costanzo2009_lenientCutoff_101120.txt.gz"
+        self.intermediate_cutoff = "sgadata_costanzo2009_intermediateCutoff_101120.txt.gz"
+        self.stringent_cutoff = "sgadata_costanzo2009_stringentCutoff_101120.txt.gz"
+        self.bioprocesses = "bioprocess_annotations_costanzo2009.xls"
+        self.chemical_genomics = "chemgenomic_data_costanzo2009.xls"
+        self.query_list = "sgadata_costanzo2009_query_list_101120.txt"
+        self.array_list = "sgadata_costanzo2009_array_list.txt"
+
+    def get_data(self,
+                 data):
+        """Get files from Costanzo's SOM website.
+
+        Args:
+            data (str): specifies the file to be downloaded.
+            <raw> for raw dataset,
+            <raw_matrix> for raw genetic interactions matrix,
+            <lenient_cutoff> for lenient dataset,
+            <intermediate_cutoff> for intermediate dataset,
+            <stringent_cutoff> for stringent dataset,
+            <bioprocesses> for bioprocesses dataset,
+            <chemical_genomics> for chemical genomics dataset,
+            <query_list> for list of query ORFs names,
+            <array_list> for list of array ORFs names
+            out_file_name (str): name for file to be downloaded. Automatically
+            same as appropriate Costanzo_API attrib when set to <None>
+        """
+        if data == "raw":
+            url = "{0}/{1}".format(self.home,
+                                   self.raw)
+            out_file_name = self.raw
+        elif data == "raw_matrix":
+            url = "{0}/{1}".format(self.home,
+                                   self.raw_matrix)
+            out_file_name = self.raw_matrix
+        elif data == "lenient_cutoff":
+            url = "{0}/{1}".format(self.home,
+                                   self.lenient_cutoff)
+            out_file_name = self.lenient_cutoff
+        elif data == "intermediate_cutoff":
+            url = "{0}/{1}".format(self.home,
+                                   self.intermediate_cutoff)
+            out_file_name = self.intermediate_cutoff
+        elif data == "stringent_cutoff":
+            url = "{0}/{1}".format(self.home,
+                                   self.stringent_cutoff)
+            out_file_name = self.stringent_cutoff
+        elif data == "bioprocesses":
+            url = "{0}/{1}".format(self.home,
+                                   self.bioprocesses)
+            out_file_name = self.bioprocesses
+        elif data == "chemical_genomics":
+            url = "{0}/{1}".format(self.home,
+                                   self.chemical_genomics)
+            out_file_name = self.chemical_genomics
+        elif data == "query_list":
+            url = "{0}/{1}".format(self.home,
+                                   self.query_list)
+            out_file_name = self.query_list
+        elif data == "array_list":
+            url = "{0}/{1}".format(self.home,
+                                   self.array_list)
+            out_file_name = self.array_list
+        else:
+            raise ValueError("unknown option for data arg")
+        res = rq.get(url)
+        with open(out_file_name, "w") as fout:
+            fout.write(res.content)
+
 class Ortho_Network:
     """Calculates and holds data about interactions in form of network,
     exportable to other software (e.g. Cytoscape) or drawable by matplotlib.
