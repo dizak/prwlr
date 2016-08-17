@@ -1290,6 +1290,7 @@ class KEGG_API:
                                "kegg_id": "genes"}
         self.id_conversions_df = None
         self.org_db_X_ref_df = None
+        self.query_ids_not_found = []
 
     def get_organisms_ids(self,
                           out_file_name,
@@ -1345,6 +1346,7 @@ class KEGG_API:
         organism_ser = self.organisms_ids_df[org_bool]
         if len(organism_ser) == 0:
             print "No record found for {}".format(organism)
+            self.query_ids_not_found.append(organism)
         elif len(organism_ser) > 1:
             if assume_1st == True:
                 return organism_ser.kegg_org_id.iloc[0]
