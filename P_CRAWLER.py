@@ -873,7 +873,8 @@ class Ortho_Stats:
                     DMF = None,
                     inter_score_min = None,
                     inter_score_max = None,
-                    no_flat = False,
+                    no_flat_plus = False,
+                    no_flat_minus = False,
                     process = None,
                     profiles = None,
                     prof_sim_lev = None):
@@ -941,10 +942,13 @@ class Ortho_Stats:
             self.inter_df_stats = self.inter_df_stats[inter_score_min_bool]
         else:
             pass
-        if no_flat == True:
+        if no_flat_plus == True:
             self.inter_df_stats = self.inter_df_stats[no_flat_plu_q_bool]
-            self.inter_df_stats = self.inter_df_stats[no_flat_min_q_bool]
             self.inter_df_stats = self.inter_df_stats[no_flat_plu_a_bool]
+        else:
+            pass
+        if no_flat_minus == True:
+            self.inter_df_stats = self.inter_df_stats[no_flat_min_q_bool]
             self.inter_df_stats = self.inter_df_stats[no_flat_min_a_bool]
         else:
             pass
