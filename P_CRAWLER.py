@@ -871,6 +871,7 @@ class Ortho_Stats:
 
     def df_selector(self,
                     DMF = None,
+                    SMF_below_one = True,
                     inter_score_min = None,
                     inter_score_max = None,
                     no_flat_plus = False,
@@ -907,6 +908,8 @@ class Ortho_Stats:
                              self.inter_df_stats["Query_SMF"]) &\
                             (self.inter_df_stats["DMF"] <\
                              self.inter_df_stats["Array_SMF"])
+        SMF_below_one_bool = (self.inter_df_stats["Query_SMF"] < 1.0) &\
+                             (self.inter_df_stats["Array_SMF"] < 1.0)
         inter_score_max_bool = (self.inter_df_stats["Genetic_interaction_score"] < inter_score_max)
         inter_score_min_bool = (self.inter_df_stats["Genetic_interaction_score"] > inter_score_min)
         no_flat_plu_q_bool = (self.inter_df_stats["Query_gene_profile"] !=\
@@ -932,6 +935,10 @@ class Ortho_Stats:
             self.inter_df_stats = self.inter_df_stats[positive_DMF_bool]
         elif DMF == "negative":
             self.inter_df_stats = self.inter_df_stats[negative_DMF_bool]
+        else:
+            pass
+        if SMF_below_one == True:
+            self.inter_df_stats = self.inter_df_stats[SMF_below_one_bool]
         else:
             pass
         if isinstance(inter_score_max, float) == True:
