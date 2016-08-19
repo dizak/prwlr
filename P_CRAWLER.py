@@ -1674,7 +1674,8 @@ class HTML_generator:
                         mirror_profiles,
                         similar_profiles,
                         dissimilar_profiles,
-                        total):
+                        total,
+                        histogram):
         curr_time = time.localtime()
         time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
                                                        curr_time.tm_mon,
@@ -1690,7 +1691,8 @@ class HTML_generator:
                          "mirror_profiles": mirror_profiles,
                          "similar_profiles": similar_profiles,
                          "dissimilar_profiles": dissimilar_profiles,
-                         "total": total}
+                         "total": total,
+                         "histogram": histogram}
         self.template_rendered = self.template.render(template_Vars)
 
     def save_template(self,
