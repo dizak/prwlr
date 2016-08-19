@@ -85,6 +85,7 @@
 				<div id="content">
 					<div class="innertube">
 						<h1>File created: {{time_stamp}}</h1>
+						<p>Definitions:</p>
 						<p>
             {%for i in definitions%}
               <p>{{i}}</p>
@@ -93,12 +94,28 @@
 						<table class="res_Table">
 						<p><b>{{filters}}</b></p>
 						<tr>
-							<td>Table cell</td>
-							<td>Table cell</td>
+							<td>DMF positive</td>
+							<td>{{DMF_positive}}</td>
 						</tr>
 						<tr>
-							<td>Table cell</td>
-							<td>Table cell</td>
+							<td>DMF negative</td>
+							<td>{{DMF_negative}}</td>
+						</tr>
+						<tr>
+							<td>mirror profiles</td>
+							<td>{{mirror_profiles}}</td>
+						</tr>
+						<tr>
+							<td>similar profiles</td>
+							<td>{{similar_profiles}}</td>
+						</tr>
+						<tr>
+							<td>dissimilar</td>
+							<td>{{unsimilar_profiles}}</td>
+						</tr>
+						<tr>
+							<td>total number</td>
+							<td>{{total}}</td>
 						</tr>
 					</table>
 					</div>
