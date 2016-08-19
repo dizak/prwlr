@@ -14,6 +14,8 @@ import numpy as np
 import pathos.multiprocessing as ptmp
 import networkx as nx
 import matplotlib.pyplot as plt
+import jinja2 as jj2
+import time
 
 def perc_prog(in_item,
               in_iterbl):
@@ -1645,6 +1647,37 @@ class Ortho_Network:
         else:
             pass
 
+class HTML_generator:
+
+    def __init__(self,
+                 template_file):
+        self.template_file = template_file
+        self.template = None
+        self.template_rendered = None
+
+    def load_template(self):
+        template_Loader = jj2.FileSystemLoader(searchpath = ".")
+        template_Env = jj2.Environment(loader = template_Loader)
+        self.template = template_Env.get_template(self.template_file)
+
+    def render_template(self):
+        curr_time = time.gmtime()
+        time_stamp = "{0}.{1}.{2} {3}:{4}:{5}".format(curr_time.tm_year,
+                                                      curr_time.tm_mon,
+                                                      curr_time.tm_mday,
+                                                      curr_time.tm_hour,
+                                                      curr_time.tm_min,
+                                                      curr_time.tm_sec)
+        template_Vars = {"time_stamp": time_stamp}
+        self.template_rendered = self.template.render(template_Vars)
+
+    def save_template(self,
+                      out_file_name):
+        with open(out_file_name, "w") as fout:
+            fout.write(self.template_rendered)
+
+    def print_template(self):
+        print self.template.render()
 
 def main():
     pass
