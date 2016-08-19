@@ -1650,25 +1650,45 @@ class Ortho_Network:
 class HTML_generator:
 
     def __init__(self,
-                 template_file):
+                 template_file,
+                 definitions_file):
         self.template_file = template_file
+        self.definitions_file = definitions_file
         self.template = None
         self.template_rendered = None
+
+    def load_definitions(self):
+        with open(self.definitions_file, "r") as fin:
+            self.definitions = fin.readlines()
+        self.definitions = [i.rstrip() for i in self.definitions]
 
     def load_template(self):
         template_Loader = jj2.FileSystemLoader(searchpath = ".")
         template_Env = jj2.Environment(loader = template_Loader)
         self.template = template_Env.get_template(self.template_file)
 
-    def render_template(self):
+    def render_template(self,
+                        DMF_positive,
+                        DMF_negative,
+                        mirror_profiles,
+                        similar_profiles,
+                        dissimilar_profiles,
+                        total):
         curr_time = time.gmtime()
-        time_stamp = "{0}.{1}.{2} {3}:{4}:{5}".format(curr_time.tm_year,
-                                                      curr_time.tm_mon,
-                                                      curr_time.tm_mday,
-                                                      curr_time.tm_hour,
-                                                      curr_time.tm_min,
-                                                      curr_time.tm_sec)
-        template_Vars = {"time_stamp": time_stamp}
+        time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
+                                                       curr_time.tm_mon,
+                                                       curr_time.tm_mday,
+                                                       curr_time.tm_hour,
+                                                       curr_time.tm_min,
+                                                       curr_time.tm_sec)
+        template_Vars = {"time_stamp": time_stamp,
+                         "definitions": self.definitions,
+                         "DMF_positive": DMF_positive,
+                         "DMF_negative": DMF_negative,
+                         "mirror_profiles": mirror_profiles,
+                         "similar_profiles": similar_profiles,
+                         "dissimilar_profiles": dissimilar_profiles,
+                         "total": total}
         self.template_rendered = self.template.render(template_Vars)
 
     def save_template(self,
