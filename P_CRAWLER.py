@@ -1674,7 +1674,7 @@ class HTML_generator:
                         similar_profiles,
                         dissimilar_profiles,
                         total):
-        curr_time = time.gmtime()
+        curr_time = time.localtime()
         time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
                                                        curr_time.tm_mon,
                                                        curr_time.tm_mday,
