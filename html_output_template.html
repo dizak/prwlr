@@ -90,14 +90,19 @@
 				<div id="content">
 					<div class="innertube">
 						<h1>File created: {{time_stamp}}</h1>
-						<h1>Definitions:</h2>
+						<h2>Definitions:</h2>
 						<p>
-            {%for i in definitions%}
-              <p>{{i}}</p>
+            {%for definition in definitions%}
+              <p>{{definition}}</p>
             {%endfor%}
             </p>
+						<h2>Filters:</h2>
+						<p>
+						{%for filter in filters%}
+						  <p>{{filter}}</p>
+						{%endfor%}
+						</p>
 						<table class="res_Table">
-						<tr>{{filters}}</tr>
 						<tr>
 							<td>DMF positive</td>
 							<td>{{DMF_positive}}</td>
