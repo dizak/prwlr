@@ -870,6 +870,7 @@ class Ortho_Stats:
         self.e_value = None
         self.perm_results = None
         self.prof_arr_perm_res_avg = None
+        self.filters_used = "No filters"
 
     def df_selector(self,
                     DMF = None,
@@ -902,6 +903,7 @@ class Ortho_Stats:
             prof_sim_lev (int): defines profiles as similar of dissimilar
             when above or below this given value
         """
+        self.filters_used = []
         positive_DMF_bool = (self.inter_df_stats["DMF"] >\
                              self.inter_df_stats["Query_SMF"]) &\
                             (self.inter_df_stats["DMF"] >\
@@ -935,42 +937,53 @@ class Ortho_Stats:
             pass
         if DMF == "positive":
             self.inter_df_stats = self.inter_df_stats[positive_DMF_bool]
+            self.filters_used.append("DMF positive")
         elif DMF == "negative":
             self.inter_df_stats = self.inter_df_stats[negative_DMF_bool]
+            self.filters_used.append("DMF negative")
         else:
             pass
         if SMF_below_one == True:
             self.inter_df_stats = self.inter_df_stats[SMF_below_one_bool]
+            self.filters_used.append("SMF < 1.0")
         else:
             pass
         if isinstance(inter_score_max, float) == True:
             self.inter_df_stats = self.inter_df_stats[inter_score_max_bool]
+            self.filters_used.append("Genetic interaction score < {0}".format(inter_score_max))
         else:
             pass
         if isinstance(inter_score_min, float) == True:
             self.inter_df_stats = self.inter_df_stats[inter_score_min_bool]
+            self.filters_used.append("Genetic interaction score > {0}".format(inter_score_min))
         else:
             pass
         if no_flat_plus == True:
             self.inter_df_stats = self.inter_df_stats[no_flat_plu_q_bool]
             self.inter_df_stats = self.inter_df_stats[no_flat_plu_a_bool]
+            self.filters_used.append("No plus-only (eg ++++++) profiles")
         else:
             pass
         if no_flat_minus == True:
             self.inter_df_stats = self.inter_df_stats[no_flat_min_q_bool]
             self.inter_df_stats = self.inter_df_stats[no_flat_min_a_bool]
+            self.filters_used.append("No minus-only (eg ------) profiles")
         else:
             pass
         if process == "identical":
             self.inter_df_stats = self.inter_df_stats[iden_proc_bool]
+            self.filters_used.append("Identical bioprocesses")
         elif process == "different":
             self.inter_df_stats = self.inter_df_stats[diff_proc_bool]
+            self.filters_used.append("Different bioprocesses")
         else:
             pass
         if profiles == "similar":
             self.inter_df_stats = self.inter_df_stats[sim_prof_bool]
+            self.filters_used.append("Similar profiles")
         elif profiles == "unsimilar":
             self.inter_df_stats = self.inter_df_stats[unsim_prof_bool]
+            self.filters_used.append("Dissimilar profiles")
         else:
             pass
 
