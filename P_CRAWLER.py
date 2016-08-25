@@ -1692,7 +1692,8 @@ class HTML_generator:
                         dissimilar_profiles_perm,
                         total,
                         e_value,
-                        histogram,
+                        histogram_profs,
+                        histogram_gis,
                         bivar,
                         lin_regr,
                         dataframe):
@@ -1716,7 +1717,8 @@ class HTML_generator:
                          "dissimilar_profiles_perm": dissimilar_profiles_perm,
                          "total": total,
                          "e_value": e_value,
-                         "histogram": histogram,
+                         "histogram_profs": histogram_profs,
+                         "histogram_gis": histogram_gis,
                          "bivar": bivar,
                          "lin_regr": lin_regr,
                          "dataframe": dataframe}
