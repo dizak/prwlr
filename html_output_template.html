@@ -69,7 +69,7 @@
 			  }
 
 			.res_Table td {
-				border-spacing: 0px;
+				border-spacing: 0;
 				border-collapse: collapse;
 				border: 1px solid darkgreen;
 			}
@@ -81,12 +81,12 @@
 
 			.dataframe {
 				font-size: 0.8em;
-				border: 2px solid darkgreen;
+				border: 1px solid darkgreen;
+				border-collapse: collapse;
 			}
 
 			.dataframe td {
-				margin: 1px;
-				border: 1px solid darkgreen;
+
 			}
 
 		</style>
@@ -112,6 +112,7 @@
 						  <p>{{filter}}</p>
 						{%endfor%}
 						</p>
+						<h2>Results:</h2>
 						<table class="res_Table">
 						<tr>
 							<td>Category</td>
@@ -146,7 +147,8 @@
 							<td>{{total}}</td>
 						</tr>
 					</table>
-					<div class="floating_Box"><img src="{{histogram}}"></div>
+					<div class="floating_Box"><img src="{{histogram_profs}}"></div>
+					<div class="floating_Box"><img src="{{histogram_gis}}"></div>
 					<div class="floating_Box"><img src="{{bivar}}"></div>
 					<div class="floating_Box"><img src="{{lin_regr}}"></div>
 					<div class="dataframe">{{dataframe}}</div>
