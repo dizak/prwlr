@@ -63,21 +63,30 @@
 				font-size: 0.9em;
 			  text-align: center;
 			  background-color: white;
-			  border-collapse: collapse;
+				border-spacing: 0;
+				border-collapse: collapse;
+				border: 1px solid darkgreen;
 			  }
-			.res_Table th {
-			  background-color: white;
-			  color: black;
-			  }
-			.res_Table td,
-			.res_Table th {
-			  padding: 2px;
-			  border: 2px solid darkgreen;
-			  }
+
+			.res_Table td {
+				border-spacing: 0px;
+				border-collapse: collapse;
+				border: 1px solid darkgreen;
+			}
 
 			.floating_Box {
 				display: inline-block;
 				margin: 5px
+			}
+
+			.dataframe {
+				font-size: 0.8em;
+				border: 2px solid darkgreen;
+			}
+
+			.dataframe td {
+				margin: 1px;
+				border: 1px solid darkgreen;
 			}
 
 		</style>
@@ -140,8 +149,8 @@
 					<div class="floating_Box"><img src="{{histogram}}"></div>
 					<div class="floating_Box"><img src="{{bivar}}"></div>
 					<div class="floating_Box"><img src="{{lin_regr}}"></div>
+					<div class="dataframe">{{dataframe}}</div>
 					</div>
-					<div>{{dataframe}}</div>
 				</div>
 			</main>
 <!--
