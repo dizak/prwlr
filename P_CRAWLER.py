@@ -1726,7 +1726,7 @@ class HTML_generator:
 
     def save_template(self,
                       out_file_name):
-        with open(out_file_name, "w") as fout:
+        with open("{0}.html".format(out_file_name), "w") as fout:
             fout.write(self.template_rendered)
 
     def print_template(self):
