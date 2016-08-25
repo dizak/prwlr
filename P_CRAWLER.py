@@ -1694,7 +1694,8 @@ class HTML_generator:
                         e_value,
                         histogram,
                         bivar,
-                        lin_regr):
+                        lin_regr,
+                        dataframe):
         curr_time = time.localtime()
         time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
                                                        curr_time.tm_mon,
@@ -1717,7 +1718,8 @@ class HTML_generator:
                          "e_value": e_value,
                          "histogram": histogram,
                          "bivar": bivar,
-                         "lin_regr": lin_regr}
+                         "lin_regr": lin_regr,
+                         "dataframe": dataframe}
         self.template_rendered = self.template.render(template_Vars)
 
     def save_template(self,
