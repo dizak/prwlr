@@ -1032,6 +1032,7 @@ class Ortho_Stats:
                                        "unsimilar_profiles": len(self.inter_df_stats[unsim_prof_bool]),
                                        "mirror_profiles": len(self.inter_df_stats[mir_prof_bool])})
         self.filters_used.append("Profiles similarity threshold: {0}".format(in_prof_sim_lev))
+        self.filters_name.append("prof_sim_th_{0}".format(in_prof_sim_lev))
 
     def names_perm(self,
                    e_value,
