@@ -4,11 +4,17 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
       $("document").ready(function(){
           $("button").click(function(){
             $("#filters").toggle("slow");
           });
+      });
+    </script>
+    <script type="text/javascript">
+      $("document").ready(function(){
+        $(".dataframe").DataTable();
       });
     </script>
     <title>P-CRAWLER</title>
@@ -108,7 +114,7 @@
         </article>
         <article>
           <h2>Dataframe</h2>
-          <div class="dataframe">{{dataframe}}</div>
+          {{dataframe}}
         </article>
     </section>
   </body>
