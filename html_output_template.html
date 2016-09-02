@@ -3,6 +3,14 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript">
+      $("document").ready(function(){
+          $("button").click(function(){
+            $("#filters").toggle("slow");
+          });
+      });
+    </script>
     <title>P-CRAWLER</title>
     <style type="text/css">
       body {
@@ -45,7 +53,8 @@
     </section>
     <section>
       <h1>Filters:</h1>
-      <ul>
+      <button>show/hide</button>
+      <ul id="filters">
         {%for filter in filters%}
           <li>{{filter}}</li>
         {%endfor%}
