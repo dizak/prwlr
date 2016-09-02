@@ -7,8 +7,13 @@
     <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
       $("document").ready(function(){
-          $("button").click(function(){
+          $("#filters_button").click(function(){
             $("#filters").toggle("slow");
+          });
+      });
+      $("document").ready(function(){
+          $("#definitions_button").click(function(){
+            $("#definitions").toggle("slow");
           });
       });
     </script>
@@ -53,7 +58,8 @@
     </section>
     <section>
       <h1>Definitions:</h1>
-      <ul>
+      <button id="definitions_button">show/hide</button>
+      <ul id="definitions">
         {%for definition in definitions%}
           <li>{{definition}}</li>
         {%endfor%}
@@ -61,7 +67,7 @@
     </section>
     <section>
       <h1>Filters:</h1>
-      <button>show/hide</button>
+      <button id="filters_button">show/hide</button>
       <ul id="filters">
         {%for filter in filters%}
           <li>{{filter}}</li>
