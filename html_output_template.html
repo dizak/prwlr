@@ -23,7 +23,12 @@
       });
       $("document").ready(function(){
           $("#summary_button").click(function(){
-            $(".res_table").toggle("slow");
+            $("#res_table").toggle("slow");
+          });
+      });
+      $("document").ready(function(){
+          $("#plots_button").click(function(){
+            $("#plots").toggle("slow");
           });
       });
     </script>
@@ -89,7 +94,7 @@
         <h2>Summary</h2>
         <article>
           <button id="summary_button">show/hide</button>
-          <table class="res_table">
+          <table id="res_table" class="res_table">
             <tr>
               <th>Category</th>
               <th>Actual value</th>
@@ -126,10 +131,13 @@
         </article>
         <article>
           <h2>Plots<h2>
-            <div class="floating_box"><img src="{{histogram_profs}}"></div>
-            <div class="floating_box"><img src="{{histogram_gis}}"></div>
-            <div class="floating_box"><img src="{{bivar}}"></div>
-            <div class="floating_box"><img src="{{lin_regr}}"></div>
+            <button id="plots_button">show/hide</button>
+            <div id="plots" class="floating_box">
+              <img src="{{histogram_profs}}">
+              <img src="{{histogram_gis}}">
+              <img src="{{bivar}}">
+              <img src="{{lin_regr}}">
+            </div>
         </article>
         <article>
           <h2>Dataframe</h2>
