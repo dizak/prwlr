@@ -31,6 +31,11 @@
             $("#plots").toggle("slow");
           });
       });
+      $("document").ready(function(){
+          $("#dataframe_button").click(function(){
+            $(".dataframe").toggle("slow");
+          });
+      });
     </script>
     <script type="text/javascript">
       $("document").ready(function(){
@@ -65,6 +70,9 @@
         font-size: 0.8em;
         border: 1px solid;
         border-collapse: collapse;
+      }
+      .double_space {
+        line-height: 200%;
       }
     </style>
   <body>
@@ -141,6 +149,8 @@
         </article>
         <article>
           <h2>Dataframe</h2>
+          <button id="dataframe_button">show/hide</button>
+          <br class=double_space></br>
           {{dataframe}}
         </article>
     </section>
