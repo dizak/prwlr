@@ -3,6 +3,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
@@ -46,14 +47,6 @@
     </script>
     <title>P-CRAWLER</title>
     <style type="text/css">
-      body {
-        padding: 5px;
-        font-family: sans-serif;
-      }
-      h2 {
-        padding-left: 5px;
-        font-size: 1.2em;
-      }
       .floating_box {
         display: inline-block;
       }
@@ -76,83 +69,99 @@
       }
     </style>
   <body>
-    <section>
-      <p>File created: {{time_stamp}}</p>
-    </section>
-    <section>
-      <h1>Definitions:</h1>
-      <button id="definitions_button">show/hide</button>
-      <ul id="definitions">
-        {%for definition in definitions%}
-          <li>{{definition}}</li>
-        {%endfor%}
-      </ul>
-    </section>
-    <section>
-      <h1>Filters:</h1>
-      <button id="filters_button">show/hide</button>
-      <ul id="filters">
-        {%for filter in filters%}
-          <li>{{filter}}</li>
-        {%endfor%}
-      </ul>
-    </section>
-    <section>
-      <h1>Results:</h1>
-        <h2>Summary</h2>
-        <article>
-          <button id="res_table_button">show/hide</button>
-          <table id="res_table" class="res_table">
-            <tr>
-              <th>Category</th>
-              <th>Actual value</th>
-            </tr>
-            <tr>
-              <th>DMF positive</th>
-              <td>{{DMF_positive}}</td>
-            </tr>
-            <tr>
-              <th>DMF negative</th>
-              <td>{{DMF_negative}}</td>
-              <th>Average of {{e_value}} permutations</th>
-            </tr>
-            <tr>
-              <th>mirror profiles</th>
-              <td>{{mirror_profiles}}</td>
-              <td>{{mirror_profiles_perm}}</td>
-            </tr>
-            <tr>
-              <th>similar profiles</th>
-              <td>{{similar_profiles}}</td>
-              <td>{{similar_profiles_perm}}</td>
-            </tr>
-            <tr>
-              <th>dissimilar</th>
-              <td>{{dissimilar_profiles}}</td>
-              <td>{{dissimilar_profiles_perm}}</td>
-            </tr>
-            <tr>
-              <th>total</th>
-              <td>{{total}}</td>
-            </tr>
-          </table>
-        </article>
-        <article>
-          <h2>Plots<h2>
-            <button id="plots_button">show/hide</button>
-            <div id="plots" class="floating_box">
-              <img src="{{histogram_profs}}">
-              <img src="{{histogram_gis}}">
-              <img src="{{bivar}}">
-              <img src="{{lin_regr}}">
+    <nav>
+      <ul class="w3-navbar w3-large w3-padding-16 w3-light-grey">
+        <li style="width:14%;" class="w3-green"><a href="index.html">HOME</a></li>
+        <li style="width:14%;" class="w3-dropdown-hover">
+            <a href="#">G148</a>
+            <div class="w3-dropdown-content w3-white">
+              <a href="#">InParanoid-based profiles</a>
+              <a href="#">OrthoFinder-based profiles</a>
+              <a href="#">KEGG-based profiles</a>
             </div>
-        </article>
-        <article>
-          <h2>Dataframe</h2>
-          <button id="dataframe_button">show/hide</button>
-          <br class=double_space></br>
-          {{dataframe}}
-        </article>
+        </li>
+        <li style="14%;"><a href="lublin_soils.html">Lublin soils</a></li>
+      </ul>
+    </nav>
+    <section class="w3-black">
+      <article class="w3-display-topright">
+        <p>File created: {{time_stamp}}</p>
+      </article>
+      <article class="w3-light-grey" style="margin-left:5%; margin-right:5%;">
+        <h1>Definitions:</h1>
+        <button id="definitions_button">show/hide</button>
+        <ul id="definitions">
+          {%for definition in definitions%}
+            <li>{{definition}}</li>
+          {%endfor%}
+        </ul>
+      </article>
+      <article class="w3-dark-grey" style="margin-left:5%; margin-right:5%;">
+        <h1>Filters:</h1>
+        <button id="filters_button">show/hide</button>
+        <ul id="filters">
+          {%for filter in filters%}
+            <li>{{filter}}</li>
+          {%endfor%}
+        </ul>
+      </article>
+      <article class="w3-light-grey" style="margin-left:5%; margin-right:5%;">
+        <h1>Results:</h1>
+          <section>
+            <h2>Summary</h2>
+            <button id="res_table_button">show/hide</button>
+            <table id="res_table" class="res_table">
+              <tr>
+                <th>Category</th>
+                <th>Actual value</th>
+              </tr>
+              <tr>
+                <th>DMF positive</th>
+                <td>{{DMF_positive}}</td>
+              </tr>
+              <tr>
+                <th>DMF negative</th>
+                <td>{{DMF_negative}}</td>
+                <th>Average of {{e_value}} permutations</th>
+              </tr>
+              <tr>
+                <th>mirror profiles</th>
+                <td>{{mirror_profiles}}</td>
+                <td>{{mirror_profiles_perm}}</td>
+              </tr>
+              <tr>
+                <th>similar profiles</th>
+                <td>{{similar_profiles}}</td>
+                <td>{{similar_profiles_perm}}</td>
+              </tr>
+              <tr>
+                <th>dissimilar</th>
+                <td>{{dissimilar_profiles}}</td>
+                <td>{{dissimilar_profiles_perm}}</td>
+              </tr>
+              <tr>
+                <th>total</th>
+                <td>{{total}}</td>
+              </tr>
+            </table>
+          </section>
+          <section class="w3-dark-grey">
+            <h2>Plots<h2>
+              <button id="plots_button">show/hide</button>
+              <div id="plots" class="floating_box">
+                <img src="{{histogram_profs}}">
+                <img src="{{histogram_gis}}">
+                <img src="{{bivar}}">
+                <img src="{{lin_regr}}">
+              </div>
+          </section>
+          <section class="w3-light-grey">
+            <h2>Dataframe</h2>
+            <button id="dataframe_button">show/hide</button>
+            <br class=double_space></br>
+            {{dataframe}}
+          </section>
+      </article>
     </section>
   </body>
   </body>
