@@ -83,11 +83,11 @@
         <li style="14%;"><a href="lublin_soils.html">Lublin soils</a></li>
       </ul>
     </nav>
-    <section class="w3-black">
+    <section class="w3-container w3-black">
       <article class="w3-display-topright">
         <p>File created: {{time_stamp}}</p>
       </article>
-      <article class="w3-light-grey" style="margin-left:5%; margin-right:5%;">
+      <article class="w3-container w3-light-grey" style="margin-left:5%; margin-right:5%;">
         <h1>Definitions:</h1>
         <button id="definitions_button">show/hide</button>
         <ul id="definitions">
@@ -96,7 +96,7 @@
           {%endfor%}
         </ul>
       </article>
-      <article class="w3-dark-grey" style="margin-left:5%; margin-right:5%;">
+      <article class="w3-container w3-dark-grey" style="margin-left:5%; margin-right:5%;">
         <h1>Filters:</h1>
         <button id="filters_button">show/hide</button>
         <ul id="filters">
@@ -105,9 +105,9 @@
           {%endfor%}
         </ul>
       </article>
-      <article class="w3-light-grey" style="margin-left:5%; margin-right:5%;">
+      <article class="w3-container w3-light-grey" style="margin-left:5%; margin-right:5%;">
         <h1>Results:</h1>
-          <section>
+          <section class="w3-container">
             <h2>Summary</h2>
             <button id="res_table_button">show/hide</button>
             <table id="res_table" class="res_table">
@@ -145,7 +145,7 @@
               </tr>
             </table>
           </section>
-          <section class="w3-dark-grey">
+          <section class="w3-container w3-dark-grey">
             <h2>Plots<h2>
               <button id="plots_button">show/hide</button>
               <div id="plots" class="floating_box">
@@ -155,7 +155,7 @@
                 <img src="{{lin_regr}}">
               </div>
           </section>
-          <section class="w3-light-grey">
+          <section class="w3-container w3-light-grey">
             <h2>Dataframe</h2>
             <button id="dataframe_button">show/hide</button>
             <br class=double_space></br>
