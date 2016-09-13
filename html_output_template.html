@@ -38,7 +38,7 @@
     </style>
   <body>
     <nav>
-      <ul class="w3-navbar w3-large w3-padding-16 w3-light-grey">
+      <ul class="w3-navbar w3-large w3-margin w3-card-8 w3-padding-16 w3-black">
         <li style="width:14%;" class="w3-green"><a href="index.html">HOME</a></li>
         <li style="width:14%;" class="w3-dropdown-hover">
             <a href="#">G148</a>
@@ -51,13 +51,11 @@
         <li style="14%;"><a href="lublin_soils.html">Lublin soils</a></li>
       </ul>
     </nav>
-    <section class="w3-container w3-black">
+    <section class="w3-container w3-grey">
       <h1>G148</h1>
       <h2>Seks, ewolucja i interakcje</h2>
-      <article class="w3-display-topright w3-light-grey">
-        <p>File created: {{time_stamp}}</p>
-      </article>
-      <article class="w3-container w3-light-grey" style="margin-left:5%; margin-right:5%;">
+      <p>File created: {{time_stamp}}</p>
+      <article class="w3-container w3-margin w3-card-8 w3-white">
         <h1>Definitions:</h1>
         <ul id="definitions">
           {%for definition in definitions%}
@@ -65,7 +63,7 @@
           {%endfor%}
         </ul>
       </article>
-      <article class="w3-container w3-dark-grey" style="margin-left:5%; margin-right:5%;">
+      <article class="w3-container w3-margin w3-card-8 w3-light-grey">
         <h1>Filters:</h1>
         <ul id="filters">
           {%for filter in filters%}
@@ -73,7 +71,7 @@
           {%endfor%}
         </ul>
       </article>
-      <article class="w3-container w3-light-grey" style="margin-left:5%; margin-right:5%;">
+      <article class="w3-container w3-margin w3-card-8 w3-white">
         <h1>Results:</h1>
           <section class="w3-container">
             <h2>Summary</h2>
@@ -112,7 +110,7 @@
               </tr>
             </table>
           </section>
-          <section class="w3-container w3-dark-grey">
+          <section class="w3-container w3-margin w3-card-8 w3-dark-grey">
             <h2>Plots<h2>
               <div id="plots" class="floating_box">
                 <img src="{{histogram_profs}}">
@@ -121,7 +119,7 @@
                 <img src="{{lin_regr}}">
               </div>
           </section>
-          <section class="w3-container w3-responsive w3-light-grey">
+          <article class="w3-container w3-margin w3-card-8 w3-dark-grey">
             <h2>Dataframe</h2>
             <br class=double_space></br>
             {{dataframe}}
