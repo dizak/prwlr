@@ -969,14 +969,14 @@ class Ortho_Stats:
             self.inter_df_stats = self.inter_df_stats[no_flat_plu_q_bool]
             self.inter_df_stats = self.inter_df_stats[no_flat_plu_a_bool]
             self.filters_used.append("No plus-only (eg ++++++) profiles")
-            self.filters_name.append("no_min_flat")
+            self.filters_name.append("no_plus_flat")
         else:
             pass
         if no_flat_minus == True:
             self.inter_df_stats = self.inter_df_stats[no_flat_min_q_bool]
             self.inter_df_stats = self.inter_df_stats[no_flat_min_a_bool]
             self.filters_used.append("No minus-only (eg ------) profiles")
-            self.filters_name.append("no_plus_flat")
+            self.filters_name.append("no_min_flat")
         else:
             pass
         if process == "identical":
