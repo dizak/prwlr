@@ -132,8 +132,14 @@
           </section>
           <article class="w3-container w3-margin w3-card-8 w3-white">
             <h2>Dataframe</h2>
+            <p>Click to show/hide columns:</p>
+            {%for column in column_names%}
+              <a class="toggle-vis w3-btn w3-panel" data-column="{{column_names.index(column)}}">{{column}}</a>
+            {%endfor%}
             <br></br>
-            <button id=count_rows_button type="button" name="button">Count selected rows</button>
+            <p>Click to count selected rows:</p>
+            <button id=count_rows_button class="w3-btn" type="button" name="button">Count selected rows</button>
+            <br></br>
             {{dataframe}}
           </section>
       </article>

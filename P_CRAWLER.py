@@ -1711,6 +1711,7 @@ class HTML_generator:
                         histogram_gis,
                         bivar,
                         lin_regr,
+                        column_names,
                         dataframe):
         curr_time = time.localtime()
         time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
@@ -1736,6 +1737,7 @@ class HTML_generator:
                          "histogram_gis": histogram_gis,
                          "bivar": bivar,
                          "lin_regr": lin_regr,
+                         "column_names": column_names,
                          "dataframe": dataframe}
         self.template_rendered = self.template.render(template_Vars)
 
