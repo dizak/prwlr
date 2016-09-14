@@ -15,7 +15,7 @@
         $('.dataframe tbody').on('click', 'tr', function(){
           $(this).toggleClass('selected');
         });
-        $('#Count_rows_button').click(function(){
+        $('#count_rows_button').click(function(){
           alert( table.rows('.selected').data().length +' row(s) selected');
         });
         $('a.toggle-vis').on( 'click', function (e){
@@ -132,6 +132,8 @@
           </section>
           <article class="w3-container w3-margin w3-card-8 w3-white">
             <h2>Dataframe</h2>
+            <br></br>
+            <button id=count_rows_button type="button" name="button">Count selected rows</button>
             {{dataframe}}
           </section>
       </article>
