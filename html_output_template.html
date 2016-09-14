@@ -8,9 +8,22 @@
     <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
       $("document").ready(function(){
-        $(".dataframe").DataTable({
+        var table = $('.dataframe').DataTable({
           scrollX: true,
           lengthMenu: [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
+        });
+        $('.dataframe tbody').on('click', 'tr', function(){
+          $(this).toggleClass('selected');
+        });
+        $('#Count_rows_button').click(function(){
+          alert( table.rows('.selected').data().length +' row(s) selected');
+        });
+        $('a.toggle-vis').on( 'click', function (e){
+          e.preventDefault();
+          // Get the column API object
+          var column = table.column($(this).attr('data-column'));
+          // Toggle the visibility
+          column.visible(!column.visible());
         });
       });
     </script>
