@@ -16,6 +16,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import jinja2 as jj2
 import time
+from tqdm import tqdm
 
 def perc_prog(in_item,
               in_iterbl):
@@ -30,58 +31,6 @@ def perc_prog(in_item,
     sys.stdout.write("{0}%\r".format(pos * 100 /\
                                      len(in_iterbl)))
     sys.stdout.flush()
-
-def sign_prog(in_item,
-              in_iterbl,
-              in_size = 50,
-              in_sign = "|"):
-    """Display progress of iterable as bar. Iterable must support built-in
-    index method.
-
-    Args:
-        in_item: current iteration element
-        in_iterbl: iterable
-        in_size: total number of signs in completed bar. Equals number of
-        iterations when argument higher than total number of iterations.
-    """
-    if in_size > len(in_iterbl):
-        in_size = len(in_iterbl)
-    else:
-        pass
-    tot_len = len(in_iterbl)
-    sign_size = float(tot_len / in_size)
-    if in_iterbl.index(in_item) % sign_size == 0:
-        sys.stdout.write(in_sign)
-        sys.stdout.flush()
-
-def sign_prog_counter(in_counter,
-                      in_iterbl,
-                      in_size = 50,
-                      in_sign = "|"):
-    """Display progress of iterable as bar. For each iteration a counter must
-    be provided and then passed as an argument.
-
-    Args:
-        in_counter: current iteration element
-        in_iterbl: iterable
-        in_size: total number of signs in completed bar. Equals number of
-        iterations when argument higher than total number of iterations.
-    Examples:
-        >>> counter = 0
-        >>> for i in range(100):
-                counter += 1
-                sign_prog_counter(counter, range(100))
-        ||||||||||||||||||||||||||||||||||||||||||||||||||
-    """
-    if in_size > len(in_iterbl):
-        in_size = len(in_iterbl)
-    else:
-        pass
-    tot_len = len(in_iterbl)
-    sign_size = float(tot_len / in_size)
-    if in_counter % sign_size == 0:
-        sys.stdout.write(in_sign)
-        sys.stdout.flush()
 
 def all_possible_combinations_counter(in_int_set,
                                       in_int_subset):
@@ -341,8 +290,7 @@ class Genome:
                 query_species_uniprot_link = root[2][1][0].attrib["link"]
                 query_species_orthologs = root[1][0][0]
             self.query_species.append(str(query_species_tax_name)[:-1])
-            for ii in self.genes:
-                sign_prog(ii, self.genes)
+            for ii in tqdm(self.genes):
                 for iii in query_species_orthologs[:]:
                     if ii["prot_id"] == iii.attrib["protId"]:
                         if "orthologs" in ii:
@@ -386,8 +334,7 @@ class Genome:
             temp_dict_list_1.append({i[0]: map(lambda x: x.split("|"),
                                                str(i[1]).split(", "))})
         print "\nprocessing reference organism ortho groups..".format()
-        for i in temp_dict_list_1:
-            sign_prog(i, temp_dict_list_1)
+        for i in tqdm(temp_dict_list_1):
             temp_ortho_group_str = str(i.keys()[0])
             temp_prot_id_list = []
             temp_yeast_gene_id_list = []
@@ -404,8 +351,7 @@ class Genome:
                            "yeast_gene_id": temp_yeast_gene_id_list}
             self.orthologous_groups_dict.append(temp_dict_1)
         print "\nappending reference organism genes db...".format()
-        for i in self.genes:
-            sign_prog(i, self.genes)
+        for i in tqdm(self.genes):
             for ii in self.orthologous_groups_dict:
                 if i["prot_id"] in ii["prot_id"]:
                     org_temp_str_list = []
@@ -1496,9 +1442,7 @@ class KEGG_API:
         """
         counter = 0
         entries = self.org_db_X_ref_df["kegg_id"]
-        for i in entries:
-            counter += 1
-            sign_prog_counter(counter, entries)
+        for i in tqdm(entries):
             url = "{0}/{1}/{2}".format(self.home,
                                        self.operations["get_by_entry_no"],
                                        i)
