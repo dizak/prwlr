@@ -342,7 +342,7 @@ class Genome:
                 query_species_orthologs = root[1][0][0]
             self.query_species.append(str(query_species_tax_name)[:-1])
             for ii in self.genes:
-                sign_prog(ii, range(len(self.genes)))
+                sign_prog(ii, self.genes)
                 for iii in query_species_orthologs[:]:
                     if ii["prot_id"] == iii.attrib["protId"]:
                         if "orthologs" in ii:
