@@ -1640,6 +1640,7 @@ class HTML_generator:
         self.template = template_Env.get_template(self.template_file)
 
     def render_template(self,
+                        name,
                         filters,
                         DMF_positive,
                         DMF_negative,
@@ -1665,6 +1666,7 @@ class HTML_generator:
                                                        curr_time.tm_min,
                                                        curr_time.tm_sec)
         template_Vars = {"time_stamp": time_stamp,
+                         "name": name,
                          "filters": filters,
                          "definitions": self.definitions,
                          "DMF_positive": DMF_positive,
