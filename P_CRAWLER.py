@@ -1,13 +1,9 @@
 #! /usr/bin/env python
 
-__author__ = "Dariusz Izak"
-
 import lxml.etree as et
 import pandas as pd
 import re
 import math
-import argparse
-import glob
 import sys
 import requests as rq
 import numpy as np
@@ -17,6 +13,9 @@ import matplotlib.pyplot as plt
 import jinja2 as jj2
 import time
 from tqdm import tqdm
+
+__author__ = "Dariusz Izak"
+
 
 def perc_prog(in_item,
               in_iterbl):
@@ -28,9 +27,10 @@ def perc_prog(in_item,
         in_iterbl: iterable
     """
     pos = in_iterbl.index(in_item)
-    sys.stdout.write("{0}%\r".format(pos * 100 /\
+    sys.stdout.write("{0}%\r".format(pos * 100 /
                                      len(in_iterbl)))
     sys.stdout.flush()
+
 
 def all_possible_combinations_counter(in_int_set,
                                       in_int_subset):
@@ -43,6 +43,7 @@ def all_possible_combinations_counter(in_int_set,
     """
     f = math.factorial
     return f(in_int_set) / f(in_int_subset) / f(in_int_set - in_int_subset)
+
 
 def all_non_redundant_genes_lister(in_df,
                                    in_col_name_1,
@@ -58,6 +59,7 @@ def all_non_redundant_genes_lister(in_df,
     temp_list_1 = [getattr(i, "in_col_name_1") for i in in_df.itertuples()]
     temp_list_2 = [getattr(i, "in_col_name_2") for i in in_df.itertuples()]
     return set(temp_list_1 + temp_list_2)
+
 
 def gene_finder_by_attrib(in_attr,
                           in_val,
@@ -89,6 +91,7 @@ def gene_finder_by_attrib(in_attr,
             if in_val in i[in_attr]:
                 return i[out_attr]
 
+
 def gene_profile_finder_by_name(in_gene_name,
                                 in_all_gene_profiles,
                                 conc = True):
@@ -118,6 +121,7 @@ def gene_profile_finder_by_name(in_gene_name,
             else:
                 return i
 
+
 def gene_name_finder_by_profile(in_gene_profile,
                                 in_all_gene_profiles):
     """Return a (list) of gene names (str) from Genome.gene_profiles found by
@@ -129,6 +133,7 @@ def gene_name_finder_by_profile(in_gene_profile,
     """
     in_gene_profile = tuple(in_gene_profile)
     return [i[0] for i in in_all_gene_profiles if i[1:] == in_gene_profile]
+
 
 def simple_profiles_scorer(in_gene_profile_1,
                            in_gene_profile_2):
@@ -142,6 +147,7 @@ def simple_profiles_scorer(in_gene_profile_1,
         generated from list. MUST NOT contain gene name.
     """
     return (in_gene_profile_1 == in_gene_profile_2).sum()
+
 
 def df_based_profiles_scorer(in_df,
                              prof_1_col_name,
@@ -159,6 +165,7 @@ def df_based_profiles_scorer(in_df,
                        temp_score_df],
                       axis = 1)
     return in_df
+
 
 def df_qa_names_2_prof_score(in_genes_pair,
                              in_all_gene_profiles):
@@ -182,6 +189,7 @@ def df_qa_names_2_prof_score(in_genes_pair,
         pass
     else:
         return simple_profiles_scorer(gene_profile_1, gene_profile_2)
+
 
 class Genome:
     """Holds data about the reference organism genome extracted from its
@@ -273,36 +281,31 @@ class Genome:
         Args:
             in_file_names (list of strs): OrthoXML files list to parse
         """
-        counter = 0
         for i in in_file_names:
             print "\nprocessing {0}".format(i)
             with open(i, "r") as xml_fin:
                 tree = et.parse(xml_fin)
             root = tree.getroot()
             if self.ref_name == str(root[2].attrib["name"])[:-1]:
-                ref_species_tax_name = root[2].attrib["name"]
                 query_species_tax_name = root[1].attrib["name"]
-                query_species_uniprot_link = root[1][1][0].attrib["link"]
                 query_species_orthologs = root[2][0][0]
             else:
-                ref_species_tax_name = root[1].attrib["name"]
                 query_species_tax_name = root[2].attrib["name"]
-                query_species_uniprot_link = root[2][1][0].attrib["link"]
                 query_species_orthologs = root[1][0][0]
             self.query_species.append(str(query_species_tax_name)[:-1])
             for ii in tqdm(self.genes):
                 for iii in query_species_orthologs[:]:
                     if ii["prot_id"] == iii.attrib["protId"]:
                         if "orthologs" in ii:
-                            ii["orthologs"]["organism"].\
+                            ii["orthologs"]["organism"].
                             update({str(query_species_tax_name)[:-1]:
                                    {"prot_id": str(iii.attrib["protId"]),
                                     "gene_id": str(iii.attrib["geneId"])}})
                         else:
                             ii["orthologs"] = {"organism":
                                               {str(query_species_tax_name)[:-1]:
-                                              {"prot_id": str(iii.attrib["protId"]),
-                                               "gene_id": str(iii.attrib["geneId"])}}}
+                                               {"prot_id": str(iii.attrib["protId"]),
+                                                "gene_id": str(iii.attrib["geneId"])}}}
         self.query_species = tuple(self.query_species)
 
     def parse_orthologous_groups_csv(self,
@@ -318,8 +321,6 @@ class Genome:
             reference organism. Will NOT be inculuded in Genome.query_species
             or as +/- sign in Genome.gene_profiles.
         """
-        clean_dict = {}
-        out_list = []
         temp_dict_list_1 = []
         self.orthologous_groups_df = pd.read_csv(in_file_name,
                                                  sep = "\t",
@@ -355,14 +356,14 @@ class Genome:
             for ii in self.orthologous_groups_dict:
                 if i["prot_id"] in ii["prot_id"]:
                     org_temp_str_list = []
-                    org_temp_utf_list =  self.orthologous_groups_df.columns[self.orthologous_groups_df.ix[ii["ortho_group_number"]].notnull()]
+                    org_temp_utf_list = self.orthologous_groups_df.columns[self.orthologous_groups_df.ix[ii["ortho_group_number"]].notnull()]
                     for e in org_temp_utf_list:
                         org_temp_str_list.append(str(e).split(".")[0])
-                    i["ortho_group"] =  ii["ortho_group_number"]
+                    i["ortho_group"] = ii["ortho_group_number"]
                     i["orthologs"] = {"organism":
                                      {e:
-                                     {"ortho_group_number": ii["ortho_group_number"]}\
-                                     for e in org_temp_str_list}}
+                                      {"ortho_group_number": ii["ortho_group_number"]}
+                                      for e in org_temp_str_list}}
 
     def parse_KO_db(self,
                     in_file_name):
@@ -375,6 +376,7 @@ class Genome:
         with open(in_file_name, "r") as fin:
             file_str = fin.read()
             entries_list = file_str.split("///")
+
         def f(i):
             entry_dict = {}
             pathway_dict = {}
@@ -402,7 +404,7 @@ class Genome:
             sequence = re.findall("SEQUENCE.+", i)
             if len(sequence) > 0:
                 entry_dict["sequence"] = sequence[0].replace("SEQUENCE", "").replace("[", "").replace("]", "").strip()
-            genes_blk_comp = re.compile("GENES.+\n^\s+\w{3}:\s.+^\w", re.DOTALL|re.MULTILINE)
+            genes_blk_comp = re.compile("GENES.+\n^\s+\w{3}:\s.+^\w", re.DOTALL | re.MULTILINE)
             genes_blk_list = genes_blk_comp.findall(i)
             re.purge()
             if len(genes_blk_list) > 0:
@@ -489,6 +491,7 @@ class Genome:
                 pass
         if KO_list_2_df == True:
             self.KO_df = pd.DataFrame(self.KO_list)
+
 
 class Ortho_Interactions:
     """Holds data about gene interactions array extracted from (csv) file.
@@ -661,7 +664,7 @@ class Ortho_Interactions:
                                       conc_q_a_prof_temp_df,
                                       q_gene_head_temp_df,
                                       a_gene_head_temp_df],
-                                      axis = 1)
+                                     axis = 1)
         if bio_proc == True:
             print "\nappending with bioprocesses info...".format()
             self.interact_df = pd.merge(self.interact_df,
@@ -801,6 +804,7 @@ class Ortho_Interactions:
                                 sep = in_sep,
                                 index = False)
 
+
 class Ortho_Stats:
     """Calculates and holds data about interactions array statistical
     properties.
@@ -852,34 +856,34 @@ class Ortho_Stats:
         """
         self.filters_used = []
         self.filters_name = []
-        positive_DMF_bool = (self.inter_df_stats["DMF"] >\
-                             self.inter_df_stats["Query_SMF"]) &\
-                            (self.inter_df_stats["DMF"] >\
-                             self.inter_df_stats["Array_SMF"])
-        negative_DMF_bool = (self.inter_df_stats["DMF"] <\
-                             self.inter_df_stats["Query_SMF"]) &\
-                            (self.inter_df_stats["DMF"] <\
-                             self.inter_df_stats["Array_SMF"])
+        positive_DMF_bool = ((self.inter_df_stats["DMF"] >
+                             self.inter_df_stats["Query_SMF"]) &
+                            (self.inter_df_stats["DMF"] >
+                             self.inter_df_stats["Array_SMF"]))
+        negative_DMF_bool = ((self.inter_df_stats["DMF"] <
+                             self.inter_df_stats["Query_SMF"]) &
+                            (self.inter_df_stats["DMF"] <
+                             self.inter_df_stats["Array_SMF"]))
         SMF_below_one_bool = (self.inter_df_stats["Query_SMF"] < 1.0) &\
                              (self.inter_df_stats["Array_SMF"] < 1.0)
         inter_score_max_bool = (self.inter_df_stats["Genetic_interaction_score"] < inter_score_max)
         inter_score_min_bool = (self.inter_df_stats["Genetic_interaction_score"] > inter_score_min)
-        no_flat_plu_q_bool = (self.inter_df_stats["Query_gene_profile"] !=\
-                               "+" * len(self.query_species_stats))
-        no_flat_min_q_bool = (self.inter_df_stats["Query_gene_profile"] !=\
-                               "-" * len(self.query_species_stats))
-        no_flat_plu_a_bool = (self.inter_df_stats["Array_gene_profile"] !=\
-                               "+" * len(self.query_species_stats))
-        no_flat_min_a_bool = (self.inter_df_stats["Array_gene_profile"] !=\
-                               "-" * len(self.query_species_stats))
-        iden_proc_bool = (self.inter_df_stats["Bioprocesses_similarity"] ==\
-                           "identical")
-        diff_proc_bool = (self.inter_df_stats["Bioprocesses_similarity"] ==\
+        no_flat_plu_q_bool = (self.inter_df_stats["Query_gene_profile"] !=
+                              "+" * len(self.query_species_stats))
+        no_flat_min_q_bool = (self.inter_df_stats["Query_gene_profile"] !=
+                              "-" * len(self.query_species_stats))
+        no_flat_plu_a_bool = (self.inter_df_stats["Array_gene_profile"] !=
+                              "+" * len(self.query_species_stats))
+        no_flat_min_a_bool = (self.inter_df_stats["Array_gene_profile"] !=
+                              "-" * len(self.query_species_stats))
+        iden_proc_bool = (self.inter_df_stats["Bioprocesses_similarity"] ==
+                          "identical")
+        diff_proc_bool = (self.inter_df_stats["Bioprocesses_similarity"] ==
                           "different")
         if profiles != None:
-            sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
+            sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=
                              prof_sim_lev)
-            unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] <\
+            unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] <
                                prof_sim_lev)
         else:
             pass
@@ -957,17 +961,17 @@ class Ortho_Stats:
             in_prof_sim_lev (int): definges minimal Genome.gene_profiles in
             Ortho_Stats.inter_df_stats similarity treshold
         """
-        positive_DMF_bool = (self.inter_df_stats["DMF"] >\
-                             self.inter_df_stats["Query_SMF"]) &\
-                            (self.inter_df_stats["DMF"] >\
-                             self.inter_df_stats["Array_SMF"])
-        negative_DMF_bool = (self.inter_df_stats["DMF"] <\
-                             self.inter_df_stats["Query_SMF"]) &\
-                            (self.inter_df_stats["DMF"] <\
-                             self.inter_df_stats["Array_SMF"])
-        sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=\
+        positive_DMF_bool = ((self.inter_df_stats["DMF"] >
+                             self.inter_df_stats["Query_SMF"]) &
+                            (self.inter_df_stats["DMF"] >
+                             self.inter_df_stats["Array_SMF"]))
+        negative_DMF_bool = ((self.inter_df_stats["DMF"] <
+                             self.inter_df_stats["Query_SMF"]) &
+                            (self.inter_df_stats["DMF"] <
+                             self.inter_df_stats["Array_SMF"]))
+        sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=
                          in_prof_sim_lev)
-        unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] <\
+        unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] <
                            in_prof_sim_lev) &\
                           (self.inter_df_stats["Profiles_similarity_score"] > 0)
         mir_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] == 0)
@@ -1009,10 +1013,10 @@ class Ortho_Stats:
                                          index=qa_temp_perm_df.index,
                                          columns=["Profiles_similarity_score"])
             qa_temp_perm_score_df = pd.concat([qa_temp_perm_df, temp_score_df],
-                                               axis=1)
-            sim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] >=\
+                                              axis=1)
+            sim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] >=
                              in_prof_sim_lev)
-            unsim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] <\
+            unsim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] <
                                in_prof_sim_lev) &\
                               (qa_temp_perm_score_df["Profiles_similarity_score"] > 0)
             mir_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] == 0)
@@ -1042,14 +1046,15 @@ class Ortho_Stats:
         """
         q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species_stats]
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
+
         def f(in_iter):
             temp_score_list = []
             q_prof_temp_df = self.inter_df_stats["Query_gene_profile"]
             a_prof_temp_df = self.inter_df_stats["Array_gene_profile"]
             drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
                                                           "Array_gene_profile",
-                                                          "Profiles_similarity_score"] +\
-                                                         q_sign_per_col_profs_cols +\
+                                                          "Profiles_similarity_score"] +
+                                                         q_sign_per_col_profs_cols +
                                                          a_sign_per_col_profs_cols,
                                                          axis = 1)
             q_prof_perm_temp_df = q_prof_temp_df.sample(len(q_prof_temp_df))
@@ -1069,9 +1074,9 @@ class Ortho_Stats:
             permuted_profs_df = pd.concat([permuted_df,
                                           temp_score_df],
                                           axis = 1)
-            sim_prof_bool = (permuted_profs_df["Profiles_similarity_score"] >=\
+            sim_prof_bool = (permuted_profs_df["Profiles_similarity_score"] >=
                              in_prof_sim_lev)
-            unsim_prof_bool = (permuted_profs_df["Profiles_similarity_score"] <\
+            unsim_prof_bool = (permuted_profs_df["Profiles_similarity_score"] <
                                in_prof_sim_lev) &\
                               (permuted_profs_df["Profiles_similarity_score"] > 0)
             mir_prof_bool = (permuted_profs_df["Profiles_similarity_score"] == 0)
@@ -1101,10 +1106,11 @@ class Ortho_Stats:
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species_stats]
         drop_prof_temp_df = self.inter_df_stats.drop(["Query_gene_profile",
                                                       "Array_gene_profile",
-                                                      "Profiles_similarity_score"] +\
-                                                     q_sign_per_col_profs_cols +\
+                                                      "Profiles_similarity_score"] +
+                                                     q_sign_per_col_profs_cols +
                                                      a_sign_per_col_profs_cols,
                                                      axis = 1)
+
         def f(in_iter):
             gene_profs_perm_arr_list = []
             prof_score_temp_list = []
@@ -1145,10 +1151,10 @@ class Ortho_Stats:
             permuted_df = pd.concat([drop_prof_temp_df,
                                      profs_pairs_temp_df,
                                      prof_score_temp_df],
-                                     axis = 1)
-            sim_prof_bool = (permuted_df["Profiles_similarity_score"] >=\
+                                    axis = 1)
+            sim_prof_bool = (permuted_df["Profiles_similarity_score"] >=
                              in_prof_sim_lev)
-            unsim_prof_bool = (permuted_df["Profiles_similarity_score"] <\
+            unsim_prof_bool = (permuted_df["Profiles_similarity_score"] <
                                in_prof_sim_lev) &\
                               (permuted_df["Profiles_similarity_score"] > 0)
             mir_prof_bool = (permuted_df["Profiles_similarity_score"] == 0)
@@ -1162,12 +1168,12 @@ class Ortho_Stats:
                     "dataframe": permuted_df}
         permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
         self.prof_arr_perm_results = pd.DataFrame(permuted_df_results_temp)
-        self.prof_arr_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_arr_perm_results.mirror) /\
-                                                                   len(self.prof_arr_perm_results),
-                                                "similar_profiles": sum(self.prof_arr_perm_results.similar) /\
-                                                                    len(self.prof_arr_perm_results),
-                                                "unsimilar": sum(self.prof_arr_perm_results.unsimilar) /\
-                                                             len(self.prof_arr_perm_results)})
+        self.prof_arr_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_arr_perm_results.mirror) /
+                                                len(self.prof_arr_perm_results),
+                                                "similar_profiles": sum(self.prof_arr_perm_results.similar) /
+                                                len(self.prof_arr_perm_results),
+                                                "unsimilar": sum(self.prof_arr_perm_results.unsimilar) /
+                                                len(self.prof_arr_perm_results)})
 
     def KO_profs_perm(self,
                       e_value,
@@ -1209,9 +1215,9 @@ class Ortho_Stats:
                                                           prof_1_col_name = "Profile_query",
                                                           prof_2_col_name = "Profile_array",
                                                           score_col_name = "Profiles_similarity_score")
-            sim_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] >=\
+            sim_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] >=
                              in_prof_sim_lev)
-            unsim_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] <\
+            unsim_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] <
                                in_prof_sim_lev) &\
                               (qa_merged_score_df["Profiles_similarity_score"] > 0)
             mir_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] == 0)
@@ -1225,20 +1231,19 @@ class Ortho_Stats:
                     "dataframe": qa_merged_score_df}
         permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
         self.prof_KO_perm_results = pd.DataFrame(permuted_df_results_temp)
-        self.prof_KO_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_KO_perm_results.mirror) /\
-                                                                   len(self.prof_KO_perm_results),
-                                                "similar_profiles": sum(self.prof_KO_perm_results.similar) /\
-                                                                    len(self.prof_KO_perm_results),
-                                                "unsimilar": sum(self.prof_KO_perm_results.unsimilar) /\
-                                                             len(self.prof_KO_perm_results)})
-
+        self.prof_KO_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_KO_perm_results.mirror) /
+                                              len(self.prof_KO_perm_results),
+                                              "similar_profiles": sum(self.prof_KO_perm_results.similar) /
+                                              len(self.prof_KO_perm_results),
+                                              "unsimilar": sum(self.prof_KO_perm_results.unsimilar) /
+                                               len(self.prof_KO_perm_results)})
 
     def e_val_calc(self):
         """Return Ortho_Stats.e_value (int) which is an expected number of
         interactions with positive DMF and similar gene profiles by chance.
         """
-        self.e_value = (self.DMF_positive_num * self.sim_prof_num) /\
-                        self.tot_inter_num
+        self.e_value = (self.DMF_positive_num * self.sim_prof_num) / self.tot_inter_num
+
 
 class KEGG_API:
     """Provides connectivity with the KEGG database. Functions ending with <tbl>
@@ -1300,19 +1305,19 @@ class KEGG_API:
             with open(out_file_name, "w") as fout:
                 fout.write(res.content)
         self.organisms_ids_df = pd.read_csv(out_file_name,
-                                     names = ["genome_id",
-                                              "names",
-                                              "description"],
-                                     header=None,
-                                     sep = "\t|;",
-                                     engine = "python")
+                                            names = ["genome_id",
+                                                     "names",
+                                                     "description"],
+                                            header=None,
+                                            sep = "\t|;",
+                                            engine = "python")
         temp_sub_df = self.organisms_ids_df["names"].str.split(",", expand = True)
         temp_sub_df.columns = ["kegg_org_id", "name", "taxon_id"]
         self.organisms_ids_df.drop("names", axis = 1, inplace = True)
         self.organisms_ids_df = pd.concat([self.organisms_ids_df, temp_sub_df], axis=1)
-        self.organisms_ids_df.replace({"genome:":""},
-                               regex=True,
-                               inplace=True)
+        self.organisms_ids_df.replace({"genome:": ""},
+                                      regex=True,
+                                      inplace=True)
         self.organisms_ids_df.dropna(inplace=True)
 
     def org_name_2_kegg_id(self,
@@ -1372,10 +1377,10 @@ class KEGG_API:
             with open(out_file_name, "w") as fout:
                 fout.write(res.content)
         self.id_conversions_df = pd.read_csv(out_file_name,
-                                              names = [source_id_type,
-                                                       "kegg_id"],
-                                              header = None,
-                                              sep = "\t")
+                                             names = [source_id_type,
+                                                      "kegg_id"],
+                                             header = None,
+                                             sep = "\t")
         if strip_pref == True:
             self.id_conversions_df.replace({"{0}:".format(org_id): ""},
                                            regex=True,
@@ -1449,6 +1454,7 @@ class KEGG_API:
             res = rq.get(url)
             with open(out_file_name, "a") as fout:
                 fout.write(res.content)
+
 
 class Costanzo_API:
     """Provides connectivity with the Costanzo's SOM website of the Genetic
@@ -1543,6 +1549,7 @@ class Costanzo_API:
         with open(out_file_name, "w") as fout:
             fout.write(res.content)
 
+
 class Ortho_Network:
     """Calculates and holds data about interactions in form of network,
     exportable to other software (e.g. Cytoscape) or drawable by matplotlib.
@@ -1619,6 +1626,7 @@ class Ortho_Network:
         else:
             pass
 
+
 class HTML_generator:
 
     def __init__(self,
@@ -1694,6 +1702,7 @@ class HTML_generator:
 
     def print_template(self):
         print self.template.render()
+
 
 def main():
     pass
