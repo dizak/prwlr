@@ -297,7 +297,7 @@ class Genome:
                 for iii in query_species_orthologs[:]:
                     if ii["prot_id"] == iii.attrib["protId"]:
                         if "orthologs" in ii:
-                            ii["orthologs"]["organism"].
+                            ii["orthologs"]["organism"].\
                             update({str(query_species_tax_name)[:-1]:
                                    {"prot_id": str(iii.attrib["protId"]),
                                     "gene_id": str(iii.attrib["geneId"])}})
