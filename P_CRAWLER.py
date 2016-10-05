@@ -297,15 +297,14 @@ class Genome:
                 for iii in query_species_orthologs[:]:
                     if ii["prot_id"] == iii.attrib["protId"]:
                         if "orthologs" in ii:
-                            ii["orthologs"]["organism"].\
-                            update({str(query_species_tax_name)[:-1]:
-                                   {"prot_id": str(iii.attrib["protId"]),
-                                    "gene_id": str(iii.attrib["geneId"])}})
+                            ii["orthologs"]["organism"].update({str(query_species_tax_name)[:-1]:
+                                                                {"prot_id": str(iii.attrib["protId"]),
+                                                                 "gene_id": str(iii.attrib["geneId"])}})
                         else:
                             ii["orthologs"] = {"organism":
-                                              {str(query_species_tax_name)[:-1]:
-                                               {"prot_id": str(iii.attrib["protId"]),
-                                                "gene_id": str(iii.attrib["geneId"])}}}
+                                               {str(query_species_tax_name)[:-1]:
+                                                {"prot_id": str(iii.attrib["protId"]),
+                                                 "gene_id": str(iii.attrib["geneId"])}}}
         self.query_species = tuple(self.query_species)
 
     def parse_orthologous_groups_csv(self,
@@ -361,9 +360,9 @@ class Genome:
                         org_temp_str_list.append(str(e).split(".")[0])
                     i["ortho_group"] = ii["ortho_group_number"]
                     i["orthologs"] = {"organism":
-                                     {e:
-                                      {"ortho_group_number": ii["ortho_group_number"]}
-                                      for e in org_temp_str_list}}
+                                      {e:
+                                       {"ortho_group_number": ii["ortho_group_number"]}
+                                       for e in org_temp_str_list}}
 
     def parse_KO_db(self,
                     in_file_name):
@@ -858,11 +857,11 @@ class Ortho_Stats:
         self.filters_name = []
         positive_DMF_bool = ((self.inter_df_stats["DMF"] >
                              self.inter_df_stats["Query_SMF"]) &
-                            (self.inter_df_stats["DMF"] >
+                             (self.inter_df_stats["DMF"] >
                              self.inter_df_stats["Array_SMF"]))
         negative_DMF_bool = ((self.inter_df_stats["DMF"] <
                              self.inter_df_stats["Query_SMF"]) &
-                            (self.inter_df_stats["DMF"] <
+                             (self.inter_df_stats["DMF"] <
                              self.inter_df_stats["Array_SMF"]))
         SMF_below_one_bool = (self.inter_df_stats["Query_SMF"] < 1.0) &\
                              (self.inter_df_stats["Array_SMF"] < 1.0)
@@ -963,11 +962,11 @@ class Ortho_Stats:
         """
         positive_DMF_bool = ((self.inter_df_stats["DMF"] >
                              self.inter_df_stats["Query_SMF"]) &
-                            (self.inter_df_stats["DMF"] >
+                             (self.inter_df_stats["DMF"] >
                              self.inter_df_stats["Array_SMF"]))
         negative_DMF_bool = ((self.inter_df_stats["DMF"] <
                              self.inter_df_stats["Query_SMF"]) &
-                            (self.inter_df_stats["DMF"] <
+                             (self.inter_df_stats["DMF"] <
                              self.inter_df_stats["Array_SMF"]))
         sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=
                          in_prof_sim_lev)
@@ -1234,8 +1233,8 @@ class Ortho_Stats:
         self.prof_KO_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_KO_perm_results.mirror) /
                                               len(self.prof_KO_perm_results),
                                               "similar_profiles": sum(self.prof_KO_perm_results.similar) /
-                                              len(self.prof_KO_perm_results),
-                                              "unsimilar": sum(self.prof_KO_perm_results.unsimilar) /
+                                               len(self.prof_KO_perm_results),
+                                               "unsimilar": sum(self.prof_KO_perm_results.unsimilar) /
                                                len(self.prof_KO_perm_results)})
 
     def e_val_calc(self):
