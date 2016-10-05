@@ -960,6 +960,8 @@ class Ortho_Stats:
             in_prof_sim_lev (int): definges minimal Genome.gene_profiles in
             Ortho_Stats.inter_df_stats similarity treshold
         """
+        self.filters_used = []
+        self.filters_name = []
         positive_DMF_bool = ((self.inter_df_stats["DMF"] >
                              self.inter_df_stats["Query_SMF"]) &
                              (self.inter_df_stats["DMF"] >
@@ -1692,7 +1694,8 @@ class HTML_generator:
                          "bivar": bivar,
                          "lin_regr": lin_regr,
                          "column_names": column_names,
-                         "dataframe": dataframe}
+                         "dataframe": dataframe,
+                         "skip_perm_res": skip_perm_res}
         self.template_rendered = self.template.render(template_Vars)
 
     def save_template(self,
