@@ -1664,7 +1664,8 @@ class HTML_generator:
                         bivar = None,
                         lin_regr = None,
                         column_names = None,
-                        dataframe = None):
+                        dataframe = None,
+                        skip_perm_res = False):
         curr_time = time.localtime()
         time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
                                                        curr_time.tm_mon,
