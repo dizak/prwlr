@@ -1668,6 +1668,7 @@ class HTML_generator:
                         lin_regr = None,
                         column_names = None,
                         dataframe = None,
+                        results_type = "chart",
                         skip_perm_res = False):
         curr_time = time.localtime()
         time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
@@ -1696,6 +1697,7 @@ class HTML_generator:
                          "lin_regr": lin_regr,
                          "column_names": column_names,
                          "dataframe": dataframe,
+                         "results_type": results_type,
                          "skip_perm_res": skip_perm_res}
         self.template_rendered = self.template.render(template_Vars)
 
