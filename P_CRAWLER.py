@@ -981,7 +981,8 @@ class Ortho_Stats:
                                        "DMF_negative": len(self.inter_df_stats[negative_DMF_bool]),
                                        "similar_profiles": len(self.inter_df_stats[sim_prof_bool]),
                                        "unsimilar_profiles": len(self.inter_df_stats[unsim_prof_bool]),
-                                       "mirror_profiles": len(self.inter_df_stats[mir_prof_bool])})
+                                       "mirror_profiles": len(self.inter_df_stats[mir_prof_bool]),
+                                       "histogram_bins": pd.value_counts(self.inter_df_stats["Profiles_similarity_score"])}),
         self.filters_used.append("Profiles similarity threshold: {0}".format(in_prof_sim_lev))
         self.filters_name.append("prof_sim_th_{0}".format(in_prof_sim_lev))
 
