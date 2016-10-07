@@ -14,6 +14,9 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Phylogenetic profile score', 'DMF positive', 'DMF negative', 'Neutral'],
+          {%for profile_score, profiles_number in num_prop_res.histogram_bins.sort_index().iteritems()%}
+            ["{{getattr()}}", profiles_number],
+          {%endfor%}
           ["0", 20, 40, 120],
           ['1', 1000, 400, 200],
           ['2', 1170, 460, 250],
