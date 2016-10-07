@@ -982,7 +982,7 @@ class Ortho_Stats:
                                        "similar_profiles": len(self.inter_df_stats[sim_prof_bool]),
                                        "unsimilar_profiles": len(self.inter_df_stats[unsim_prof_bool]),
                                        "mirror_profiles": len(self.inter_df_stats[mir_prof_bool]),
-                                       "histogram_bins": pd.value_counts(self.inter_df_stats["Profiles_similarity_score"])}),
+                                       "histogram_bins": pd.value_counts(self.inter_df_stats["Profiles_similarity_score"])})
         self.filters_used.append("Profiles similarity threshold: {0}".format(in_prof_sim_lev))
         self.filters_name.append("prof_sim_th_{0}".format(in_prof_sim_lev))
 
@@ -1652,8 +1652,8 @@ class HTML_generator:
     def render_template(self,
                         name = None,
                         filters = None,
-                        num_prop_res,
-                        num_prop_perm,
+                        num_prop_res = None,
+                        num_prop_perm = None,
                         e_value = None,
                         histogram_profs = None,
                         histogram_gis = None,
