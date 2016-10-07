@@ -128,7 +128,7 @@
       </article>
       <article class="w3-container w3-margin w3-card-8 w3-white">
         <h1>Results:</h1>
-          {%if results_type == "tbl"%}
+          {%if skip_summary_tbl == False%}
             {%if skip_perm_res == False%}
               <section class="w3-container">
                 <h2>Summary</h2>
@@ -202,7 +202,7 @@
                 </table>
               </section>
             {%endif%}
-          {%elif results_type == "chart"%}
+          {%else%}
             <section class="w3-container w3-margin w3-card-8 w3-dark-grey">
               <h2>Summary - google chart</h2>
               <div id="summary_chart">
