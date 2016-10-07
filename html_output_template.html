@@ -90,77 +90,86 @@
       </article>
       <article class="w3-container w3-margin w3-card-8 w3-white">
         <h1>Results:</h1>
-          {%if skip_perm_res == False%}
-            <section class="w3-container">
-              <h2>Summary</h2>
-              <table id="res_table" class="res_table">
-                <tr>
-                  <th>Category</th>
-                  <th>Actual value</th>
-                </tr>
-                <tr>
-                  <th>DMF positive</th>
-                  <td>{{DMF_positive}}</td>
-                </tr>
-                <tr>
-                  <th>DMF negative</th>
-                  <td>{{DMF_negative}}</td>
-                  <th>Average of {{e_value}} permutations</th>
-                </tr>
-                <tr>
-                  <th>mirror profiles</th>
-                  <td>{{mirror_profiles}}</td>
-                  <td>{{mirror_profiles_perm}}</td>
-                </tr>
-                <tr>
-                  <th>similar profiles</th>
-                  <td>{{similar_profiles}}</td>
-                  <td>{{similar_profiles_perm}}</td>
-                </tr>
-                <tr>
-                  <th>dissimilar</th>
-                  <td>{{dissimilar_profiles}}</td>
-                  <td>{{dissimilar_profiles_perm}}</td>
-                </tr>
-                <tr>
-                  <th>total</th>
-                  <td>{{total}}</td>
-                </tr>
-              </table>
-            </section>
+          {%if skip_summary_tbl == False%}
+            {%if skip_perm_res == False%}
+              <section class="w3-container">
+                <h2>Summary</h2>
+                <table id="res_table" class="res_table">
+                  <tr>
+                    <th>Category</th>
+                    <th>Actual value</th>
+                  </tr>
+                  <tr>
+                    <th>DMF positive</th>
+                    <td>{{DMF_positive}}</td>
+                  </tr>
+                  <tr>
+                    <th>DMF negative</th>
+                    <td>{{DMF_negative}}</td>
+                    <th>Average of {{e_value}} permutations</th>
+                  </tr>
+                  <tr>
+                    <th>mirror profiles</th>
+                    <td>{{mirror_profiles}}</td>
+                    <td>{{mirror_profiles_perm}}</td>
+                  </tr>
+                  <tr>
+                    <th>similar profiles</th>
+                    <td>{{similar_profiles}}</td>
+                    <td>{{similar_profiles_perm}}</td>
+                  </tr>
+                  <tr>
+                    <th>dissimilar</th>
+                    <td>{{dissimilar_profiles}}</td>
+                    <td>{{dissimilar_profiles_perm}}</td>
+                  </tr>
+                  <tr>
+                    <th>total</th>
+                    <td>{{total}}</td>
+                  </tr>
+                </table>
+              </section>
+            {%else%}
+              <section class="w3-container">
+                <h2>Summary</h2>
+                <table id="res_table" class="res_table">
+                  <tr>
+                    <th>Category</th>
+                    <th>Value</th>
+                  </tr>
+                  <tr>
+                    <th>DMF positive</th>
+                    <td>{{DMF_positive}}</td>
+                  </tr>
+                  <tr>
+                    <th>DMF negative</th>
+                    <td>{{DMF_negative}}</td>
+                  </tr>
+                  <tr>
+                    <th>mirror profiles</th>
+                    <td>{{mirror_profiles}}</td>
+                  </tr>
+                  <tr>
+                    <th>similar profiles</th>
+                    <td>{{similar_profiles}}</td>
+                  </tr>
+                  <tr>
+                    <th>dissimilar</th>
+                    <td>{{dissimilar_profiles}}</td>
+                  </tr>
+                  <tr>
+                    <th>total</th>
+                    <td>{{total}}</td>
+                  </tr>
+                </table>
+              </section>
+            {%endif%}
           {%else%}
-            <section class="w3-container">
-              <h2>Summary</h2>
-              <table id="res_table" class="res_table">
-                <tr>
-                  <th>Category</th>
-                  <th>Value</th>
-                </tr>
-                <tr>
-                  <th>DMF positive</th>
-                  <td>{{DMF_positive}}</td>
-                </tr>
-                <tr>
-                  <th>DMF negative</th>
-                  <td>{{DMF_negative}}</td>
-                </tr>
-                <tr>
-                  <th>mirror profiles</th>
-                  <td>{{mirror_profiles}}</td>
-                </tr>
-                <tr>
-                  <th>similar profiles</th>
-                  <td>{{similar_profiles}}</td>
-                </tr>
-                <tr>
-                  <th>dissimilar</th>
-                  <td>{{dissimilar_profiles}}</td>
-                </tr>
-                <tr>
-                  <th>total</th>
-                  <td>{{total}}</td>
-                </tr>
-              </table>
+            <section class="w3-container w3-margin w3-card-8 w3-dark-grey">
+              <h2>Summary - google chart</h2>
+              <div id="summary-chart">
+
+              </div>
             </section>
           {%endif%}
           <section class="w3-container w3-margin w3-card-8 w3-dark-grey">
