@@ -960,8 +960,14 @@ class Ortho_Stats:
             in_prof_sim_lev (int): definges minimal Genome.gene_profiles in
             Ortho_Stats.inter_df_stats similarity treshold
         """
-        self.filters_used = []
-        self.filters_name = []
+        if isinstance(self.filters_used, str) == True:
+            self.filters_used = []
+        else:
+            pass
+        if isinstance(self.filters_name, str) == True:
+            self.filters_name = []
+        else:
+            pass
         positive_DMF_bool = ((self.inter_df_stats["DMF"] >
                              self.inter_df_stats["Query_SMF"]) &
                              (self.inter_df_stats["DMF"] >
