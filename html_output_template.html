@@ -129,31 +129,31 @@
                   </tr>
                   <tr>
                     <th>DMF positive</th>
-                    <td>{{DMF_positive}}</td>
+                    <td>{{num_prop_res.DMF_positive}}</td>
                   </tr>
                   <tr>
                     <th>DMF negative</th>
-                    <td>{{DMF_negative}}</td>
+                    <td>{{num_prop_res.DMF_negative}}</td>
                     <th>Average of {{e_value}} permutations</th>
                   </tr>
                   <tr>
                     <th>mirror profiles</th>
-                    <td>{{mirror_profiles}}</td>
-                    <td>{{mirror_profiles_perm}}</td>
+                    <td>{{num_prop_res.mirror_profiles}}</td>
+                    <td>{{num_prop_perm.mirror_profiles_perm}}</td>
                   </tr>
                   <tr>
                     <th>similar profiles</th>
-                    <td>{{similar_profiles}}</td>
-                    <td>{{similar_profiles_perm}}</td>
+                    <td>{{num_prop_res.similar_profiles}}</td>
+                    <td>{{num_prop_perm.similar_profiles_perm}}</td>
                   </tr>
                   <tr>
                     <th>dissimilar</th>
-                    <td>{{dissimilar_profiles}}</td>
-                    <td>{{dissimilar_profiles_perm}}</td>
+                    <td>{{num_prop_res.dissimilar_profiles}}</td>
+                    <td>{{num_prop_perm.dissimilar_profiles_perm}}</td>
                   </tr>
                   <tr>
                     <th>total</th>
-                    <td>{{total}}</td>
+                    <td>{{num_prop_res.total}}</td>
                   </tr>
                 </table>
               </section>
@@ -167,27 +167,27 @@
                   </tr>
                   <tr>
                     <th>DMF positive</th>
-                    <td>{{DMF_positive}}</td>
+                    <td>{{num_prop_res.DMF_positive}}</td>
                   </tr>
                   <tr>
                     <th>DMF negative</th>
-                    <td>{{DMF_negative}}</td>
+                    <td>{{num_prop_res.DMF_negative}}</td>
                   </tr>
                   <tr>
                     <th>mirror profiles</th>
-                    <td>{{mirror_profiles}}</td>
+                    <td>{{num_prop_res.mirror_profiles}}</td>
                   </tr>
                   <tr>
                     <th>similar profiles</th>
-                    <td>{{similar_profiles}}</td>
+                    <td>{{num_prop_res.imilar_profiles}}</td>
                   </tr>
                   <tr>
                     <th>dissimilar</th>
-                    <td>{{dissimilar_profiles}}</td>
+                    <td>{{num_prop_res.dissimilar_profiles}}</td>
                   </tr>
                   <tr>
                     <th>total</th>
-                    <td>{{total}}</td>
+                    <td>{{num_prop_res.total}}</td>
                   </tr>
                 </table>
               </section>
@@ -195,9 +195,7 @@
           {%elif results_type == "chart"%}
             <section class="w3-container w3-margin w3-card-8 w3-dark-grey">
               <h2>Summary - google chart</h2>
-              <div id="summary_chart">
-
-              </div>
+              <div id="summary_chart"></div>
             </section>
           {%endif%}
           <section class="w3-container w3-margin w3-card-8 w3-dark-grey">
