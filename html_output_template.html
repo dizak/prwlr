@@ -203,11 +203,23 @@
           {%endif%}
           <section class="w3-container w3-margin w3-card-8 w3-dark-grey">
             <h2>Plots<h2>
-              <div id="plots" class="floating_box">
-                <img src="{{histogram_profs}}">
-                <img src="{{histogram_gis}}">
-                <img src="{{bivar}}">
-                <img src="{{lin_regr}}">
+              <h3>DMF positive</h3>
+              <div class="floating_box">
+                <img src="{{histogram_gis_pos}}">
+                <img src="{{bivar_pos}}">
+                <img src="{{lin_regr_pos}}">
+              </div>
+              <h3>DMF negative</h3>
+              <div class="floating_box">
+                <img src="{{histogram_gis_neg}}">
+                <img src="{{bivar_neg}}">
+                <img src="{{lin_regr_neg}}">
+              </div>
+              <h3>Neutral</h3>
+              <div class="floating_box">
+                <img src="{{histogram_gis_neu}}">
+                <img src="{{bivar_neu}}">
+                <img src="{{lin_regr_neu}}">
               </div>
           </section>
           <article class="w3-container w3-margin w3-card-8 w3-white">
