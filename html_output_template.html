@@ -15,7 +15,7 @@
         var data = google.visualization.arrayToDataTable([
           ['Phylogenetic profile score', 'DMF positive', 'DMF negative', 'Neutral'],
           {%for i in histogram_bins.itertuples()%}
-            ["{{getattr(i, "Index")}}", {{getattr(i, "positive")}}, {{getattr(i, "negative")}}, {{getattr(i, "neutral")}}],
+            ["{{i["Index"]}}", {{i["positive"]}}, {{i["negative"]}}, {{i["neutral"]}}],
           {%endfor%}
         ]);
 
