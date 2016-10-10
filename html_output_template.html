@@ -98,7 +98,7 @@
         <h2>{{name}}</h2>
       {%endif%}
       <p>File created: {{time_stamp}}</p>
-      <article class="w3-container w3-margin w3-card-8 w3-white">
+      <article class="w3-container w3-margin w3-card-8 w3-light-grey">
         <h1>Definitions:</h1>
         <ul id="definitions">
           {%if definitions != None%}
@@ -118,7 +118,7 @@
           {%endif%}
         </ul>
       </article>
-      <article class="w3-container w3-margin w3-card-8 w3-white">
+      <article class="w3-container w3-margin w3-card-8 w3-light-grey">
         <h1>Results:</h1>
           {%if results_type == "tbl"%}
             {%if skip_perm_res == False%}
@@ -195,30 +195,30 @@
               </section>
             {%endif%}
           {%elif results_type == "chart"%}
-            <section class="w3-container w3-margin w3-card-8 w3-dark-grey">
+            <section class="w3-container w3-margin w3-card-8 w3-white">
               <h2>Summary - google chart</h2>
               <div id="summary_chart"></div>
             </section>
           {%endif%}
-          <section class="w3-container w3-margin w3-card-8 w3-dark-grey">
+          <section class="w3-container w3-margin w3-card-8 w3-white">
             <h2>Plots<h2>
               <h3>DMF positive</h3>
               <div class="floating_box">
-                <img src="{{histogram_gis_pos}}">
-                <img src="{{bivar_pos}}">
-                <img src="{{lin_regr_pos}}">
+                <img src="{{histogram_gis_pos}}", style="width: 32%; max-width: 600px;">
+                <img src="{{histogram_gis_neg}}", style="width: 32%; max-width: 600px;">
+                <img src="{{histogram_gis_neu}}", style="width: 32%; max-width: 600px;">
               </div>
               <h3>DMF negative</h3>
               <div class="floating_box">
-                <img src="{{histogram_gis_neg}}">
-                <img src="{{bivar_neg}}">
-                <img src="{{lin_regr_neg}}">
+                <img src="{{bivar_pos}}", style="width: 32%; max-width: 600px;">
+                <img src="{{bivar_neg}}", style="width: 32%; max-width: 600px;">
+                <img src="{{bivar_neu}}", style="width: 32%; max-width: 600px;">
               </div>
               <h3>Neutral</h3>
               <div class="floating_box">
-                <img src="{{histogram_gis_neu}}">
-                <img src="{{bivar_neu}}">
-                <img src="{{lin_regr_neu}}">
+                <img src="{{lin_regr_pos}}", style="width: 32%; max-width: 600px;">
+                <img src="{{lin_regr_neg}}", style="width: 32%; max-width: 600px;">
+                <img src="{{lin_regr_neu}}", style="width: 32%; max-width: 600px;">
               </div>
           </section>
           <article class="w3-container w3-margin w3-card-8 w3-white">
