@@ -58,18 +58,18 @@
       });
     </script>
     <script>
-    function openCity(evt, cityName) {
+    function openDataframe(evt, dataframeType) {
       var i, x, tablinks;
-      x = document.getElementsByClassName("city");
+      x = document.getElementsByClassName("dataframe");
       for (i = 0; i < x.length; i++) {
           x[i].style.display = "none";
       }
       tablinks = document.getElementsByClassName("tablink");
       for (i = 0; i < x.length; i++) {
-          tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+          tablinks[i].className = tablinks[i].className.replace(" w3-green", "");
       }
-      document.getElementById(cityName).style.display = "block";
-      evt.currentTarget.className += " w3-red";
+      document.getElementById(dataframeType).style.display = "block";
+      evt.currentTarget.className += " w3-green";
     }
     </script>
     <title>P-CRAWLER</title>
@@ -309,7 +309,25 @@
             <p>Click to count selected rows:</p>
             <button id=count_rows_button class="w3-btn" type="button" name="button">Count selected rows</button>
             <br></br>
-            {{dataframe}}
+            <div class="w3-container">
+              <p>
+                Click to switch between
+              </p>
+              <ul class="w3-navbar w3-black">
+                <li><a href="#" class="tablink" onclick="openDataframe(event, 'DMF_positive_dataframe')"></a></li>
+                <li><a href="#" class="tablink" onclick="openDataframe(event, DMF_negative_dataframe)"></a></li>
+                <li><a href="#" class="tablink" onclick="openDataframe(event, 'Neutral_dataframe')"></a></li>
+              </ul>
+              <div id="DMF_positive_dataframe">
+                {{dataframe_pos}}
+              </div>
+              <div id="DMF_negative_dataframe">
+                {{dataframe_neg}}
+              </div>
+              <div id="Neutral_dataframe">
+                {{dataframe_neu}}
+              </div>
+            </div>
           </section>
       </article>
     </section>
