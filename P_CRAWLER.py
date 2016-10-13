@@ -459,7 +459,7 @@ class Genome:
                          upperize_ids = True,
                          profile_list = False,
                          KO_list_2_df = True,
-                         profiles_df = False):
+                         profiles_df = True):
         """Return Genome.KO_list (list of dict) or Genome.KO_df (pandas.DataFrame)
         appended with profiles (list of str or str).
 
