@@ -460,7 +460,7 @@ class Genome:
                          profile_list = False,
                          KO_list_2_df = True,
                          profiles_df = False):
-        """Return Genome.KO_list (list of dict) of Genome.KO_df (pandas.DataFrame)
+        """Return Genome.KO_list (list of dict) or Genome.KO_df (pandas.DataFrame)
         appended with profiles (list of str or str).
 
         Args:
@@ -473,13 +473,17 @@ class Genome:
             (default)
             profile_list (bool): return each profile as the list of separate
             "+" or "-" when <True> or as one str when <False> (default)
-            KO_list_2_df (bool): convert Genome.KO_list to pandas.DataFrame
+            KO_list_2_df (bool): convert Genome.KO_list to pandas.DataFrame.
+            Rows NOT containing profiles are removed and resulting
+            pandas.DataFrame is reindexed as continuous int sequence!
+            profiles_df (bool): append Genome.KO_df with sign-per-column
+            profiles list
         """
         if remove_empty == True:
             species_ids = [i for i in species_ids if i != None]
         if upperize_ids == True:
             species_ids = [i.upper() for i in species_ids]
-        for i in self.KO_list:
+        for i in tqdm(self.KO_list):
             if "orgs" in i.keys():
                 profile = ["+" if ii in i["orgs"] else "-" for ii in species_ids]
                 if profile_list == False:
@@ -491,8 +495,10 @@ class Genome:
                 pass
         if KO_list_2_df == True:
             self.KO_df = pd.DataFrame(self.KO_list)
+            self.KO_df = self.KO_df[-self.KO_df["profile"].isnull()]
+            self.KO_df.index = range(len(self.KO_df))
             if profiles_df == True:
-                all_profiles_list = [list(i["profile"]) for i in self.KO_list if "profile" in i.keys()]
+                all_profiles_list = [list(i[1]) for i in self.KO_df["profile"].iteritems()]
                 profiles_df = pd.DataFrame(all_profiles_list, columns = self.query_species)
                 self.KO_df = pd.concat([self.KO_df, profiles_df], axis = 1)
 
