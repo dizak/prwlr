@@ -483,7 +483,7 @@ class Genome:
             species_ids = [i for i in species_ids if i != None]
         if upperize_ids == True:
             species_ids = [i.upper() for i in species_ids]
-        for i in tqdm(self.KO_list):
+        for i in self.KO_list:
             if "orgs" in i.keys():
                 profile = ["+" if ii in i["orgs"] else "-" for ii in species_ids]
                 if profile_list == False:
