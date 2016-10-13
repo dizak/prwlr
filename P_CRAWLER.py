@@ -458,7 +458,8 @@ class Genome:
                          remove_empty = True,
                          upperize_ids = True,
                          profile_list = False,
-                         KO_list_2_df = True):
+                         KO_list_2_df = True,
+                         profiles_df = False):
         """Return Genome.KO_list (list of dict) of Genome.KO_df (pandas.DataFrame)
         appended with profiles (list of str or str).
 
@@ -490,6 +491,10 @@ class Genome:
                 pass
         if KO_list_2_df == True:
             self.KO_df = pd.DataFrame(self.KO_list)
+            if profiles_df == True:
+                all_profiles_list = [list(i["profile"]) for i in self.KO_list if "profile" in i.keys()]
+                profiles_df = pd.DataFrame(all_profiles_list, columns = self.query_species)
+                self.KO_df = pd.concat([self.KO_df, profiles_df], axis = 1)
 
 
 class Ortho_Interactions:
