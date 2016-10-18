@@ -869,11 +869,11 @@ class Ortho_Stats:
         positive_DMF_bool = ((self.inter_df_stats["DMF"] >
                              self.inter_df_stats["Query_SMF"]) &
                              (self.inter_df_stats["DMF"] >
-                             self.inter_df_stats["Array_SMF"]))
+                              self.inter_df_stats["Array_SMF"]))
         negative_DMF_bool = ((self.inter_df_stats["DMF"] <
                              self.inter_df_stats["Query_SMF"]) &
                              (self.inter_df_stats["DMF"] <
-                             self.inter_df_stats["Array_SMF"]))
+                              self.inter_df_stats["Array_SMF"]))
         SMF_below_one_bool = (self.inter_df_stats["Query_SMF"] < 1.0) &\
                              (self.inter_df_stats["Array_SMF"] < 1.0)
         inter_score_max_bool = (self.inter_df_stats["Genetic_interaction_score"] < inter_score_max)
@@ -976,11 +976,11 @@ class Ortho_Stats:
         positive_DMF_bool = ((self.inter_df_stats["DMF"] >
                              self.inter_df_stats["Query_SMF"]) &
                              (self.inter_df_stats["DMF"] >
-                             self.inter_df_stats["Array_SMF"]))
+                              self.inter_df_stats["Array_SMF"]))
         negative_DMF_bool = ((self.inter_df_stats["DMF"] <
                              self.inter_df_stats["Query_SMF"]) &
                              (self.inter_df_stats["DMF"] <
-                             self.inter_df_stats["Array_SMF"]))
+                              self.inter_df_stats["Array_SMF"]))
         sim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] >=
                          in_prof_sim_lev)
         unsim_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] <
