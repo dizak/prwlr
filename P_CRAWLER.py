@@ -1676,7 +1676,6 @@ class HTML_generator:
                         histogram_gis = None,
                         bivar = None,
                         lin_regr = None,
-                        column_names = None,
                         dataframe = None,
                         skip_perm_res = False):
         curr_time = time.localtime()
@@ -1704,7 +1703,6 @@ class HTML_generator:
                          "histogram_gis": histogram_gis,
                          "bivar": bivar,
                          "lin_regr": lin_regr,
-                         "column_names": column_names,
                          "dataframe": dataframe,
                          "skip_perm_res": skip_perm_res}
         self.template_rendered = self.template.render(template_Vars)
