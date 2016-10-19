@@ -1683,7 +1683,9 @@ class HTML_generator:
                         bivar_neu = None,
                         lin_regr_neu = None,
                         column_names = None,
-                        dataframe = None,
+                        dataframe_pos = None,
+                        dataframe_neg = None,
+                        dataframe_neu = None,
                         results_type = "chart",
                         skip_perm_res = False):
         curr_time = time.localtime()
@@ -1711,7 +1713,9 @@ class HTML_generator:
                          "bivar_neu": bivar_neu,
                          "lin_regr_neu": lin_regr_neu,
                          "column_names": column_names,
-                         "dataframe": dataframe,
+                         "dataframe_pos": dataframe_pos,
+                         "dataframe_neg": dataframe_neg,
+                         "dataframe_neu": dataframe_neu,
                          "results_type": results_type,
                          "skip_perm_res": skip_perm_res}
         self.template_rendered = self.template.render(template_Vars)

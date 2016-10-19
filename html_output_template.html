@@ -68,6 +68,21 @@
       });
     });
     </script>
+    <script>
+      function openDataframe(evt, DataframeName) {
+        var i, x, tablinks;
+        x = document.getElementsByClassName("dataframe_div");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < x.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+        }
+        document.getElementById(DataframeName).style.display = "block";
+        evt.currentTarget.className += " w3-red";
+      }
+    </script>
     <title>P-CRAWLER</title>
     <style type="text/css">
       .floating_box {
