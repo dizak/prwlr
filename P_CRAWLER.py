@@ -1676,7 +1676,9 @@ class HTML_generator:
 
     def render_template(self,
                         name = None,
-                        filters = None,
+                        filters_pos = None,
+                        filters_neg = None,
+                        filters_neu = None,
                         num_prop_res = None,
                         num_prop_perm = None,
                         histogram_bins = None,
@@ -1705,7 +1707,9 @@ class HTML_generator:
                                                        curr_time.tm_sec)
         template_Vars = {"time_stamp": time_stamp,
                          "name": name,
-                         "filters": filters,
+                         "filters_pos": filters_pos,
+                         "filters_neg": filters_neg,
+                         "filters_neu": filters_neu,
                          "definitions": self.definitions,
                          "num_prop_res": num_prop_res,
                          "num_prop_perm": num_prop_perm,

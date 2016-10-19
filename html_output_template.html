@@ -139,9 +139,26 @@
       </article>
       <article class="w3-container w3-margin w3-card-8 w3-light-grey">
         <h1>Filters:</h1>
-        <ul id="filters">
-          {%if filters != None%}
-            {%for filter in filters%}
+        <h2>DMF positive</h2>
+        <ul class="w3-ul">
+          {%if filters_pos != None%}
+            {%for filter in filters_pos%}
+              <li>{{filter}}</li>
+            {%endfor%}
+          {%endif%}
+        </ul>
+        <h2>DMF negative</h2>
+        <ul class="w3-ul">
+          {%if filters_neg != None%}
+            {%for filter in filters_neg%}
+              <li>{{filter}}</li>
+            {%endfor%}
+          {%endif%}
+        </ul>
+        <h2>Neutral</h2>
+        <ul class="w3-ul">
+          {%if filters_neu != None%}
+            {%for filter in filters_neu%}
               <li>{{filter}}</li>
             {%endfor%}
           {%endif%}
