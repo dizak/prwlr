@@ -326,13 +326,25 @@
                 <li><a href="javascript:void(0)" class="tablink w3-blue" onclick="openDataframe(event, 'Neutral_dataframe');">Neutral</a></li>
               </ul>
               <div id="DMF_positive_dataframe" class="w3-contianer w3-border dataframe_div">
-                {{dataframe_pos}}
+                {%if dataframe_pos != None%}
+                  {{dataframe_pos}}
+                {%else%}
+                  <p>No dataframe for this filtering type</p>
+                {%endif%}
               </div>
               <div id="DMF_negative_dataframe" class="w3-contianer w3-border dataframe_div">
-                {{dataframe_neg}}
+                {%if dataframe_neg != None%}
+                  {{dataframe_neg}}
+                {%else%}
+                  <p>No dataframe for this filtering type</p>
+                {%endif%}
               </div>
               <div id="Neutral_dataframe" class="w3-contianer w3-border dataframe_div">
-                {{dataframe_neu}}
+                {%if dataframe_neu != None%}
+                  {{dataframe_neu}}
+                {%else%}
+                  <p>No dataframe for this filtering type</p>
+                {%endif%}
               </div>
             </div>
           </section>

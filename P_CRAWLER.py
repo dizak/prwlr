@@ -961,15 +961,17 @@ class Ortho_Stats:
             pass
 
     def df_num_prop(self,
-                    in_prof_sim_lev):
+                    in_prof_sim_lev = None):
         """Return Ortho_Stats.tot_inter_num (int),
         Ortho_Stats.DMF_positive_num (int),
         Ortho_Stats.DMF_negative_num (int),
         Ortho_Stats.sim_prof_num (int).
 
         Args:
-            in_prof_sim_lev (int): definges minimal Genome.gene_profiles in
-            Ortho_Stats.inter_df_stats similarity treshold
+            in_prof_sim_lev (int): defines minimal Genome.gene_profiles in
+            Ortho_Stats.inter_df_stats similarity treshold. Set to <None> to
+            omit, eg when dispalying multiple thresholds at once.
+            Default: <None>
         """
         if isinstance(self.filters_used, str) == True:
             self.filters_used = []
@@ -993,15 +995,21 @@ class Ortho_Stats:
                            in_prof_sim_lev) &\
                           (self.inter_df_stats["Profiles_similarity_score"] > 0)
         mir_prof_bool = (self.inter_df_stats["Profiles_similarity_score"] == 0)
-        self.num_prop_res = pd.Series({"total": len(self.inter_df_stats),
-                                       "DMF_positive": len(self.inter_df_stats[positive_DMF_bool]),
-                                       "DMF_negative": len(self.inter_df_stats[negative_DMF_bool]),
-                                       "similar_profiles": len(self.inter_df_stats[sim_prof_bool]),
-                                       "unsimilar_profiles": len(self.inter_df_stats[unsim_prof_bool]),
-                                       "mirror_profiles": len(self.inter_df_stats[mir_prof_bool]),
-                                       "histogram_bins": pd.value_counts(self.inter_df_stats["Profiles_similarity_score"])})
-        self.filters_used.append("Profiles similarity threshold: {0}".format(in_prof_sim_lev))
-        self.filters_name.append("prof_sim_th_{0}".format(in_prof_sim_lev))
+        if in_prof_sim_lev == None:
+            self.num_prop_res = pd.Series({"total": len(self.inter_df_stats),
+                                           "DMF_positive": len(self.inter_df_stats[positive_DMF_bool]),
+                                           "DMF_negative": len(self.inter_df_stats[negative_DMF_bool]),
+                                           "histogram_bins": pd.value_counts(self.inter_df_stats["Profiles_similarity_score"])})
+        else:
+            self.num_prop_res = pd.Series({"total": len(self.inter_df_stats),
+                                           "DMF_positive": len(self.inter_df_stats[positive_DMF_bool]),
+                                           "DMF_negative": len(self.inter_df_stats[negative_DMF_bool]),
+                                           "similar_profiles": len(self.inter_df_stats[sim_prof_bool]),
+                                           "unsimilar_profiles": len(self.inter_df_stats[unsim_prof_bool]),
+                                           "mirror_profiles": len(self.inter_df_stats[mir_prof_bool]),
+                                           "histogram_bins": pd.value_counts(self.inter_df_stats["Profiles_similarity_score"])})
+            self.filters_used.append("Profiles similarity threshold: {0}".format(in_prof_sim_lev))
+            self.filters_name.append("prof_sim_th_{0}".format(in_prof_sim_lev))
 
     def names_perm(self,
                    e_value,
