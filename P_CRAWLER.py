@@ -12,6 +12,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import jinja2 as jj2
 import time
+import json
+from networkx.readwrite import json_graph
 from tqdm import tqdm
 
 __author__ = "Dariusz Izak"
@@ -1618,6 +1620,9 @@ class Ortho_Network:
             nx.write_gexf(self.nwrk, out_file_name)
         elif out_file_format.lower() == "gml":
             nx.write_gml(self.nwrk, out_file_name)
+        elif out_file_format.lower() == "json":
+            with open("{0}.{1}".format(out_file_name, out_file_format), "w") as fout:
+                fout.write(json.dumps(json_graph.node_link_data(self.nwrk)))
 
     def draw_nwrk(self,
                   width = 20,
