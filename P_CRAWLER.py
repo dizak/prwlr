@@ -1612,7 +1612,8 @@ class Ortho_Network:
 
         Args:
             out_file_name (str): file name to save as
-            out_file_format (str): file format to save as
+            out_file_format (str): file format to save as. Available formats are:
+            graphml, gefx, gml, json.
         """
         if out_file_format.lower() == "graphml":
             nx.write_graphml(self.nwrk, out_file_name)
