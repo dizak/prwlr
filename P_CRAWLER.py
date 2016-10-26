@@ -731,12 +731,12 @@ class Ortho_Interactions:
                                     self.ORF_KO_df,
                                     left_on = "Query_ORF",
                                     right_on = "ORF_id",
-                                    how = "left")
+                                    how = "inner")
         self.interact_df = pd.merge(self.interact_df,
                                     self.ORF_KO_df,
                                     left_on = "Array_ORF",
                                     right_on = "ORF_id",
-                                    how = "left",
+                                    how = "inner",
                                     suffixes = ("_query", "_array"))
         self.interact_df.drop(["ORF_id_query", "ORF_id_array"],
                               axis = 1,
