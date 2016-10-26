@@ -461,7 +461,8 @@ class Genome:
                          upperize_ids = True,
                          profile_list = False,
                          KO_list_2_df = True,
-                         profiles_df = True):
+                         profiles_df = True,
+                         deduplicate = True):
         """Return Genome.KO_list (list of dict) or Genome.KO_df (pandas.DataFrame)
         appended with profiles (list of str or str).
 
@@ -499,10 +500,19 @@ class Genome:
             self.KO_df = pd.DataFrame(self.KO_list)
             self.KO_df = self.KO_df[-self.KO_df["profile"].isnull()]
             self.KO_df.index = range(len(self.KO_df))
+            if deduplicate == True:
+                self.KO_df = self.KO_df.drop_duplicates(subset = ["entry"],
+                                                        keep = "first")
+            else:
+                pass
+        else:
+            pass
             if profiles_df == True:
                 all_profiles_list = [list(i[1]) for i in self.KO_df["profile"].iteritems()]
                 profiles_df = pd.DataFrame(all_profiles_list, columns = self.query_species)
                 self.KO_df = pd.concat([self.KO_df, profiles_df], axis = 1)
+            else:
+                pass
 
 
 class Ortho_Interactions:
@@ -733,12 +743,12 @@ class Ortho_Interactions:
                                     self.ORF_KO_df,
                                     left_on = "Query_ORF",
                                     right_on = "ORF_id",
-                                    how = "left")
+                                    how = "inner")
         self.interact_df = pd.merge(self.interact_df,
                                     self.ORF_KO_df,
                                     left_on = "Array_ORF",
                                     right_on = "ORF_id",
-                                    how = "left",
+                                    how = "inner",
                                     suffixes = ("_query", "_array"))
         self.interact_df.drop(["ORF_id_query", "ORF_id_array"],
                               axis = 1,
@@ -748,12 +758,12 @@ class Ortho_Interactions:
                                     self.KO_df_inter,
                                     left_on = "kegg_id_query",
                                     right_on = "entry",
-                                    how = "left")
+                                    how = "inner")
         self.interact_df = pd.merge(self.interact_df,
                                     self.KO_df_inter,
                                     left_on = "kegg_id_array",
                                     right_on = "entry",
-                                    how = "left",
+                                    how = "inner",
                                     suffixes=('_query', '_array'))
         self.interact_df.dropna(inplace = True)
         self.interact_df.rename(columns = {"profile_query": "Query_gene_profile",
