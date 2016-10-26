@@ -746,12 +746,12 @@ class Ortho_Interactions:
                                     self.KO_df_inter,
                                     left_on = "kegg_id_query",
                                     right_on = "entry",
-                                    how = "left")
+                                    how = "inner")
         self.interact_df = pd.merge(self.interact_df,
                                     self.KO_df_inter,
                                     left_on = "kegg_id_array",
                                     right_on = "entry",
-                                    how = "left",
+                                    how = "inner",
                                     suffixes=('_query', '_array'))
         self.interact_df.dropna(inplace = True)
         self.interact_df.rename(columns = {"profile_query": "Query_gene_profile",
