@@ -459,7 +459,8 @@ class Genome:
                          upperize_ids = True,
                          profile_list = False,
                          KO_list_2_df = True,
-                         profiles_df = True):
+                         profiles_df = True,
+                         deduplicate = True):
         """Return Genome.KO_list (list of dict) or Genome.KO_df (pandas.DataFrame)
         appended with profiles (list of str or str).
 
@@ -497,10 +498,19 @@ class Genome:
             self.KO_df = pd.DataFrame(self.KO_list)
             self.KO_df = self.KO_df[-self.KO_df["profile"].isnull()]
             self.KO_df.index = range(len(self.KO_df))
+            if deduplicate == True:
+                self.KO_df = self.KO_df.drop_duplicates(subset = ["entry"],
+                                                        keep = "first")
+            else:
+                pass
+        else:
+            pass
             if profiles_df == True:
                 all_profiles_list = [list(i[1]) for i in self.KO_df["profile"].iteritems()]
                 profiles_df = pd.DataFrame(all_profiles_list, columns = self.query_species)
                 self.KO_df = pd.concat([self.KO_df, profiles_df], axis = 1)
+            else:
+                pass
 
 
 class Ortho_Interactions:
