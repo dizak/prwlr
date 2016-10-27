@@ -4,85 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" media="screen" title="no title">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Phylogenetic profile score', 'DMF positive', 'DMF negative', 'Neutral'],
-          {%for i in histogram_bins.itertuples()%}
-            ["{{i["Index"]}}", {{i["positive"]}}, {{i["negative"]}}, {{i["neutral"]}}],
-          {%endfor%}
-        ]);
-
-        var options = {
-          chart: {
-            title: 'Phylogenetic profiles similarity scores distribution',
-            subtitle: 'among different types of filtering'
-          },
-          colors: ["green", "red", "blue"],
-          height: 600,
-        };
-
-        function resize() {
-          var chart = new google.charts.Bar(document.getElementById('summary_chart'));
-          chart.draw(data, options);
-        }
-        window.onload = resize();
-        window.onresize = resize;
-      }
-    </script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-      $('.dataframe').DataTable( {
-          scrollX: true,
-          lengthMenu: [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
-          initComplete: function () {
-            this.api().columns().every( function () {
-              var column = this;
-              var select = $('<select><option value=""></option></select>')
-                .appendTo( $(column.header()))
-                .on( 'change', function () {
-                    var val = $.fn.dataTable.util.escapeRegex(
-                        $(this).val()
-                    );
-
-                    column
-                        .search( val ? '^'+val+'$' : '', true, false )
-                        .draw();
-                });
-                column.cells('', column[0]).render('display').sort().unique().each( function ( d, j ) {
-                  if(column.search() === '^'+d+'$'){
-                      select.append( '<option value="'+d+'" selected="selected">'+d+'</option>' )
-                  }
-                  else {
-                      select.append( '<option value="'+d+'">'+d+'</option>' )
-                  }
-                });
-            });
-          }
-      });
-    });
-    </script>
-    <script>
-      function openDataframe(evt, DataframeName) {
-        var i, x, tablinks;
-        x = document.getElementsByClassName("dataframe_div");
-        for (i = 0; i < x.length; i++) {
-            x[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("tablink");
-        for (i = 0; i < x.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" w3-white", "");
-        }
-        document.getElementById(DataframeName).style.display = "block";
-        evt.currentTarget.className += " w3-white";
-      }
-    </script>
     <title>P-CRAWLER</title>
     <style type="text/css">
       .floating_box {
@@ -367,6 +289,85 @@
           </section>
       </article>
     </section>
-<!-->JavaScript<-->
+<!--JavaScript Start-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Phylogenetic profile score', 'DMF positive', 'DMF negative', 'Neutral'],
+          {%for i in histogram_bins.itertuples()%}
+            ["{{i["Index"]}}", {{i["positive"]}}, {{i["negative"]}}, {{i["neutral"]}}],
+          {%endfor%}
+        ]);
+
+        var options = {
+          chart: {
+            title: 'Phylogenetic profiles similarity scores distribution',
+            subtitle: 'among different types of filtering'
+          },
+          colors: ["green", "red", "blue"],
+          height: 600,
+        };
+
+        function resize() {
+          var chart = new google.charts.Bar(document.getElementById('summary_chart'));
+          chart.draw(data, options);
+        }
+        window.onload = resize();
+        window.onresize = resize;
+      }
+    </script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+      $('.dataframe').DataTable( {
+          scrollX: true,
+          lengthMenu: [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
+          initComplete: function () {
+            this.api().columns().every( function () {
+              var column = this;
+              var select = $('<select><option value=""></option></select>')
+                .appendTo( $(column.header()))
+                .on( 'change', function () {
+                    var val = $.fn.dataTable.util.escapeRegex(
+                        $(this).val()
+                    );
+
+                    column
+                        .search( val ? '^'+val+'$' : '', true, false )
+                        .draw();
+                });
+                column.cells('', column[0]).render('display').sort().unique().each( function ( d, j ) {
+                  if(column.search() === '^'+d+'$'){
+                      select.append( '<option value="'+d+'" selected="selected">'+d+'</option>' )
+                  }
+                  else {
+                      select.append( '<option value="'+d+'">'+d+'</option>' )
+                  }
+                });
+            });
+          }
+      });
+    });
+    </script>
+    <script>
+      function openDataframe(evt, DataframeName) {
+        var i, x, tablinks;
+        x = document.getElementsByClassName("dataframe_div");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < x.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" w3-white", "");
+        }
+        document.getElementById(DataframeName).style.display = "block";
+        evt.currentTarget.className += " w3-white";
+      }
+    </script>
+<!--JavaScript End-->
   </body>
 </html>
