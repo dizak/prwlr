@@ -507,12 +507,12 @@ class Genome:
                 pass
         else:
             pass
-            if profiles_df == True:
-                all_profiles_list = [list(i[1]) for i in self.KO_df["profile"].iteritems()]
-                profiles_df = pd.DataFrame(all_profiles_list, columns = self.query_species)
-                self.KO_df = pd.concat([self.KO_df, profiles_df], axis = 1)
-            else:
-                pass
+        if profiles_df == True:
+            all_profiles_list = [list(i[1]) for i in self.KO_df["profile"].iteritems()]
+            profiles_df = pd.DataFrame(all_profiles_list, columns = self.query_species)
+            self.KO_df = pd.concat([self.KO_df, profiles_df], axis = 1)
+        else:
+            pass
 
 
 class Ortho_Interactions:
