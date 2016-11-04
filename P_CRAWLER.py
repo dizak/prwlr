@@ -1217,6 +1217,23 @@ class Ortho_Stats:
     def KO_profs_perm(self,
                       e_value,
                       in_prof_sim_lev):
+        """Return Ortho_Stats.prof_arr_perm_results pandas.DataFrame containing
+        number of similar, dissimilar, mirror profiles and complete permuted
+        pandas.DataFrame itself. Return Ortho_Stats.prof_arr_perm_res_avg
+        containing average numbers of similar, dissimilar and mirror profiles.
+        The algorithm:
+            1. Extract Ortho_Stats.inter_df_stats["ORF", "Profile"].
+            2. Strip the original DataFrame from these 2 cols.
+            3. Make the non-redundant list.
+            4. Shuffle Profile col using pandas.Series.sample method.
+            5. Merge with the stripped DataFrame on ORF (how="left").
+            6. Calculate the results.
+
+        Args:
+            e_value (int): number of times to shuffle the pandas DataFrame
+            in_prof_sim_lev(int): treshold for assuming profiles as similar or
+            not
+        """
         def f(in_iter):
             q_ORF_prof_df = self.inter_df_stats[["Query_ORF",
                                                  "Query_gene_profile"]]
