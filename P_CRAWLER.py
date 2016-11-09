@@ -509,8 +509,14 @@ class Genome:
             pass
         if profiles_df == True:
             all_profiles_list = [list(i[1]) for i in self.KO_df["profile"].iteritems()]
-            profiles_df = pd.DataFrame(all_profiles_list, columns = self.query_species)
-            self.KO_df = pd.concat([self.KO_df, profiles_df], axis = 1)
+            all_entries_list = [i[1] for i in self.KO_df["entry"].iteritems()]
+            profiles_df = pd.DataFrame(all_profiles_list)
+            entries_df = pd.DataFrame(all_entries_list)
+            entries_profiles_df = pd.concat([entries_df, profiles_df], axis = 1)
+            entries_profiles_df.columns = ["entry"] + self.query_species
+            self.KO_df = pd.merge(left = self.KO_df,
+                                  right = entries_profiles_df,
+                                  on = "entry")
         else:
             pass
 
