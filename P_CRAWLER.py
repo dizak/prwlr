@@ -506,15 +506,15 @@ class Genome:
                 self.KO_df.index = range(len(self.KO_df))
             else:
                 pass
-        else:
-            pass
-        if profiles_df == True:
-            profs_df = pd.DataFrame(self.KO_df.profile
-                                              .map(lambda x: [i for i in x])
-                                              .tolist(),
-                                    columns = self.query_species)
-            self.KO_df = pd.concat([self.KO_df, profs_df], axis = 1)
-            self.KO_df.index = range(len(self.KO_df))
+            if profiles_df == True:
+                profs_df = pd.DataFrame(self.KO_df.profile.map(lambda x:
+                                                               [i for i in x])
+                                                          .tolist(),
+                                        columns = self.query_species)
+                self.KO_df = pd.concat([self.KO_df, profs_df], axis = 1)
+                self.KO_df.index = range(len(self.KO_df))
+            else:
+                pass
         else:
             pass
 
