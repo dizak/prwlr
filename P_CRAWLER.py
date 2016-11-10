@@ -880,6 +880,12 @@ class Ortho_Stats:
             prof_sim_lev (int): defines profiles as similar of dissimilar
             when above or below this given value
         """
+        if profiles == None and prof_sim_lev != None:
+            raise ValueError("No value for profiles")
+        elif profiles != None and prof_sim_lev == None:
+            raise ValueError("No value for prof_sim_lev")
+        else:
+            pass
         self.filters_used = []
         self.filters_name = []
         positive_DMF_bool = ((self.inter_df_stats["DMF"] >
