@@ -1492,10 +1492,13 @@ class KEGG_API:
                                            header=None,
                                            sep = "\t")
         if strip_pref == True:
-            self.org_db_X_ref_df.replace({"{0}:".format(org_id): ""},
+            self.org_db_X_ref_df.replace({org_id: ""},
                                          regex = True,
                                          inplace = True)
-            self.org_db_X_ref_df.replace({"{0}:".format(self.databases[target_db]): ""},
+            self.org_db_X_ref_df.replace({self.databases[target_db]: ""},
+                                         regex=True,
+                                         inplace=True)
+            self.org_db_X_ref_df.replace({":": ""},
                                          regex=True,
                                          inplace=True)
         else:
