@@ -1495,7 +1495,7 @@ class KEGG_API:
             self.org_db_X_ref_df.replace({"{0}:".format(org_id): ""},
                                          regex = True,
                                          inplace = True)
-            self.org_db_X_ref_df.replace({"{0}:".format(self.databases["orthology"]): ""},
+            self.org_db_X_ref_df.replace({"{0}:".format(self.databases[target_db]): ""},
                                          regex=True,
                                          inplace=True)
         else:
