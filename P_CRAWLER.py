@@ -1504,12 +1504,12 @@ class KEGG_API:
         else:
             pass
 
-    def get_ortho_db_entries(self,
-                             out_file_name):
-        """Get full information about ortho groups by entries from
-        KEGG_API.org_ortho_db_X_ref_df and download them into a local file.
+    def get_db_entries(self,
+                       out_file_name):
+        """Get full database by quering entries from
+        KEGG_API.org_db_X_ref_df and download them into a local file.
         Necessary for Genome.parse_KO_db. The only func that does NOT convert
-        downloaded file into pandas.DataFrame. Uses KEGG_API.get_org_db_X_ref_df.
+        downloaded file into pandas.DataFrame. Uses KEGG_API.get_db_X_ref_df.
 
         Args:
             out_file_name (str): name for file to be downloaded
@@ -1522,11 +1522,6 @@ class KEGG_API:
             res = rq.get(url)
             with open(out_file_name, "a") as fout:
                 fout.write(res.content)
-
-
-    def get_path_db_entries(self,
-                            out_file_name):
-        pass
 
 
 class Costanzo_API:
