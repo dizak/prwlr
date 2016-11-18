@@ -1514,7 +1514,6 @@ class KEGG_API:
         Args:
             out_file_name (str): name for file to be downloaded
         """
-        counter = 0
         entries = self.org_db_X_ref_df["kegg_id"]
         for i in tqdm(entries):
             url = "{0}/{1}/{2}".format(self.home,
@@ -1523,6 +1522,11 @@ class KEGG_API:
             res = rq.get(url)
             with open(out_file_name, "a") as fout:
                 fout.write(res.content)
+
+
+    def get_path_db_entries(self,
+                            out_file_name):
+        pass
 
 
 class Costanzo_API:
