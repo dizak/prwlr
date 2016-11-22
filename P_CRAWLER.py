@@ -34,14 +34,14 @@ def perc_prog(in_item,
     sys.stdout.flush()
 
 
-def all_possible_combinations_counter(in_int_set,
-                                      in_int_subset):
+def all_possible_combinations_counter(in_int_subset,
+                                      in_int_set):
     """Return a number (int) of all possible combinations of elements in size
     of a subset of a set.
 
     Args:
-        in_int_set (int): size of the whole set
         in_int_subset (int): size of the subset
+        in_int_set (int): size of the whole set
     """
     f = math.factorial
     return f(in_int_set) / f(in_int_subset) / f(in_int_set - in_int_subset)
