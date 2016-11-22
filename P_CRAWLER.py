@@ -19,21 +19,6 @@ from tqdm import tqdm
 __author__ = "Dariusz Izak"
 
 
-def perc_prog(in_item,
-              in_iterbl):
-    """Display progress of iterable as percent. Uses carriage return. Works in
-    the terminal only.
-
-    Args:
-        in_item: current iteration element
-        in_iterbl: iterable
-    """
-    pos = in_iterbl.index(in_item)
-    sys.stdout.write("{0}%\r".format(pos * 100 /
-                                     len(in_iterbl)))
-    sys.stdout.flush()
-
-
 def all_possible_combinations_counter(subset_size,
                                       set_size):
     """Return a number (int) of all possible combinations of elements in size
@@ -45,22 +30,6 @@ def all_possible_combinations_counter(subset_size,
     """
     f = math.factorial
     return f(set_size) / f(subset_size) / f(set_size - subset_size)
-
-
-def all_non_redundant_genes_lister(in_df,
-                                   in_col_name_1,
-                                   in_col_name_2):
-    """Return a non-redundant set (set) of elements from taken from two pandas
-    DataFrame columns merged together.
-
-    Args:
-        in_df (pandas.DataFrame): dataframe to take the columns from
-        in_col_name_1 (str): name of the 1st column to take the elements from
-        in_col_name_2 (str): name of the 2nd column to take the elements from
-    """
-    temp_list_1 = [getattr(i, in_col_name_1) for i in in_df.itertuples()]
-    temp_list_2 = [getattr(i, in_col_name_2) for i in in_df.itertuples()]
-    return set(temp_list_1 + temp_list_2)
 
 
 def gene_finder_by_attrib(in_attr,
