@@ -1461,7 +1461,7 @@ class KEGG_API:
                                            header=None,
                                            sep = "\t")
         if strip_ORF_pref == True:
-            self.org_db_X_ref_df["ORF_id"] = self.org_db_X_ref_df["ORF_id"].replace({"sce:": ""},
+            self.org_db_X_ref_df["ORF_id"] = self.org_db_X_ref_df["ORF_id"].replace({"{0}:".format(org_id): ""},
                                                                                     regex = True)
         else:
             pass
