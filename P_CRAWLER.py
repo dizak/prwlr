@@ -518,7 +518,7 @@ class Ortho_Interactions:
         self.gene_profiles = gene_profiles
         self.KO_df = KO_df
         self.ORF_KO_df = org_ortho_db_X_ref_df
-        self.interact_df = None
+        self.inter_df = None
         self.bio_proc_df = None
 
     def parse_sgadata(self,
@@ -558,13 +558,13 @@ class Ortho_Interactions:
                            (sga_df["p-value"] <= p_value)
         print "\nselecting data...".format()
         if DMF_type == "positive":
-            self.interact_df = sga_df[positive_DMF_bool]
+            self.inter_df = sga_df[positive_DMF_bool]
         elif DMF_type == "negative":
-            self.interact_df = sga_df[negative_DMF_bool]
+            self.inter_df = sga_df[negative_DMF_bool]
         elif DMF_type == "neutral":
-            self.interact_df = sga_df[neutral_DMF_bool]
+            self.inter_df = sga_df[neutral_DMF_bool]
         elif DMF_type == "raw":
-            self.interact_df = sga_df
+            self.inter_df = sga_df
         else:
             pass
 
@@ -609,7 +609,7 @@ class Ortho_Interactions:
         a_gene_head_temp_list = []
         bio_proc_temp_list = []
         print "\ncreating attributes list...".format()
-        for i in self.interact_df.itertuples():
+        for i in self.inter_df.itertuples():
             qa_attrib_temp_list.append([getattr(i, "Query_gene_name"),
                                         getattr(i, "Array_gene_name")])
         print "\nscoring profiles similarity...".format()
@@ -625,7 +625,7 @@ class Ortho_Interactions:
                                                                                                   conc = True)],
                                                            qa_attrib_temp_list)
         print "\npreparing descriptors of query genes...".format()
-        for i in self.interact_df.itertuples():
+        for i in self.inter_df.itertuples():
             q_gene_name_temp_list.append(getattr(i, "Query_gene_name"))
         q_gene_head_temp_list = ptmp.ProcessingPool().map(lambda x: gene_finder_by_attrib("GN_gene_id",
                                                                                           x,
@@ -633,7 +633,7 @@ class Ortho_Interactions:
                                                                                           self.genes_inter),
                                                           q_gene_name_temp_list)
         print "\npreparing descriptors of array genes...".format()
-        for i in self.interact_df.itertuples():
+        for i in self.inter_df.itertuples():
             a_gene_name_temp_list.append(getattr(i, "Array_gene_name"))
         a_gene_head_temp_list = ptmp.ProcessingPool().map(lambda x: gene_finder_by_attrib("GN_gene_id",
                                                                                           x,
@@ -642,41 +642,41 @@ class Ortho_Interactions:
                                                           a_gene_name_temp_list)
         print "\ncreating temporary dataframes...".format()
         prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
-                                          index = self.interact_df.index,
+                                          index = self.inter_df.index,
                                           columns = ["Profiles_similarity_score"])
         conc_q_a_prof_temp_df = pd.DataFrame(conc_qa_prof_temp_list,
-                                             index = self.interact_df.index,
+                                             index = self.inter_df.index,
                                              columns = ["Query_gene_profile", "Array_gene_profile"])
         q_gene_head_temp_df = pd.DataFrame(q_gene_head_temp_list,
-                                           index = self.interact_df.index,
+                                           index = self.inter_df.index,
                                            columns = ["Query_gene_description"])
         a_gene_head_temp_df = pd.DataFrame(a_gene_head_temp_list,
-                                           index = self.interact_df.index,
+                                           index = self.inter_df.index,
                                            columns = ["Array_gene_description"])
         print "\nconcatenating dataframes...".format()
-        self.interact_df = pd.concat([self.interact_df,
-                                      prof_score_temp_df,
-                                      conc_q_a_prof_temp_df,
-                                      q_gene_head_temp_df,
-                                      a_gene_head_temp_df],
-                                     axis = 1)
+        self.inter_df = pd.concat([self.inter_df,
+                                   prof_score_temp_df,
+                                   conc_q_a_prof_temp_df,
+                                   q_gene_head_temp_df,
+                                   a_gene_head_temp_df],
+                                  axis = 1)
         if bio_proc == True:
             print "\nappending with bioprocesses info...".format()
-            self.interact_df = pd.merge(self.interact_df,
-                                        self.bio_proc_df,
-                                        left_on = "Query_gene_name",
-                                        right_on = "Gene_name",
-                                        how = "left")
-            self.interact_df = pd.merge(self.interact_df,
-                                        self.bio_proc_df,
-                                        left_on = "Array_gene_name",
-                                        right_on = "Gene_name",
-                                        how = "left",
-                                        suffixes=("_query", "_array"))
-            self.interact_df.drop(["Gene_name_query", "Gene_name_array"],
-                                  axis = 1,
-                                  inplace = True)
-            for i in self.interact_df.itertuples():
+            self.inter_df = pd.merge(self.inter_df,
+                                     self.bio_proc_df,
+                                     left_on = "Query_gene_name",
+                                     right_on = "Gene_name",
+                                     how = "left")
+            self.inter_df = pd.merge(self.inter_df,
+                                     self.bio_proc_df,
+                                     left_on = "Array_gene_name",
+                                     right_on = "Gene_name",
+                                     how = "left",
+                                     suffixes=("_query", "_array"))
+            self.inter_df.drop(["Gene_name_query", "Gene_name_array"],
+                               axis = 1,
+                               inplace = True)
+            for i in self.inter_df.itertuples():
                 if getattr(i, "Process_query") == getattr(i, "Process_array"):
                     if getattr(i, "Process_query") == "unknown" or\
                        getattr(i, "Process_query") == "unknown":
@@ -686,11 +686,11 @@ class Ortho_Interactions:
                 else:
                     bio_proc_temp_list.append("different")
             bio_proc_temp_df = pd.DataFrame(bio_proc_temp_list,
-                                            index = self.interact_df.index,
+                                            index = self.inter_df.index,
                                             columns = ["Bioprocesses_similarity"])
-            self.interact_df = pd.concat([self.interact_df,
-                                          bio_proc_temp_df],
-                                         axis = 1)
+            self.inter_df = pd.concat([self.inter_df,
+                                       bio_proc_temp_df],
+                                      axis = 1)
         else:
             pass
         if profiles_df == True:
@@ -699,78 +699,78 @@ class Ortho_Interactions:
             cols_array_temp_list = ["Array_gene_name"] + list(self.query_species)
             sep_prof_temp_df = pd.DataFrame(self.gene_profiles,
                                             columns = cols_query_temp_list)
-            self.interact_df = pd.merge(self.interact_df,
-                                        sep_prof_temp_df,
-                                        on = "Query_gene_name")
+            self.inter_df = pd.merge(self.inter_df,
+                                     sep_prof_temp_df,
+                                     on = "Query_gene_name")
             sep_prof_temp_df.columns = cols_array_temp_list
-            self.interact_df = pd.merge(self.interact_df,
-                                        sep_prof_temp_df,
-                                        on = "Array_gene_name",
-                                        suffixes = ("_query", "_array"))
+            self.inter_df = pd.merge(self.inter_df,
+                                     sep_prof_temp_df,
+                                     on = "Array_gene_name",
+                                     suffixes = ("_query", "_array"))
         else:
             pass
 
     def KO_based_appender(self):
         temp_score_list = []
-        self.interact_df = pd.merge(self.interact_df,
-                                    self.ORF_KO_df,
-                                    left_on = "Query_ORF",
-                                    right_on = "ORF_id",
-                                    how = "inner")
-        self.interact_df = pd.merge(self.interact_df,
-                                    self.ORF_KO_df,
-                                    left_on = "Array_ORF",
-                                    right_on = "ORF_id",
-                                    how = "inner",
-                                    suffixes = ("_query", "_array"))
-        self.interact_df.drop(["ORF_id_query", "ORF_id_array"],
-                              axis = 1,
-                              inplace = True)
-        self.interact_df.dropna(inplace = True)
-        self.interact_df = pd.merge(self.interact_df,
-                                    self.KO_df,
-                                    left_on = "kegg_id_query",
-                                    right_on = "entry",
-                                    how = "inner")
-        self.interact_df = pd.merge(self.interact_df,
-                                    self.KO_df,
-                                    left_on = "kegg_id_array",
-                                    right_on = "entry",
-                                    how = "inner",
-                                    suffixes=('_query', '_array'))
-        self.interact_df.dropna(inplace = True)
-        self.interact_df.rename(columns = {"profile_query": "Query_gene_profile",
-                                           "profile_array": "Array_gene_profile"},
-                                inplace = True)
-        for i in self.interact_df.itertuples():
+        self.inter_df = pd.merge(self.inter_df,
+                                 self.ORF_KO_df,
+                                 left_on = "Query_ORF",
+                                 right_on = "ORF_id",
+                                 how = "inner")
+        self.inter_df = pd.merge(self.inter_df,
+                                 self.ORF_KO_df,
+                                 left_on = "Array_ORF",
+                                 right_on = "ORF_id",
+                                 how = "inner",
+                                 suffixes = ("_query", "_array"))
+        self.inter_df.drop(["ORF_id_query", "ORF_id_array"],
+                           axis = 1,
+                           inplace = True)
+        self.inter_df.dropna(inplace = True)
+        self.inter_df = pd.merge(self.inter_df,
+                                 self.KO_df,
+                                 left_on = "kegg_id_query",
+                                 right_on = "entry",
+                                 how = "inner")
+        self.inter_df = pd.merge(self.inter_df,
+                                 self.KO_df,
+                                 left_on = "kegg_id_array",
+                                 right_on = "entry",
+                                 how = "inner",
+                                 suffixes=('_query', '_array'))
+        self.inter_df.dropna(inplace = True)
+        self.inter_df.rename(columns = {"profile_query": "Query_gene_profile",
+                                        "profile_array": "Array_gene_profile"},
+                             inplace = True)
+        for i in self.inter_df.itertuples():
             prof_1 = np.array(list(getattr(i, "Query_gene_profile")))
             prof_2 = np.array(list(getattr(i, "Array_gene_profile")))
             temp_score_list.append(simple_profiles_scorer(prof_1,
                                                           prof_2))
         temp_score_df = pd.DataFrame(temp_score_list,
-                                     index = self.interact_df.index,
+                                     index = self.inter_df.index,
                                      columns = ["Profiles_similarity_score"])
-        self.interact_df = pd.concat([self.interact_df,
-                                     temp_score_df],
-                                     axis = 1)
+        self.inter_df = pd.concat([self.inter_df,
+                                   temp_score_df],
+                                  axis = 1)
 
     def bio_proc_appender(self):
         bio_proc_temp_list = []
-        self.interact_df = pd.merge(self.interact_df,
-                                    self.bio_proc_df,
-                                    left_on = "Query_gene_name",
-                                    right_on = "Gene_name",
-                                    how = "left")
-        self.interact_df = pd.merge(self.interact_df,
-                                    self.bio_proc_df,
-                                    left_on = "Array_gene_name",
-                                    right_on = "Gene_name",
-                                    how = "left",
-                                    suffixes=("_query", "_array"))
-        self.interact_df.drop(["Gene_name_query", "Gene_name_array"],
-                              axis = 1,
-                              inplace = True)
-        for i in self.interact_df.itertuples():
+        self.inter_df = pd.merge(self.inter_df,
+                                 self.bio_proc_df,
+                                 left_on = "Query_gene_name",
+                                 right_on = "Gene_name",
+                                 how = "left")
+        self.inter_df = pd.merge(self.inter_df,
+                                 self.bio_proc_df,
+                                 left_on = "Array_gene_name",
+                                 right_on = "Gene_name",
+                                 how = "left",
+                                 suffixes=("_query", "_array"))
+        self.inter_df.drop(["Gene_name_query", "Gene_name_array"],
+                           axis = 1,
+                           inplace = True)
+        for i in self.inter_df.itertuples():
             if getattr(i, "Process_query") == getattr(i, "Process_array"):
                 if getattr(i, "Process_query") == "unknown" or\
                    getattr(i, "Process_query") == "unknown":
@@ -780,24 +780,24 @@ class Ortho_Interactions:
             else:
                 bio_proc_temp_list.append("different")
         bio_proc_temp_df = pd.DataFrame(bio_proc_temp_list,
-                                        index = self.interact_df.index,
+                                        index = self.inter_df.index,
                                         columns = ["Bioprocesses_similarity"])
-        self.interact_df = pd.concat([self.interact_df,
-                                      bio_proc_temp_df],
-                                     axis = 1)
+        self.inter_df = pd.concat([self.inter_df,
+                                  bio_proc_temp_df],
+                                  axis = 1)
 
     def inter_df_read(self,
                       in_file_name,
                       in_sep = "\t"):
-        self.interact_df = pd.read_csv(in_file_name,
-                                       sep = in_sep)
+        self.inter_df = pd.read_csv(in_file_name,
+                                    sep = in_sep)
 
     def inter_df_save(self,
                       out_file_name,
                       in_sep = "\t"):
-        self.interact_df.to_csv("{0}.csv".format(out_file_name),
-                                sep = in_sep,
-                                index = False)
+        self.inter_df.to_csv("{0}.csv".format(out_file_name),
+                             sep = in_sep,
+                             index = False)
 
 
 class Ortho_Stats:
