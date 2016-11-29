@@ -500,6 +500,9 @@ class Ortho_Interactions:
         data from KEGG
         gene_profiles (list of tuples): passed from Genome. Set to <None>
         if using data from KEGG
+        sga_heads (dict of strs): translation from variable name to
+        Ortho_Interactions.inter_df. Meant to avoid hard-coding and shorten
+        line length
         ORF_KO_df (pandas.DataFrame): passed from KEGG_API. Consists of 2
         columns - ORF name and KO orthology group ID
         interact_df (pandas.DataFrame): holds data about interactions from
@@ -516,6 +519,19 @@ class Ortho_Interactions:
         self.query_species = query_species
         self.genes_inter = genes
         self.gene_profiles = gene_profiles
+        self.sga_heads = {"ORF_Q": "Query_ORF",
+                          "GENE_Q": "Query_gene_name",
+                          "SMF_Q": "Query_SMF",
+                          "SMF_SD_Q": "Query_SMF_standard_deviation",
+                          "ORF_A": "Array_ORF",
+                          "GENE_A": "Array_gene_name",
+                          "SMF_A": "Array_SMF",
+                          "SMF_SD_A": "Array_SMF_standard_deviation",
+                          "DMF": "DMF",
+                          "DMF_SD": "DMF_SD",
+                          "GIS": "Genetic_interaction_score",
+                          "GIS_SD": "Standard_deviation",
+                          "GIS_P": "p-value"}
         self.KO_df = KO_df
         self.ORF_KO_df = org_ortho_db_X_ref_df
         self.inter_df = None
