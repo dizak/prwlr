@@ -540,6 +540,8 @@ class Ortho_Interactions:
                           'Genetic_interaction_score': 'GIS',
                           'Standard_deviation': 'GIS_SD',
                           'p-value': 'GIS_P'}
+        self.bio_proc_heads = {"Gene_name": "GENE",
+                               "Process": "PROC"}
         self.KO_df = KO_df
         self.ORF_KO_df = org_ortho_db_X_ref_df
         self.inter_df = None
@@ -610,6 +612,7 @@ class Ortho_Interactions:
             self.bio_proc_df = pd.read_csv(in_file_name, sep = in_sep)
         else:
             self.bio_proc_df = pd.read_excel(in_file_name)
+        self.bio_proc_df.rename(self.bio_proc_heads, inplace = True)
 
     def gen_based_appender(self,
                            bio_proc = True,
