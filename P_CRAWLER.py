@@ -176,6 +176,8 @@ class Genome:
         orthologous_groups_df (df): pandas DataFrame of ortho-finder csv
         orthologous_groups_dict (list of dicts): data extracted from
         orthologous_groups_df for convenience
+        KO_list (list of dicts): data from parsed KEGG ortho-database
+        KO_df (pandas.DataFrame): KO_list converted to DataFrame
         empty_genes (list of dicts): genes without orthologs
         ortho_genes (list of dicts): genes with orthologs
         gene_profiles (list of tuples): each profile contains gene name and +/-
