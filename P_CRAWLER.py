@@ -433,6 +433,7 @@ class Genome:
                          profile_list = False,
                          KO_list_2_df = True,
                          profiles_df = True,
+                         remove_species_white_spaces = True,
                          deduplicate = True):
         """Return Genome.KO_list (list of dict) or Genome.KO_df (pandas.DataFrame)
         appended with profiles (list of str or str).
@@ -478,10 +479,16 @@ class Genome:
             else:
                 pass
             if profiles_df == True:
-                profs_df = pd.DataFrame(self.KO_df.profile.map(lambda x:
-                                                               [i for i in x])
-                                                          .tolist(),
-                                        columns = self.query_species)
+                if remove_species_white_spaces == True:
+                    profs_df = pd.DataFrame(self.KO_df.profile.map(lambda x:
+                                                                   [i for i in x])
+                                                              .tolist(),
+                                            columns = [i.replace(" ", "_") for i in self.query_species])
+                else:
+                    profs_df = pd.DataFrame(self.KO_df.profile.map(lambda x:
+                                                                   [i for i in x])
+                                                              .tolist(),
+                                            columns = self.query_species)
                 self.KO_df = pd.concat([self.KO_df, profs_df], axis = 1)
                 self.KO_df.index = range(len(self.KO_df))
             else:
