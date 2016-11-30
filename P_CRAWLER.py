@@ -507,9 +507,8 @@ class Ortho_Interactions:
         line length
         ORF_KO_df (pandas.DataFrame): passed from KEGG_API. Consists of 2
         columns - ORF name and KO orthology group ID
-        interact_df (pandas.DataFrame): holds data about interactions from
-        parsed csv file. Can be appended with
-        Ortho_Interactions.gen_based_appender or
+        inter_df (pandas.DataFrame): holds data about interactions from parsed
+        csv file. Can be appended with Ortho_Interactions.gen_based_appender or
         Ortho_Interactions.ko_based_appender
     """
     def __init__(self,
