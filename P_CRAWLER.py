@@ -671,16 +671,16 @@ class Ortho_Interactions:
         print "\ncreating temporary dataframes...".format()
         prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
                                           index = self.inter_df.index,
-                                          columns = ["Profiles_similarity_score"])
+                                          columns = ["PSS"])
         conc_q_a_prof_temp_df = pd.DataFrame(conc_qa_prof_temp_list,
                                              index = self.inter_df.index,
-                                             columns = ["Query_gene_profile", "Array_gene_profile"])
+                                             columns = ["PROF_Q", "PROF_A"])
         q_gene_head_temp_df = pd.DataFrame(q_gene_head_temp_list,
                                            index = self.inter_df.index,
-                                           columns = ["Query_gene_description"])
+                                           columns = ["DESC_Q"])
         a_gene_head_temp_df = pd.DataFrame(a_gene_head_temp_list,
                                            index = self.inter_df.index,
-                                           columns = ["Array_gene_description"])
+                                           columns = ["DESC_A"])
         print "\nconcatenating dataframes...".format()
         self.inter_df = pd.concat([self.inter_df,
                                    prof_score_temp_df,
@@ -734,7 +734,7 @@ class Ortho_Interactions:
             self.inter_df = pd.merge(self.inter_df,
                                      sep_prof_temp_df,
                                      on = "GENE_A",
-                                     suffixes = ("_query", "_array"))
+                                     suffixes = ("_Q", "_A"))
         else:
             pass
 
@@ -750,34 +750,37 @@ class Ortho_Interactions:
                                  left_on = "ORF_A",
                                  right_on = "ORF_id",
                                  how = "inner",
-                                 suffixes = ("_query", "_array"))
-        self.inter_df.drop(["ORF_id_query", "ORF_id_array"],
+                                 suffixes = ("_Q", "_A"))
+        self.inter_df.drop(["ORF_id_Q", "ORF_id_A"],
                            axis = 1,
                            inplace = True)
         self.inter_df.dropna(inplace = True)
         self.inter_df = pd.merge(self.inter_df,
                                  self.KO_df,
-                                 left_on = "kegg_id_query",
+                                 left_on = "kegg_id_Q",
                                  right_on = "entry",
                                  how = "inner")
         self.inter_df = pd.merge(self.inter_df,
                                  self.KO_df,
-                                 left_on = "kegg_id_array",
+                                 left_on = "kegg_id_A",
                                  right_on = "entry",
                                  how = "inner",
-                                 suffixes=('_query', '_array'))
+                                 suffixes=('_Q', '_A'))
+        self.inter_df.drop(["kegg_id_Q", "kegg_id_A"],
+                           axis = 1,
+                           inplace = True)
         self.inter_df.dropna(inplace = True)
-        self.inter_df.rename(columns = {"profile_query": "Query_gene_profile",
-                                        "profile_array": "Array_gene_profile"},
+        self.inter_df.rename(columns = {"profile_Q": "PROF_Q",
+                                        "profile_A": "PROF_A"},
                              inplace = True)
         for i in self.inter_df.itertuples():
-            prof_1 = np.array(list(getattr(i, "Query_gene_profile")))
-            prof_2 = np.array(list(getattr(i, "Array_gene_profile")))
+            prof_1 = np.array(list(getattr(i, "PROF_Q")))
+            prof_2 = np.array(list(getattr(i, "PROF_A")))
             temp_score_list.append(simple_profiles_scorer(prof_1,
                                                           prof_2))
         temp_score_df = pd.DataFrame(temp_score_list,
                                      index = self.inter_df.index,
-                                     columns = ["Profiles_similarity_score"])
+                                     columns = ["PSS"])
         self.inter_df = pd.concat([self.inter_df,
                                    temp_score_df],
                                   axis = 1)
@@ -910,9 +913,9 @@ class Ortho_Stats:
         diff_proc_bool = (self.inter_df["BSS"] ==
                           "different")
         if profiles != None:
-            sim_prof_bool = (self.inter_df["Profiles_similarity_score"] >=
+            sim_prof_bool = (self.inter_df["PSS"] >=
                              prof_sim_lev)
-            unsim_prof_bool = (self.inter_df["Profiles_similarity_score"] <
+            unsim_prof_bool = (self.inter_df["PSS"] <
                                prof_sim_lev)
         else:
             pass
@@ -1008,17 +1011,17 @@ class Ortho_Stats:
                              self.inter_df["SMF_Q"]) &
                              (self.inter_df["DMF"] <
                               self.inter_df["SMF_A"]))
-        sim_prof_bool = (self.inter_df["Profiles_similarity_score"] >=
+        sim_prof_bool = (self.inter_df["PSS"] >=
                          in_prof_sim_lev)
-        unsim_prof_bool = (self.inter_df["Profiles_similarity_score"] <
+        unsim_prof_bool = (self.inter_df["PSS"] <
                            in_prof_sim_lev) &\
-                          (self.inter_df["Profiles_similarity_score"] > 0)
-        mir_prof_bool = (self.inter_df["Profiles_similarity_score"] == 0)
+                          (self.inter_df["PSS"] > 0)
+        mir_prof_bool = (self.inter_df["PSS"] == 0)
         if in_prof_sim_lev == None:
             self.num_prop_res = pd.Series({"total": len(self.inter_df),
                                            "DMF_positive": len(self.inter_df[positive_DMF_bool]),
                                            "DMF_negative": len(self.inter_df[negative_DMF_bool]),
-                                           "histogram_bins": pd.value_counts(self.inter_df["Profiles_similarity_score"])})
+                                           "histogram_bins": pd.value_counts(self.inter_df["PSS"])})
         else:
             self.num_prop_res = pd.Series({"total": len(self.inter_df),
                                            "DMF_positive": len(self.inter_df[positive_DMF_bool]),
@@ -1026,7 +1029,7 @@ class Ortho_Stats:
                                            "similar_profiles": len(self.inter_df[sim_prof_bool]),
                                            "unsimilar_profiles": len(self.inter_df[unsim_prof_bool]),
                                            "mirror_profiles": len(self.inter_df[mir_prof_bool]),
-                                           "histogram_bins": pd.value_counts(self.inter_df["Profiles_similarity_score"])})
+                                           "histogram_bins": pd.value_counts(self.inter_df["PSS"])})
             self.filters_used.append("Profiles similarity threshold: {0}".format(in_prof_sim_lev))
             self.filters_name.append("prof_sim_th_{0}".format(in_prof_sim_lev))
 
@@ -1057,15 +1060,15 @@ class Ortho_Stats:
                                                                 self.gene_profiles))
             temp_score_df = pd.DataFrame(temp_score_list,
                                          index=qa_temp_perm_df.index,
-                                         columns=["Profiles_similarity_score"])
+                                         columns=["PSS"])
             qa_temp_perm_score_df = pd.concat([qa_temp_perm_df, temp_score_df],
                                               axis=1)
-            sim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] >=
+            sim_prof_bool = (qa_temp_perm_score_df["PSS"] >=
                              in_prof_sim_lev)
-            unsim_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] <
+            unsim_prof_bool = (qa_temp_perm_score_df["PSS"] <
                                in_prof_sim_lev) &\
-                              (qa_temp_perm_score_df["Profiles_similarity_score"] > 0)
-            mir_prof_bool = (qa_temp_perm_score_df["Profiles_similarity_score"] == 0)
+                              (qa_temp_perm_score_df["PSS"] > 0)
+            mir_prof_bool = (qa_temp_perm_score_df["PSS"] == 0)
             sim_prof_perm_num = len(qa_temp_perm_score_df[sim_prof_bool])
             unsim_prof_perm_num = len(qa_temp_perm_score_df[unsim_prof_bool])
             mir_prof_perm_num = len(qa_temp_perm_score_df[mir_prof_bool])
@@ -1090,7 +1093,7 @@ class Ortho_Stats:
             in_prof_sim_lev(int): treshold for assuming profiles as similar or
             not
         """
-        q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species]
+        q_sign_per_col_profs_cols = ["{0}_Q".format(i) for i in self.query_species]
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species]
 
         def f(in_iter):
@@ -1099,7 +1102,7 @@ class Ortho_Stats:
             a_prof_temp_df = self.inter_df["Array_gene_profile"]
             drop_prof_temp_df = self.inter_df.drop(["Query_gene_profile",
                                                     "Array_gene_profile",
-                                                    "Profiles_similarity_score"] +
+                                                    "PSS"] +
                                                    q_sign_per_col_profs_cols +
                                                    a_sign_per_col_profs_cols,
                                                    axis = 1)
@@ -1116,16 +1119,16 @@ class Ortho_Stats:
                                                                np.array(list(getattr(ii, "Array_gene_profile"))))])
             temp_score_df = pd.DataFrame(temp_score_list,
                                          index=permuted_df.index,
-                                         columns=["Profiles_similarity_score"])
+                                         columns=["PSS"])
             permuted_profs_df = pd.concat([permuted_df,
                                           temp_score_df],
                                           axis = 1)
-            sim_prof_bool = (permuted_profs_df["Profiles_similarity_score"] >=
+            sim_prof_bool = (permuted_profs_df["PSS"] >=
                              in_prof_sim_lev)
-            unsim_prof_bool = (permuted_profs_df["Profiles_similarity_score"] <
+            unsim_prof_bool = (permuted_profs_df["PSS"] <
                                in_prof_sim_lev) &\
-                              (permuted_profs_df["Profiles_similarity_score"] > 0)
-            mir_prof_bool = (permuted_profs_df["Profiles_similarity_score"] == 0)
+                              (permuted_profs_df["PSS"] > 0)
+            mir_prof_bool = (permuted_profs_df["PSS"] == 0)
             sim_prof_perm_num = len(permuted_profs_df[sim_prof_bool])
             unsim_prof_perm_num = len(permuted_profs_df[unsim_prof_bool])
             mir_prof_perm_num = len(permuted_profs_df[mir_prof_bool])
@@ -1148,11 +1151,11 @@ class Ortho_Stats:
             in_prof_sim_lev(int): treshold for assuming profiles as similar or
             not
         """
-        q_sign_per_col_profs_cols = ["{0}_query".format(i) for i in self.query_species]
+        q_sign_per_col_profs_cols = ["{0}_Q".format(i) for i in self.query_species]
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species]
         drop_prof_temp_df = self.inter_df.drop(["Query_gene_profile",
                                                 "Array_gene_profile",
-                                                "Profiles_similarity_score"] +
+                                                "PSS"] +
                                                q_sign_per_col_profs_cols +
                                                a_sign_per_col_profs_cols,
                                                axis = 1)
@@ -1190,7 +1193,7 @@ class Ortho_Stats:
                                                                            conc = True)])
             prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
                                               index = drop_prof_temp_df.index,
-                                              columns = ["Profiles_similarity_score"])
+                                              columns = ["PSS"])
             profs_pairs_temp_df = pd.DataFrame(conc_qa_prof_temp_list,
                                                index = drop_prof_temp_df.index,
                                                columns = ["Query_gene_profile", "Array_gene_profile"])
@@ -1198,12 +1201,12 @@ class Ortho_Stats:
                                      profs_pairs_temp_df,
                                      prof_score_temp_df],
                                     axis = 1)
-            sim_prof_bool = (permuted_df["Profiles_similarity_score"] >=
+            sim_prof_bool = (permuted_df["PSS"] >=
                              in_prof_sim_lev)
-            unsim_prof_bool = (permuted_df["Profiles_similarity_score"] <
+            unsim_prof_bool = (permuted_df["PSS"] <
                                in_prof_sim_lev) &\
-                              (permuted_df["Profiles_similarity_score"] > 0)
-            mir_prof_bool = (permuted_df["Profiles_similarity_score"] == 0)
+                              (permuted_df["PSS"] > 0)
+            mir_prof_bool = (permuted_df["PSS"] == 0)
             sim_prof_perm_num = len(permuted_df[sim_prof_bool])
             unsim_prof_perm_num = len(permuted_df[unsim_prof_bool])
             mir_prof_perm_num = len(permuted_df[mir_prof_bool])
@@ -1229,10 +1232,10 @@ class Ortho_Stats:
         pandas.DataFrame itself. Return Ortho_Stats.prof_arr_perm_res_avg
         containing average numbers of similar, dissimilar and mirror profiles.
         The algorithm:
-            1. Extract Ortho_Stats.inter_df["ORF", "Profile"].
+            1. Extract Ortho_Stats.inter_df["ORF", "PROF"].
             2. Strip the original DataFrame from these 2 cols.
             3. Make the non-redundant list.
-            4. Shuffle Profile col using pandas.Series.sample method.
+            4. Shuffle PROF col using pandas.Series.sample method.
             5. Merge with the stripped DataFrame on ORF (how="left").
             6. Calculate the results.
 
@@ -1248,7 +1251,7 @@ class Ortho_Stats:
                                            "Array_gene_profile"]]
             drop_prof_temp_df = self.inter_df.drop(["Query_gene_profile",
                                                     "Array_gene_profile",
-                                                    "Profiles_similarity_score"],
+                                                    "PSS"],
                                                    axis = 1)
             q_ORF_prof_df.columns = range(len(q_ORF_prof_df.columns))
             a_ORF_prof_df.columns = range(len(a_ORF_prof_df.columns))
@@ -1256,9 +1259,9 @@ class Ortho_Stats:
                                            a_ORF_prof_df],
                                           ignore_index = True)
             stack_ORF_prof_df.drop_duplicates(inplace = True)
-            stack_ORF_prof_df.columns = ["ORF", "Profile"]
+            stack_ORF_prof_df.columns = ["ORF", "PROF"]
             stack_ORF_prof_df.index = range(len(stack_ORF_prof_df))
-            stack_prof_perm_df = stack_ORF_prof_df.Profile.sample(len(stack_ORF_prof_df))
+            stack_prof_perm_df = stack_ORF_prof_df.PROF.sample(len(stack_ORF_prof_df))
             stack_prof_perm_df.index = range(len(stack_prof_perm_df))
             ORF_prof_perm_df = pd.concat([stack_ORF_prof_df.ORF,
                                           stack_prof_perm_df],
@@ -1273,17 +1276,17 @@ class Ortho_Stats:
                                     left_on = "ORF_A",
                                     right_on = "ORF",
                                     how = "left",
-                                    suffixes=("_query", "_array"))
+                                    suffixes=("_Q", "_array"))
             qa_merged_score_df = df_based_profiles_scorer(qa_merged_df,
-                                                          prof_1_col_name = "Profile_query",
-                                                          prof_2_col_name = "Profile_array",
-                                                          score_col_name = "Profiles_similarity_score")
-            sim_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] >=
+                                                          prof_1_col_name = "PROF_Q",
+                                                          prof_2_col_name = "PROF_A",
+                                                          score_col_name = "PSS")
+            sim_prof_bool = (qa_merged_score_df["PSS"] >=
                              in_prof_sim_lev)
-            unsim_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] <
+            unsim_prof_bool = (qa_merged_score_df["PSS"] <
                                in_prof_sim_lev) &\
-                              (qa_merged_score_df["Profiles_similarity_score"] > 0)
-            mir_prof_bool = (qa_merged_score_df["Profiles_similarity_score"] == 0)
+                              (qa_merged_score_df["PSS"] > 0)
+            mir_prof_bool = (qa_merged_score_df["PSS"] == 0)
             sim_prof_perm_num = len(qa_merged_score_df[sim_prof_bool])
             unsim_prof_perm_num = len(qa_merged_score_df[unsim_prof_bool])
             mir_prof_perm_num = len(qa_merged_score_df[mir_prof_bool])
