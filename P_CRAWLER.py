@@ -798,9 +798,6 @@ class Ortho_Interactions:
                                  right_on = "GENE",
                                  how = "left",
                                  suffixes=("_Q", "_A"))
-        self.inter_df.drop(["GENE_Q", "GENE_A"],
-                           axis = 1,
-                           inplace = True)
         for i in self.inter_df.itertuples():
             if getattr(i, "BIOPROC_Q") == getattr(i, "BIOPROC_A"):
                 if getattr(i, "BIOPROC_Q") == "unknown" or\
