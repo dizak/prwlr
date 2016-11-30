@@ -524,13 +524,13 @@ class Ortho_Interactions:
                           'Array_gene_name': 'GENE_A',
                           'Array_SMF': 'SMF_A',
                           'Array_SMF_standard_deviation': 'SMF_SD_A',
+                          'DMF': 'DMF',
+                          'DMF_standard_deviation': 'DMF_SD',
+                          'Genetic_interaction_score': 'GIS',
                           'Query_ORF': 'ORF_Q',
-                          'Query_gene_name': 'GENE_Q',
                           'Query_SMF': 'SMF_Q',
                           'Query_SMF_standard_deviation': 'SMF_SD_Q',
-                          'DMF': 'DMF',
-                          'DMF_SD': 'DMF_SD',
-                          'Genetic_interaction_score': 'GIS',
+                          'Query_gene_name': 'GENE_Q',
                           'Standard_deviation': 'GIS_SD',
                           'p-value': 'GIS_P'}
         self.KO_df = KO_df
@@ -545,13 +545,13 @@ class Ortho_Interactions:
                       excel = False,
                       in_sep = ","):
         """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
-        parsed <csv> file. The minimal filtration is based of a given p-value
+        parsed <csv> file. The minimal filtration is based of a given GIS_P
         and presence of DMF value. Further filtration results in DMF
         higher/lower than both SMFs.
 
         Args:
             in_file_name (str): name of file to parse
-            p_value (float): maximum p-value for filtering
+            p_value (float): maximum GIS_P for filtering
             DMF_type (str): positive -> DMF > both SMFs
                             negative -> DMF < both SMFs
                             neutral  -> DMF not <None> (default)
@@ -565,14 +565,15 @@ class Ortho_Interactions:
             sga_df = pd.read_csv(in_file_name, sep = in_sep)
         else:
             sga_df = pd.read_excel(in_file_name)
-        positive_DMF_bool = (sga_df["DMF"] > sga_df["Query_SMF"]) &\
-                            (sga_df["DMF"] > sga_df["Array_SMF"]) &\
-                            (sga_df["p-value"] <= p_value)
-        negative_DMF_bool = (sga_df["DMF"] < sga_df["Query_SMF"]) &\
-                            (sga_df["DMF"] < sga_df["Array_SMF"]) &\
-                            (sga_df["p-value"] <= p_value)
+        sga_df.rename(columns = self.sga_heads, inplace = True)
+        positive_DMF_bool = (sga_df["DMF"] > sga_df["SMF_Q"]) &\
+                            (sga_df["DMF"] > sga_df["SMF_A"]) &\
+                            (sga_df["GIS_P"] <= p_value)
+        negative_DMF_bool = (sga_df["DMF"] < sga_df["SMF_Q"]) &\
+                            (sga_df["DMF"] < sga_df["SMF_A"]) &\
+                            (sga_df["GIS_P"] <= p_value)
         neutral_DMF_bool = (sga_df["DMF"].isnull() == False) &\
-                           (sga_df["p-value"] <= p_value)
+                           (sga_df["GIS_P"] <= p_value)
         print "\nselecting data...".format()
         if DMF_type == "positive":
             self.inter_df = sga_df[positive_DMF_bool]
@@ -627,8 +628,8 @@ class Ortho_Interactions:
         bio_proc_temp_list = []
         print "\ncreating attributes list...".format()
         for i in self.inter_df.itertuples():
-            qa_attrib_temp_list.append([getattr(i, "Query_gene_name"),
-                                        getattr(i, "Array_gene_name")])
+            qa_attrib_temp_list.append([getattr(i, "GENE_Q"),
+                                        getattr(i, "GENE_A")])
         print "\nscoring profiles similarity...".format()
         prof_score_temp_list = ptmp.ProcessingPool().map(lambda x: df_qa_names_2_prof_score(x,
                                                                                             self.gene_profiles),
@@ -643,7 +644,7 @@ class Ortho_Interactions:
                                                            qa_attrib_temp_list)
         print "\npreparing descriptors of query genes...".format()
         for i in self.inter_df.itertuples():
-            q_gene_name_temp_list.append(getattr(i, "Query_gene_name"))
+            q_gene_name_temp_list.append(getattr(i, "GENE_Q"))
         q_gene_head_temp_list = ptmp.ProcessingPool().map(lambda x: gene_finder_by_attrib("GN_gene_id",
                                                                                           x,
                                                                                           "description",
@@ -651,7 +652,7 @@ class Ortho_Interactions:
                                                           q_gene_name_temp_list)
         print "\npreparing descriptors of array genes...".format()
         for i in self.inter_df.itertuples():
-            a_gene_name_temp_list.append(getattr(i, "Array_gene_name"))
+            a_gene_name_temp_list.append(getattr(i, "GENE_A"))
         a_gene_head_temp_list = ptmp.ProcessingPool().map(lambda x: gene_finder_by_attrib("GN_gene_id",
                                                                                           x,
                                                                                           "description",
@@ -681,12 +682,12 @@ class Ortho_Interactions:
             print "\nappending with bioprocesses info...".format()
             self.inter_df = pd.merge(self.inter_df,
                                      self.bio_proc_df,
-                                     left_on = "Query_gene_name",
+                                     left_on = "GENE_Q",
                                      right_on = "Gene_name",
                                      how = "left")
             self.inter_df = pd.merge(self.inter_df,
                                      self.bio_proc_df,
-                                     left_on = "Array_gene_name",
+                                     left_on = "GENE_A",
                                      right_on = "Gene_name",
                                      how = "left",
                                      suffixes=("_query", "_array"))
@@ -712,17 +713,17 @@ class Ortho_Interactions:
             pass
         if profiles_df == True:
             print "\nappending with sign-per-column profiles...".format()
-            cols_query_temp_list = ["Query_gene_name"] + list(self.query_species)
-            cols_array_temp_list = ["Array_gene_name"] + list(self.query_species)
+            cols_query_temp_list = ["GENE_Q"] + list(self.query_species)
+            cols_array_temp_list = ["GENE_A"] + list(self.query_species)
             sep_prof_temp_df = pd.DataFrame(self.gene_profiles,
                                             columns = cols_query_temp_list)
             self.inter_df = pd.merge(self.inter_df,
                                      sep_prof_temp_df,
-                                     on = "Query_gene_name")
+                                     on = "GENE_Q")
             sep_prof_temp_df.columns = cols_array_temp_list
             self.inter_df = pd.merge(self.inter_df,
                                      sep_prof_temp_df,
-                                     on = "Array_gene_name",
+                                     on = "GENE_A",
                                      suffixes = ("_query", "_array"))
         else:
             pass
@@ -731,12 +732,12 @@ class Ortho_Interactions:
         temp_score_list = []
         self.inter_df = pd.merge(self.inter_df,
                                  self.ORF_KO_df,
-                                 left_on = "Query_ORF",
+                                 left_on = "ORF_Q",
                                  right_on = "ORF_id",
                                  how = "inner")
         self.inter_df = pd.merge(self.inter_df,
                                  self.ORF_KO_df,
-                                 left_on = "Array_ORF",
+                                 left_on = "ORF_A",
                                  right_on = "ORF_id",
                                  how = "inner",
                                  suffixes = ("_query", "_array"))
@@ -775,12 +776,12 @@ class Ortho_Interactions:
         bio_proc_temp_list = []
         self.inter_df = pd.merge(self.inter_df,
                                  self.bio_proc_df,
-                                 left_on = "Query_gene_name",
+                                 left_on = "GENE_Q",
                                  right_on = "Gene_name",
                                  how = "left")
         self.inter_df = pd.merge(self.inter_df,
                                  self.bio_proc_df,
-                                 left_on = "Array_gene_name",
+                                 left_on = "GENE_A",
                                  right_on = "Gene_name",
                                  how = "left",
                                  suffixes=("_query", "_array"))
@@ -875,17 +876,17 @@ class Ortho_Stats:
         self.filters_used = []
         self.filters_name = []
         positive_DMF_bool = ((self.inter_df["DMF"] >
-                             self.inter_df["Query_SMF"]) &
+                             self.inter_df["SMF_Q"]) &
                              (self.inter_df["DMF"] >
-                              self.inter_df["Array_SMF"]))
+                              self.inter_df["SMF_A"]))
         negative_DMF_bool = ((self.inter_df["DMF"] <
-                             self.inter_df["Query_SMF"]) &
+                             self.inter_df["SMF_Q"]) &
                              (self.inter_df["DMF"] <
-                              self.inter_df["Array_SMF"]))
-        SMF_below_one_bool = (self.inter_df["Query_SMF"] < 1.0) &\
-                             (self.inter_df["Array_SMF"] < 1.0)
-        inter_score_max_bool = (self.inter_df["Genetic_interaction_score"] < inter_score_max)
-        inter_score_min_bool = (self.inter_df["Genetic_interaction_score"] > inter_score_min)
+                              self.inter_df["SMF_A"]))
+        SMF_below_one_bool = (self.inter_df["SMF_Q"] < 1.0) &\
+                             (self.inter_df["SMF_A"] < 1.0)
+        inter_score_max_bool = (self.inter_df["GIS"] < inter_score_max)
+        inter_score_min_bool = (self.inter_df["GIS"] > inter_score_min)
         no_flat_plu_q_bool = (self.inter_df["Query_gene_profile"] !=
                               "+" * len(self.query_species))
         no_flat_min_q_bool = (self.inter_df["Query_gene_profile"] !=
@@ -990,13 +991,13 @@ class Ortho_Stats:
         else:
             pass
         positive_DMF_bool = ((self.inter_df["DMF"] >
-                             self.inter_df["Query_SMF"]) &
+                             self.inter_df["SMF_Q"]) &
                              (self.inter_df["DMF"] >
-                              self.inter_df["Array_SMF"]))
+                              self.inter_df["SMF_A"]))
         negative_DMF_bool = ((self.inter_df["DMF"] <
-                             self.inter_df["Query_SMF"]) &
+                             self.inter_df["SMF_Q"]) &
                              (self.inter_df["DMF"] <
-                              self.inter_df["Array_SMF"]))
+                              self.inter_df["SMF_A"]))
         sim_prof_bool = (self.inter_df["Profiles_similarity_score"] >=
                          in_prof_sim_lev)
         unsim_prof_bool = (self.inter_df["Profiles_similarity_score"] <
@@ -1033,16 +1034,16 @@ class Ortho_Stats:
         """
         def f(in_iter):
             temp_score_list = []
-            q_temp_df = self.inter_df[["Query_gene_name", "Query_gene_profile"]]
-            a_temp_df = self.inter_df[["Array_gene_name", "Array_gene_profile"]]
+            q_temp_df = self.inter_df[["GENE_Q", "Query_gene_profile"]]
+            a_temp_df = self.inter_df[["GENE_A", "Array_gene_profile"]]
             q_temp_perm_df = q_temp_df.sample(len(q_temp_df))
             a_temp_perm_df = a_temp_df.sample(len(a_temp_df))
             q_temp_perm_df.index = range(len(q_temp_perm_df))
             a_temp_perm_df.index = range(len(a_temp_perm_df))
             qa_temp_perm_df = pd.concat([q_temp_perm_df, a_temp_perm_df], axis=1)
             for ii in qa_temp_perm_df.itertuples():
-                temp_score_list.append(df_qa_names_2_prof_score([getattr(ii, "Query_gene_name"),
-                                                                 getattr(ii, "Array_gene_name")],
+                temp_score_list.append(df_qa_names_2_prof_score([getattr(ii, "GENE_Q"),
+                                                                 getattr(ii, "GENE_A")],
                                                                 self.gene_profiles))
             temp_score_df = pd.DataFrame(temp_score_list,
                                          index=qa_temp_perm_df.index,
@@ -1166,8 +1167,8 @@ class Ortho_Stats:
                 full_arr = np.append(name_arr, getattr(i, "profiles"))
                 gene_profs_perm_arr_list.append(full_arr)
             for i in drop_prof_temp_df.itertuples():
-                qa_attrib_temp_list.append([getattr(i, "Query_gene_name"),
-                                            getattr(i, "Array_gene_name")])
+                qa_attrib_temp_list.append([getattr(i, "GENE_Q"),
+                                            getattr(i, "GENE_A")])
             for i in qa_attrib_temp_list:
                 prof_score_temp_list.append(df_qa_names_2_prof_score(i,
                                                                      gene_profs_perm_arr_list))
@@ -1231,9 +1232,9 @@ class Ortho_Stats:
             not
         """
         def f(in_iter):
-            q_ORF_prof_df = self.inter_df[["Query_ORF",
+            q_ORF_prof_df = self.inter_df[["ORF_Q",
                                            "Query_gene_profile"]]
-            a_ORF_prof_df = self.inter_df[["Array_ORF",
+            a_ORF_prof_df = self.inter_df[["ORF_A",
                                            "Array_gene_profile"]]
             drop_prof_temp_df = self.inter_df.drop(["Query_gene_profile",
                                                     "Array_gene_profile",
@@ -1254,12 +1255,12 @@ class Ortho_Stats:
                                          axis = 1)
             q_merged_df = pd.merge(drop_prof_temp_df,
                                    ORF_prof_perm_df,
-                                   left_on = "Query_ORF",
+                                   left_on = "ORF_Q",
                                    right_on = "ORF",
                                    how = "left")
             qa_merged_df = pd.merge(q_merged_df,
                                     ORF_prof_perm_df,
-                                    left_on = "Array_ORF",
+                                    left_on = "ORF_A",
                                     right_on = "ORF",
                                     how = "left",
                                     suffixes=("_query", "_array"))
@@ -1518,11 +1519,11 @@ class Costanzo_API:
         raw (str): raw data link and file name
         raw_matrix (str): raw data genetic interactions matrix link and file
         name, Java Treeview format
-        lenient_cutoff (str): p-value < 0.05 cutoff link and file name
+        lenient_cutoff (str): GIS_P < 0.05 cutoff link and file name
         intermediate_cutoff (str): |genetic interaction score| > 0.08,
-        p-value < 0.05 cutoff link and file name
+        GIS_P < 0.05 cutoff link and file name
         stringent_cutoff (str): genetic interaction score < -0.12,
-        p-value < 0.05 or genetic interaction score > 0.16, p-value < 0.05 link
+        GIS_P < 0.05 or genetic interaction score > 0.16, GIS_P < 0.05 link
         and file name
         bioprocesses (str): bioprocesses annotations
         chemical_genomics (str): chemical genomics data
