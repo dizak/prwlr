@@ -524,13 +524,13 @@ class Ortho_Interactions:
                           'Array_gene_name': 'GENE_A',
                           'Array_SMF': 'SMF_A',
                           'Array_SMF_standard_deviation': 'SMF_SD_A',
+                          'Query_ORF': 'ORF_Q',
+                          'Query_gene_name': 'GENE_Q',
+                          'Query_SMF': 'SMF_Q',
+                          'Query_SMF_standard_deviation': 'SMF_SD_Q',
                           'DMF': 'DMF',
                           'DMF_standard_deviation': 'DMF_SD',
                           'Genetic_interaction_score': 'GIS',
-                          'Query_ORF': 'ORF_Q',
-                          'Query_SMF': 'SMF_Q',
-                          'Query_SMF_standard_deviation': 'SMF_SD_Q',
-                          'Query_gene_name': 'GENE_Q',
                           'Standard_deviation': 'GIS_SD',
                           'p-value': 'GIS_P'}
         self.KO_df = KO_df
