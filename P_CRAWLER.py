@@ -900,13 +900,13 @@ class Ortho_Stats:
                              (self.inter_df["SMF_A"] < 1.0)
         inter_score_max_bool = (self.inter_df["GIS"] < inter_score_max)
         inter_score_min_bool = (self.inter_df["GIS"] > inter_score_min)
-        no_flat_plu_q_bool = (self.inter_df["Query_gene_profile"] !=
+        no_flat_plu_q_bool = (self.inter_df["PROF_Q"] !=
                               "+" * len(self.query_species))
-        no_flat_min_q_bool = (self.inter_df["Query_gene_profile"] !=
+        no_flat_min_q_bool = (self.inter_df["PROF_Q"] !=
                               "-" * len(self.query_species))
-        no_flat_plu_a_bool = (self.inter_df["Array_gene_profile"] !=
+        no_flat_plu_a_bool = (self.inter_df["PROF_A"] !=
                               "+" * len(self.query_species))
-        no_flat_min_a_bool = (self.inter_df["Array_gene_profile"] !=
+        no_flat_min_a_bool = (self.inter_df["PROF_A"] !=
                               "-" * len(self.query_species))
         iden_proc_bool = (self.inter_df["BSS"] ==
                           "identical")
@@ -1047,8 +1047,8 @@ class Ortho_Stats:
         """
         def f(in_iter):
             temp_score_list = []
-            q_temp_df = self.inter_df[["GENE_Q", "Query_gene_profile"]]
-            a_temp_df = self.inter_df[["GENE_A", "Array_gene_profile"]]
+            q_temp_df = self.inter_df[["GENE_Q", "PROF_Q"]]
+            a_temp_df = self.inter_df[["GENE_A", "PROF_A"]]
             q_temp_perm_df = q_temp_df.sample(len(q_temp_df))
             a_temp_perm_df = a_temp_df.sample(len(a_temp_df))
             q_temp_perm_df.index = range(len(q_temp_perm_df))
@@ -1098,10 +1098,10 @@ class Ortho_Stats:
 
         def f(in_iter):
             temp_score_list = []
-            q_prof_temp_df = self.inter_df["Query_gene_profile"]
-            a_prof_temp_df = self.inter_df["Array_gene_profile"]
-            drop_prof_temp_df = self.inter_df.drop(["Query_gene_profile",
-                                                    "Array_gene_profile",
+            q_prof_temp_df = self.inter_df["PROF_Q"]
+            a_prof_temp_df = self.inter_df["PROF_A"]
+            drop_prof_temp_df = self.inter_df.drop(["PROF_Q",
+                                                    "PROF_A",
                                                     "PSS"] +
                                                    q_sign_per_col_profs_cols +
                                                    a_sign_per_col_profs_cols,
@@ -1115,8 +1115,8 @@ class Ortho_Stats:
                                      a_prof_perm_temp_df],
                                     axis = 1)
             for ii in permuted_df.itertuples():
-                temp_score_list.append([simple_profiles_scorer(np.array(list(getattr(ii, "Query_gene_profile"))),
-                                                               np.array(list(getattr(ii, "Array_gene_profile"))))])
+                temp_score_list.append([simple_profiles_scorer(np.array(list(getattr(ii, "PROF_Q"))),
+                                                               np.array(list(getattr(ii, "PROF_A"))))])
             temp_score_df = pd.DataFrame(temp_score_list,
                                          index=permuted_df.index,
                                          columns=["PSS"])
@@ -1153,8 +1153,8 @@ class Ortho_Stats:
         """
         q_sign_per_col_profs_cols = ["{0}_Q".format(i) for i in self.query_species]
         a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species]
-        drop_prof_temp_df = self.inter_df.drop(["Query_gene_profile",
-                                                "Array_gene_profile",
+        drop_prof_temp_df = self.inter_df.drop(["PROF_Q",
+                                                "PROF_A",
                                                 "PSS"] +
                                                q_sign_per_col_profs_cols +
                                                a_sign_per_col_profs_cols,
@@ -1196,7 +1196,7 @@ class Ortho_Stats:
                                               columns = ["PSS"])
             profs_pairs_temp_df = pd.DataFrame(conc_qa_prof_temp_list,
                                                index = drop_prof_temp_df.index,
-                                               columns = ["Query_gene_profile", "Array_gene_profile"])
+                                               columns = ["PROF_Q", "PROF_A"])
             permuted_df = pd.concat([drop_prof_temp_df,
                                      profs_pairs_temp_df,
                                      prof_score_temp_df],
@@ -1246,11 +1246,11 @@ class Ortho_Stats:
         """
         def f(in_iter):
             q_ORF_prof_df = self.inter_df[["ORF_Q",
-                                           "Query_gene_profile"]]
+                                           "PROF_Q"]]
             a_ORF_prof_df = self.inter_df[["ORF_A",
-                                           "Array_gene_profile"]]
-            drop_prof_temp_df = self.inter_df.drop(["Query_gene_profile",
-                                                    "Array_gene_profile",
+                                           "PROF_A"]]
+            drop_prof_temp_df = self.inter_df.drop(["PROF_Q",
+                                                    "PROF_A",
                                                     "PSS"],
                                                    axis = 1)
             q_ORF_prof_df.columns = range(len(q_ORF_prof_df.columns))
