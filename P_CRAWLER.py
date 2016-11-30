@@ -517,7 +517,7 @@ class Ortho_Interactions:
                  KO_df,
                  org_ortho_db_X_ref_df):
         self.query_species = query_species
-        self.genes_inter = genes
+        self.genes = genes
         self.gene_profiles = gene_profiles
         self.sga_heads = {"ORF_Q": "Query_ORF",
                           "GENE_Q": "Query_gene_name",
