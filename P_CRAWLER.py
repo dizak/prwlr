@@ -541,7 +541,7 @@ class Ortho_Interactions:
                           'Standard_deviation': 'GIS_SD',
                           'p-value': 'GIS_P'}
         self.bio_proc_heads = {"Gene_name": "GENE",
-                               "Process": "PROC"}
+                               "Process": "BIOPROC"}
         self.KO_df = KO_df
         self.ORF_KO_df = org_ortho_db_X_ref_df
         self.inter_df = None
@@ -612,7 +612,7 @@ class Ortho_Interactions:
             self.bio_proc_df = pd.read_csv(in_file_name, sep = in_sep)
         else:
             self.bio_proc_df = pd.read_excel(in_file_name)
-        self.bio_proc_df.rename(self.bio_proc_heads, inplace = True)
+        self.bio_proc_df.rename(columns = self.bio_proc_heads, inplace = True)
 
     def gen_based_appender(self,
                            bio_proc = True,
@@ -693,21 +693,21 @@ class Ortho_Interactions:
             self.inter_df = pd.merge(self.inter_df,
                                      self.bio_proc_df,
                                      left_on = "GENE_Q",
-                                     right_on = "Gene_name",
+                                     right_on = "GENE",
                                      how = "left")
             self.inter_df = pd.merge(self.inter_df,
                                      self.bio_proc_df,
                                      left_on = "GENE_A",
-                                     right_on = "Gene_name",
+                                     right_on = "GENE",
                                      how = "left",
-                                     suffixes=("_query", "_array"))
-            self.inter_df.drop(["Gene_name_query", "Gene_name_array"],
+                                     suffixes=("_Q", "_A"))
+            self.inter_df.drop(["GENE_Q", "GENE_A"],
                                axis = 1,
                                inplace = True)
             for i in self.inter_df.itertuples():
-                if getattr(i, "Process_query") == getattr(i, "Process_array"):
-                    if getattr(i, "Process_query") == "unknown" or\
-                       getattr(i, "Process_query") == "unknown":
+                if getattr(i, "BIOPROC_Q") == getattr(i, "BIOPROC_A"):
+                    if getattr(i, "BIOPROC_Q") == "unknown" or\
+                       getattr(i, "BIOPROC_Q") == "unknown":
                         bio_proc_temp_list.append("unknown")
                     else:
                         bio_proc_temp_list.append("identical")
@@ -715,7 +715,7 @@ class Ortho_Interactions:
                     bio_proc_temp_list.append("different")
             bio_proc_temp_df = pd.DataFrame(bio_proc_temp_list,
                                             index = self.inter_df.index,
-                                            columns = ["Bioprocesses_similarity"])
+                                            columns = ["BSS"])
             self.inter_df = pd.concat([self.inter_df,
                                        bio_proc_temp_df],
                                       axis = 1)
@@ -787,21 +787,21 @@ class Ortho_Interactions:
         self.inter_df = pd.merge(self.inter_df,
                                  self.bio_proc_df,
                                  left_on = "GENE_Q",
-                                 right_on = "Gene_name",
+                                 right_on = "GENE",
                                  how = "left")
         self.inter_df = pd.merge(self.inter_df,
                                  self.bio_proc_df,
                                  left_on = "GENE_A",
-                                 right_on = "Gene_name",
+                                 right_on = "GENE",
                                  how = "left",
-                                 suffixes=("_query", "_array"))
-        self.inter_df.drop(["Gene_name_query", "Gene_name_array"],
+                                 suffixes=("_Q", "_A"))
+        self.inter_df.drop(["GENE_Q", "GENE_A"],
                            axis = 1,
                            inplace = True)
         for i in self.inter_df.itertuples():
-            if getattr(i, "Process_query") == getattr(i, "Process_array"):
-                if getattr(i, "Process_query") == "unknown" or\
-                   getattr(i, "Process_query") == "unknown":
+            if getattr(i, "BIOPROC_Q") == getattr(i, "BIOPROC_A"):
+                if getattr(i, "BIOPROC_Q") == "unknown" or\
+                   getattr(i, "BIOPROC_Q") == "unknown":
                     bio_proc_temp_list.append("unknown")
                 else:
                     bio_proc_temp_list.append("identical")
@@ -809,7 +809,7 @@ class Ortho_Interactions:
                 bio_proc_temp_list.append("different")
         bio_proc_temp_df = pd.DataFrame(bio_proc_temp_list,
                                         index = self.inter_df.index,
-                                        columns = ["Bioprocesses_similarity"])
+                                        columns = ["BSS"])
         self.inter_df = pd.concat([self.inter_df,
                                   bio_proc_temp_df],
                                   axis = 1)
@@ -905,9 +905,9 @@ class Ortho_Stats:
                               "+" * len(self.query_species))
         no_flat_min_a_bool = (self.inter_df["Array_gene_profile"] !=
                               "-" * len(self.query_species))
-        iden_proc_bool = (self.inter_df["Bioprocesses_similarity"] ==
+        iden_proc_bool = (self.inter_df["BSS"] ==
                           "identical")
-        diff_proc_bool = (self.inter_df["Bioprocesses_similarity"] ==
+        diff_proc_bool = (self.inter_df["BSS"] ==
                           "different")
         if profiles != None:
             sim_prof_bool = (self.inter_df["Profiles_similarity_score"] >=
