@@ -1107,7 +1107,7 @@ class Ortho_Stats:
             not
         """
         q_sign_per_col_profs_cols = ["{0}_Q".format(i) for i in self.query_species]
-        a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species]
+        a_sign_per_col_profs_cols = ["{0}_A".format(i) for i in self.query_species]
 
         def f(in_iter):
             temp_score_list = []
@@ -1165,7 +1165,7 @@ class Ortho_Stats:
             not
         """
         q_sign_per_col_profs_cols = ["{0}_Q".format(i) for i in self.query_species]
-        a_sign_per_col_profs_cols = ["{0}_array".format(i) for i in self.query_species]
+        a_sign_per_col_profs_cols = ["{0}_A".format(i) for i in self.query_species]
         drop_prof_temp_df = self.inter_df.drop(["PROF_Q",
                                                 "PROF_A",
                                                 "PSS"] +
@@ -1289,7 +1289,7 @@ class Ortho_Stats:
                                     left_on = "ORF_A",
                                     right_on = "ORF",
                                     how = "left",
-                                    suffixes=("_Q", "_array"))
+                                    suffixes=("_Q", "_A"))
             qa_merged_score_df = df_based_profiles_scorer(qa_merged_df,
                                                           prof_1_col_name = "PROF_Q",
                                                           prof_2_col_name = "PROF_A",
