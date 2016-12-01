@@ -500,7 +500,9 @@ class Genome:
 class Ortho_Interactions:
     """Holds data about gene interactions array extracted from (csv) file.
     Merges these data with Genome.gene_profiles (list of tuples) and
-    Genome.genes (list of dicts) selected values or Genome.KO_df.
+    Genome.genes (list of dicts) selected values or Genome.KO_df. All col names
+    issues e.g. rename, are kept in here. Dicts for col names change are stored
+    as dicts in Ortho_Interactions attribs.
 
     Attribs:
         query_species (tuple of strs): passed from Genome. Set to <None>
