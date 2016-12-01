@@ -511,7 +511,7 @@ class Ortho_Interactions:
         data from KEGG
         gene_profiles (list of tuples): passed from Genome. Set to <None>
         if using data from KEGG
-        sga_heads (dict of strs): translation from variable name to
+        sga1_heads (dict of strs): translation from variable name to
         Ortho_Interactions.inter_df. Meant to avoid hard-coding and shorten
         line length
         ORF_KO_df (pandas.DataFrame): passed from KEGG_API. Consists of 2
@@ -529,19 +529,30 @@ class Ortho_Interactions:
         self.query_species = query_species
         self.genes = genes
         self.gene_profiles = gene_profiles
-        self.sga_heads = {'Array_ORF': 'ORF_A',
-                          'Array_gene_name': 'GENE_A',
-                          'Array_SMF': 'SMF_A',
-                          'Array_SMF_standard_deviation': 'SMF_SD_A',
-                          'Query_ORF': 'ORF_Q',
-                          'Query_gene_name': 'GENE_Q',
-                          'Query_SMF': 'SMF_Q',
-                          'Query_SMF_standard_deviation': 'SMF_SD_Q',
-                          'DMF': 'DMF',
-                          'DMF_standard_deviation': 'DMF_SD',
-                          'Genetic_interaction_score': 'GIS',
-                          'Standard_deviation': 'GIS_SD',
-                          'p-value': 'GIS_P'}
+        self.sga1_heads = {'Array_ORF': 'ORF_A',
+                           'Array_gene_name': 'GENE_A',
+                           'Array_SMF': 'SMF_A',
+                           'Array_SMF_standard_deviation': 'SMF_SD_A',
+                           'Query_ORF': 'ORF_Q',
+                           'Query_gene_name': 'GENE_Q',
+                           'Query_SMF': 'SMF_Q',
+                           'Query_SMF_standard_deviation': 'SMF_SD_Q',
+                           'DMF': 'DMF',
+                           'DMF_standard_deviation': 'DMF_SD',
+                           'Genetic_interaction_score': 'GIS',
+                           'Standard_deviation': 'GIS_SD',
+                           'p-value': 'GIS_P'}
+        self.sga2_heads = {"Query_Strain_ID": "STR_ID_Q",
+                           "Query_allele_name": "GENE_Q",
+                           "Array_Strain_ID": "STR_ID_Q",
+                           "Array_allele_name": "GENE_A",
+                           "Arraytype/Temp": "TEMP",
+                           "Genetic_interaction_score_(\xce)": "GIS",
+                           "P-value	": "GIS_P",
+                           "Query_single_mutant_fitness_(SMF)": "SMF_Q",
+                           "Array_SMF": "SMF_A",
+                           "Double_mutant_fitness": "DMF",
+                           "Double_mutant_fitness_standard_deviation": "DMF_SD"}
         self.bio_proc_heads = {"Gene_name": "GENE",
                                "Process": "BIOPROC"}
         self.KO_heads = {"authors": "AUTH",
@@ -562,9 +573,11 @@ class Ortho_Interactions:
 
     def parse_sgadata(self,
                       in_file_name,
+                      sga_ver = 1,
+                      excel = False,
                       p_value = float(0.05),
                       DMF_type = "neutral",
-                      excel = False,
+                      remove_white_spaces = True,
                       in_sep = ","):
         """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
         parsed <csv> file. The minimal filtration is based of a given GIS_P
@@ -587,7 +600,15 @@ class Ortho_Interactions:
             sga_df = pd.read_csv(in_file_name, sep = in_sep)
         else:
             sga_df = pd.read_excel(in_file_name)
-        sga_df.rename(columns = self.sga_heads, inplace = True)
+        if remove_white_spaces == True:
+            sga_df.columns = [i.replace(" ", "_") for i in sga_df.columns]
+        if sga_ver == 1:
+            sga_df.rename(columns = self.sga1_heads, inplace = True)
+        elif sga_ver == 2:
+            sga_df.rename(columns = self.sga2_heads, inplace = True)
+        else:
+            pass
+        print sga_df.columns
         positive_DMF_bool = (sga_df["DMF"] > sga_df["SMF_Q"]) &\
                             (sga_df["DMF"] > sga_df["SMF_A"]) &\
                             (sga_df["GIS_P"] <= p_value)
