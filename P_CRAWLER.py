@@ -542,6 +542,17 @@ class Ortho_Interactions:
                           'p-value': 'GIS_P'}
         self.bio_proc_heads = {"Gene_name": "GENE",
                                "Process": "BIOPROC"}
+        self.KO_heads = {"authors": "AUTH",
+                         "definition": "DEF",
+                         "entry": "ENTRY",
+                         "genes": "GENES",
+                         "journal": "JOURN",
+                         "name": "NAME",
+                         "orgs": "ORGS",
+                         "profile": "PROF",
+                         "reference": "REF",
+                         "sequence": "SEQ",
+                         "title": "TITLE"}
         self.KO_df = KO_df
         self.ORF_KO_df = org_ortho_db_X_ref_df
         self.inter_df = None
@@ -740,6 +751,8 @@ class Ortho_Interactions:
 
     def KO_based_appender(self):
         temp_score_list = []
+        self.KO_df.rename(columns = self.KO_heads,
+                          inplace = True)
         self.inter_df = pd.merge(self.inter_df,
                                  self.ORF_KO_df,
                                  left_on = "ORF_Q",
@@ -758,21 +771,18 @@ class Ortho_Interactions:
         self.inter_df = pd.merge(self.inter_df,
                                  self.KO_df,
                                  left_on = "kegg_id_Q",
-                                 right_on = "entry",
+                                 right_on = "ENTRY",
                                  how = "inner")
         self.inter_df = pd.merge(self.inter_df,
                                  self.KO_df,
                                  left_on = "kegg_id_A",
-                                 right_on = "entry",
+                                 right_on = "ENTRY",
                                  how = "inner",
                                  suffixes=('_Q', '_A'))
         self.inter_df.drop(["kegg_id_Q", "kegg_id_A"],
                            axis = 1,
                            inplace = True)
         self.inter_df.dropna(inplace = True)
-        self.inter_df.rename(columns = {"profile_Q": "PROF_Q",
-                                        "profile_A": "PROF_A"},
-                             inplace = True)
         for i in self.inter_df.itertuples():
             prof_1 = np.array(list(getattr(i, "PROF_Q")))
             prof_2 = np.array(list(getattr(i, "PROF_A")))
