@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import lxml.etree as et
 import pandas as pd
@@ -547,7 +548,7 @@ class Ortho_Interactions:
                            "Array_Strain_ID": "STR_ID_Q",
                            "Array_allele_name": "GENE_A",
                            "Arraytype/Temp": "TEMP",
-                           "Genetic_interaction_score_(\xce)": "GIS",
+                           "Genetic_interaction_score_(ε)": "GIS",
                            "P-value	": "GIS_P",
                            "Query_single_mutant_fitness_(SMF)": "SMF_Q",
                            "Array_SMF": "SMF_A",
