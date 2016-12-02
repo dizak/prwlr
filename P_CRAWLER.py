@@ -607,9 +607,13 @@ class Ortho_Interactions:
             sga_df.rename(columns = self.sga1_heads, inplace = True)
         elif sga_ver == 2:
             sga_df.rename(columns = self.sga2_heads, inplace = True)
+            ORF_Q_col = sga_df["STR_ID_Q"].str.split("_", expand = True)[0]
+            ORF_A_col = sga_df["STR_ID_A"].str.split("_", expand = True)[0]
+            ORF_Q_col.name = "ORF_Q"
+            ORF_A_col.name = "ORF_A"
+            sga_df = pd.concat([ORF_Q_col, ORF_A_col, sga_df], axis = 1)
         else:
             pass
-        print sga_df.columns
         positive_DMF_bool = (sga_df["DMF"] > sga_df["SMF_Q"]) &\
                             (sga_df["DMF"] > sga_df["SMF_A"]) &\
                             (sga_df["GIS_P"] <= p_value)
