@@ -587,13 +587,16 @@ class Ortho_Interactions:
 
         Args:
             in_file_name (str): name of file to parse
+            sga_ver (int) = costanzo dataframe version
+            excel (bool): pandas.read_excel when <True>. pandas.read_csv when
+            <False> (default).
             p_value (float): maximum GIS_P for filtering
             DMF_type (str): positive -> DMF > both SMFs
                             negative -> DMF < both SMFs
                             neutral  -> DMF not <None> (default)
                             raw      -> no filter
-            excel (bool): pandas.read_excel when <True>. pandas.read_csv when
-            <False> (default).
+            remove_white_spaces (bool): replaces whitespaces from col names
+            with <_> when True (default)
             in_sep (str): separator for pandas.read_csv method
         """
         print "\nreading in interactions csv...".format()
