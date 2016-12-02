@@ -545,11 +545,11 @@ class Ortho_Interactions:
                            'p-value': 'GIS_P'}
         self.sga2_heads = {"Query_Strain_ID": "STR_ID_Q",
                            "Query_allele_name": "GENE_Q",
-                           "Array_Strain_ID": "STR_ID_Q",
+                           "Array_Strain_ID": "STR_ID_A",
                            "Array_allele_name": "GENE_A",
                            "Arraytype/Temp": "TEMP",
                            "Genetic_interaction_score_(ε)": "GIS",
-                           "P-value	": "GIS_P",
+                           "P-value": "GIS_P",
                            "Query_single_mutant_fitness_(SMF)": "SMF_Q",
                            "Array_SMF": "SMF_A",
                            "Double_mutant_fitness": "DMF",
