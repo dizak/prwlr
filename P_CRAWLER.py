@@ -659,7 +659,7 @@ class Ortho_Interactions:
     def gen_based_appender(self,
                            bio_proc = True,
                            profiles_df = True):
-        """Return Ortho_Interactions.interact_df appended by concatenated
+        """Return Ortho_Interactions.inter_df appended by concatenated
         Genome.gene_profiles (list of tuples), Genome.gene_profiles similarity
         score (float), Genome.genes(list of dicts) gene descriptors. Optionally
         appends with Genome.gene_profiles array browsable by organism's name.
@@ -781,6 +781,9 @@ class Ortho_Interactions:
             pass
 
     def KO_based_appender(self):
+        """Return Ortho_Interactions.inter_df appended by
+        Ortho_Interactions.KO_df. Merge key: ORF
+        """
         temp_score_list = []
         self.KO_df.rename(columns = self.KO_heads,
                           inplace = True)
@@ -827,6 +830,9 @@ class Ortho_Interactions:
                                   axis = 1)
 
     def bio_proc_appender(self):
+        """Return Ortho_Interactions.inter_df appended by
+        Ortho_Interactions.KO_df. Merge key: GENE
+        """
         bio_proc_temp_list = []
         self.inter_df = pd.merge(self.inter_df,
                                  self.bio_proc_df,
