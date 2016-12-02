@@ -867,19 +867,6 @@ class Ortho_Interactions:
                                   bio_proc_temp_df],
                                   axis = 1)
 
-    def inter_df_read(self,
-                      in_file_name,
-                      in_sep = "\t"):
-        self.inter_df = pd.read_csv(in_file_name,
-                                    sep = in_sep)
-
-    def inter_df_save(self,
-                      out_file_name,
-                      in_sep = "\t"):
-        self.inter_df.to_csv("{0}.csv".format(out_file_name),
-                             sep = in_sep,
-                             index = False)
-
 
 class Ortho_Stats:
     """Calculates and holds data about interactions array statistical
