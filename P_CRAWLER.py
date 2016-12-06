@@ -1871,7 +1871,6 @@ class HTML_Generator:
                          "histogram_gis_neu": histogram_gis_neu,
                          "bivar_neu": bivar_neu,
                          "lin_regr_neu": lin_regr_neu,
-                         "column_names": column_names,
                          "dataframe_pos": dataframe_pos,
                          "dataframe_neg": dataframe_neg,
                          "dataframe_neu": dataframe_neu,
