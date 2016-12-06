@@ -1791,7 +1791,6 @@ class HTML_Generator:
                         histogram_gis_neu = None,
                         bivar_neu = None,
                         lin_regr_neu = None,
-                        column_names = None,
                         dataframe_pos = None,
                         dataframe_neg = None,
                         dataframe_neu = None,
@@ -1811,7 +1810,7 @@ class HTML_Generator:
             results_type == <tbl>
             num_prop_perm (pandas.Series): passed from
             Ortho_Stats.num_prop_perm. Values of num_prop_perm are displayed in
-            cells of Summary of results_type == <tbl>
+            cells of Summary if results_type == <tbl>
             histogram_bins (pandas.DataFrame): sorted histogram bins from
             Ortho_Stats.num_prop_res. Used drawChart (JavaScript) func in
             template_file IMPORTANT: created externally. Will be included in
@@ -1845,7 +1844,8 @@ class HTML_Generator:
             bivar_neu (str): path to png file, displayed in Plots
             section, above neutral h5 tag. IMPORTANT: created externally.
             Will be included in one the classes of this script.
-            column_names (list):
+            column_names (list): names of cloumns to display in all three
+            dataframes on the bottom of the rendered html file.
         """
         curr_time = time.localtime()
         time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
