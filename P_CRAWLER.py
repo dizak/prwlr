@@ -1844,8 +1844,6 @@ class HTML_Generator:
             bivar_neu (str): path to png file, displayed in Plots
             section, above neutral h5 tag. IMPORTANT: created externally.
             Will be included in one the classes of this script.
-            column_names (list): names of cloumns to display in all three
-            dataframes on the bottom of the rendered html file.
         """
         curr_time = time.localtime()
         time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
