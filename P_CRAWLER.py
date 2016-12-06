@@ -1844,6 +1844,15 @@ class HTML_Generator:
             bivar_neu (str): path to png file, displayed in Plots
             section, above neutral h5 tag. IMPORTANT: created externally.
             Will be included in one the classes of this script.
+            dataframe_pos (unicode): pandas.Dataframe converted to html table
+            using pandas.DataFrame.to_html method. Displayed in
+            <div id=dataframe_pos></div> if is not <None> (default).
+            dataframe_neg (unicode): pandas.Dataframe converted to html table
+            using pandas.DataFrame.to_html method. Displayed in
+            <div id=dataframe_neg></div> if is not <None> (default).
+            dataframe_neu (unicode): pandas.Dataframe converted to html table
+            using pandas.DataFrame.to_html method. Displayed in
+            <div id=dataframe_neu></div> if is not <None> (default).
         """
         curr_time = time.localtime()
         time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
