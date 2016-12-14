@@ -1844,8 +1844,15 @@ class HTML_Generator:
             bivar_neu (str): path to png file, displayed in Plots
             section, above neutral h5 tag. IMPORTANT: created externally.
             Will be included in one the classes of this script.
-            column_names (list): names of cloumns to display in all three
-            dataframes on the bottom of the rendered html file.
+            dataframe_pos (unicode): pandas.Dataframe converted to html table
+            using pandas.DataFrame.to_html method. Displayed in
+            <div id=dataframe_pos></div> if is not <None> (default).
+            dataframe_neg (unicode): pandas.Dataframe converted to html table
+            using pandas.DataFrame.to_html method. Displayed in
+            <div id=dataframe_neg></div> if is not <None> (default).
+            dataframe_neu (unicode): pandas.Dataframe converted to html table
+            using pandas.DataFrame.to_html method. Displayed in
+            <div id=dataframe_neu></div> if is not <None> (default).
         """
         curr_time = time.localtime()
         time_stamp = "{0}.{1}.{2}, {3}:{4}:{5}".format(curr_time.tm_year,
@@ -1873,7 +1880,6 @@ class HTML_Generator:
                          "histogram_gis_neu": histogram_gis_neu,
                          "bivar_neu": bivar_neu,
                          "lin_regr_neu": lin_regr_neu,
-                         "column_names": column_names,
                          "dataframe_pos": dataframe_pos,
                          "dataframe_neg": dataframe_neg,
                          "dataframe_neu": dataframe_neu,
