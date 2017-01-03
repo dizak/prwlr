@@ -1550,7 +1550,7 @@ class KEGG_API:
         Args:
             out_file_name (str): name for file to be downloaded
         """
-        entries = self.org_db_X_ref_df["kegg_id"]
+        entries = self.org_db_X_ref_df["kegg_id"].drop_duplicates()
         for i in tqdm(entries):
             url = "{0}/{1}/{2}".format(self.home,
                                        self.operations["get_by_entry_no"],
