@@ -5,7 +5,6 @@ import lxml.etree as et
 import pandas as pd
 import re
 import math
-import sys
 import requests as rq
 import numpy as np
 import pathos.multiprocessing as ptmp
@@ -54,7 +53,7 @@ def gene_finder_by_attrib(in_attr,
                                         sc.genes)
         DNA-directed RNA polymerases I, II, and III subunit RPABC5
     """
-    if exact == True:
+    if exact is True:
         for i in in_genes:
             if i[in_attr] == in_val:
                 return i[out_attr]
@@ -88,7 +87,7 @@ def gene_profile_finder_by_name(in_gene_name,
     """
     for i in in_all_gene_profiles:
         if in_gene_name == i[0]:
-            if conc == True:
+            if conc is True:
                 return "".join(i[1:])
             else:
                 return i
@@ -157,7 +156,7 @@ def df_qa_names_2_prof_score(in_genes_pair,
                                                  in_all_gene_profiles,
                                                  conc = False)
     if isinstance(gene_profile_1, type(None)) or isinstance(gene_profile_2,
-                                                            type(None)) == True:
+                                                            type(None)) is True:
         pass
     else:
         return simple_profiles_scorer(gene_profile_1, gene_profile_2)
@@ -352,7 +351,6 @@ class Genome:
 
         def f(i):
             entry_dict = {}
-            pathway_dict = {}
             entry = re.findall("ENTRY.+", i)
             if len(entry) > 0:
                 entry_dict["entry"] = entry[0].replace("ENTRY", "").replace("KO", "").strip()
@@ -455,32 +453,32 @@ class Genome:
             profiles_df (bool): append Genome.KO_df with sign-per-column
             profiles list
         """
-        if remove_empty == True:
-            species_ids = [i for i in species_ids if i != None]
-        if upperize_ids == True:
+        if remove_empty is True:
+            species_ids = [i for i in species_ids if i is not None]
+        if upperize_ids is True:
             species_ids = [i.upper() for i in species_ids]
         for i in self.KO_list:
             if "orgs" in i.keys():
                 profile = ["+" if ii in i["orgs"] else "-" for ii in species_ids]
-                if profile_list == False:
+                if profile_list is False:
                     profile = "".join(profile)
                 else:
                     pass
                 i["profile"] = profile
             else:
                 pass
-        if KO_list_2_df == True:
+        if KO_list_2_df is True:
             self.KO_df = pd.DataFrame(self.KO_list)
             self.KO_df = self.KO_df[-self.KO_df["profile"].isnull()]
             self.KO_df.index = range(len(self.KO_df))
-            if deduplicate == True:
+            if deduplicate is True:
                 self.KO_df = self.KO_df.drop_duplicates(subset = ["entry"],
                                                         keep = "first")
                 self.KO_df.index = range(len(self.KO_df))
             else:
                 pass
-            if profiles_df == True:
-                if remove_species_white_spaces == True:
+            if profiles_df is True:
+                if remove_species_white_spaces is True:
                     profs_df = pd.DataFrame(self.KO_df.profile.map(lambda x:
                                                                    [i for i in x])
                                                               .tolist(),
@@ -600,11 +598,11 @@ class Ortho_Interactions:
             in_sep (str): separator for pandas.read_csv method
         """
         print "\nreading in interactions csv...".format()
-        if excel == False:
+        if excel is False:
             sga_df = pd.read_csv(in_file_name, sep = in_sep)
         else:
             sga_df = pd.read_excel(in_file_name)
-        if remove_white_spaces == True:
+        if remove_white_spaces is True:
             sga_df.columns = [i.replace(" ", "_") for i in sga_df.columns]
         if sga_ver == 1:
             sga_df.rename(columns = self.sga1_heads, inplace = True)
@@ -623,7 +621,7 @@ class Ortho_Interactions:
         negative_DMF_bool = (sga_df["DMF"] < sga_df["SMF_Q"]) &\
                             (sga_df["DMF"] < sga_df["SMF_A"]) &\
                             (sga_df["GIS_P"] <= p_value)
-        neutral_DMF_bool = (sga_df["DMF"].isnull() == False) &\
+        neutral_DMF_bool = (sga_df["DMF"].isnull() is False) &\
                            (sga_df["GIS_P"] <= p_value)
         print "\nselecting data...".format()
         if DMF_type == "positive":
@@ -650,7 +648,7 @@ class Ortho_Interactions:
             <False> (default).
             in_sep (str): separator for pandas.read_csv method
         """
-        if excel == False:
+        if excel is False:
             self.bio_proc_df = pd.read_csv(in_file_name, sep = in_sep)
         else:
             self.bio_proc_df = pd.read_excel(in_file_name)
@@ -730,7 +728,7 @@ class Ortho_Interactions:
                                    q_gene_head_temp_df,
                                    a_gene_head_temp_df],
                                   axis = 1)
-        if bio_proc == True:
+        if bio_proc is True:
             print "\nappending with bioprocesses info...".format()
             self.inter_df = pd.merge(self.inter_df,
                                      self.bio_proc_df,
@@ -763,7 +761,7 @@ class Ortho_Interactions:
                                       axis = 1)
         else:
             pass
-        if profiles_df == True:
+        if profiles_df is True:
             print "\nappending with sign-per-column profiles...".format()
             cols_query_temp_list = ["GENE_Q"] + list(self.query_species)
             cols_array_temp_list = ["GENE_A"] + list(self.query_species)
@@ -917,9 +915,9 @@ class Ortho_Stats:
             prof_sim_lev (int): defines profiles as similar of dissimilar
             when above or below this given value
         """
-        if profiles == None and prof_sim_lev != None:
+        if profiles is None and prof_sim_lev is not None:
             raise ValueError("No value for profiles")
-        elif profiles != None and prof_sim_lev == None:
+        elif profiles is not None and prof_sim_lev is None:
             raise ValueError("No value for prof_sim_lev")
         else:
             pass
@@ -949,7 +947,7 @@ class Ortho_Stats:
                           "identical")
         diff_proc_bool = (self.inter_df["BSS"] ==
                           "different")
-        if profiles != None:
+        if profiles is not None:
             sim_prof_bool = (self.inter_df["PSS"] >=
                              prof_sim_lev)
             unsim_prof_bool = (self.inter_df["PSS"] <
@@ -966,32 +964,32 @@ class Ortho_Stats:
             self.filters_name.append("DMF_n")
         else:
             pass
-        if SMF_below_one == True:
+        if SMF_below_one is True:
             self.inter_df = self.inter_df[SMF_below_one_bool]
             self.filters_used.append("SMF < 1.0")
             self.filters_name.append("SMF_blw_1")
         else:
             pass
-        if isinstance(inter_score_max, float) == True:
+        if isinstance(inter_score_max, float) is True:
             self.inter_df = self.inter_df[inter_score_max_bool]
             self.filters_used.append("Genetic interaction score < {0}".format(inter_score_max))
             self.filters_name.append("gis_{0}".format(inter_score_max))
         else:
             pass
-        if isinstance(inter_score_min, float) == True:
+        if isinstance(inter_score_min, float) is True:
             self.inter_df = self.inter_df[inter_score_min_bool]
             self.filters_used.append("Genetic interaction score > {0}".format(inter_score_min))
             self.filters_name.append("gis_{0}".format(inter_score_min))
         else:
             pass
-        if no_flat_plus == True:
+        if no_flat_plus is True:
             self.inter_df = self.inter_df[no_flat_plu_q_bool]
             self.inter_df = self.inter_df[no_flat_plu_a_bool]
             self.filters_used.append("No plus-only (eg ++++++) profiles")
             self.filters_name.append("no_plus_flat")
         else:
             pass
-        if no_flat_minus == True:
+        if no_flat_minus is True:
             self.inter_df = self.inter_df[no_flat_min_q_bool]
             self.inter_df = self.inter_df[no_flat_min_a_bool]
             self.filters_used.append("No minus-only (eg ------) profiles")
@@ -1032,11 +1030,11 @@ class Ortho_Stats:
             omit, eg when dispalying multiple thresholds at once.
             Default: <None>
         """
-        if isinstance(self.filters_used, str) == True:
+        if isinstance(self.filters_used, str) is True:
             self.filters_used = []
         else:
             pass
-        if isinstance(self.filters_name, str) == True:
+        if isinstance(self.filters_name, str) is True:
             self.filters_name = []
         else:
             pass
@@ -1054,7 +1052,7 @@ class Ortho_Stats:
                            in_prof_sim_lev) &\
                           (self.inter_df["PSS"] > 0)
         mir_prof_bool = (self.inter_df["PSS"] == 0)
-        if in_prof_sim_lev == None:
+        if in_prof_sim_lev is None:
             self.num_prop_res = pd.Series({"total": len(self.inter_df),
                                            "DMF_positive": len(self.inter_df[positive_DMF_bool]),
                                            "DMF_negative": len(self.inter_df[negative_DMF_bool]),
@@ -1254,12 +1252,9 @@ class Ortho_Stats:
                     "dataframe": permuted_df}
         permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
         self.prof_arr_perm_results = pd.DataFrame(permuted_df_results_temp)
-        self.prof_arr_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_arr_perm_results.mirror) /
-                                                len(self.prof_arr_perm_results),
-                                                "similar_profiles": sum(self.prof_arr_perm_results.similar) /
-                                                len(self.prof_arr_perm_results),
-                                                "unsimilar": sum(self.prof_arr_perm_results.unsimilar) /
-                                                len(self.prof_arr_perm_results)})
+        self.prof_arr_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_arr_perm_results.mirror) / len(self.prof_arr_perm_results),
+                                                "similar_profiles": sum(self.prof_arr_perm_results.similar) / len(self.prof_arr_perm_results),
+                                                "unsimilar": sum(self.prof_arr_perm_results.unsimilar) / len(self.prof_arr_perm_results)})
 
     def KO_profs_perm(self,
                       e_value,
@@ -1398,7 +1393,7 @@ class KEGG_API:
             out_file_name (str): name for file to be downloaded
             skip_dwnld (bool): read existing file when <True>. Default <False>
         """
-        if skip_dwnld == True:
+        if skip_dwnld is True:
             pass
         else:
             url = "{0}/{1}/{2}".format(self.home,
@@ -1443,7 +1438,7 @@ class KEGG_API:
             print "No record found for {}".format(organism)
             self.query_ids_not_found.append(organism)
         elif len(organism_ser) > 1:
-            if assume_1st == True:
+            if assume_1st is True:
                 return organism_ser.kegg_org_id.iloc[0]
             print "More than one record for this query\n{}".format(organism_ser[["description",
                                                                                  "kegg_org_id"]])
@@ -1469,7 +1464,7 @@ class KEGG_API:
             skip_dwnld (bool) = read existing file when <True>. Default <False>
         """
         org_id = self.org_name_2_kegg_id(organism)
-        if skip_dwnld == True:
+        if skip_dwnld is True:
             pass
         else:
             url = "{0}/{1}/{2}/{3}".format(self.home,
@@ -1484,7 +1479,7 @@ class KEGG_API:
                                                       "kegg_id"],
                                              header = None,
                                              sep = "\t")
-        if strip_pref == True:
+        if strip_pref is True:
             self.id_conversions_df.replace({"{0}:".format(org_id): ""},
                                            regex=True,
                                            inplace=True)
@@ -1515,7 +1510,7 @@ class KEGG_API:
             skip_dwnld (bool) = read existing file when <True>. Default <False>
         """
         org_id = self.org_name_2_kegg_id(organism)
-        if skip_dwnld == True:
+        if skip_dwnld is True:
             pass
         else:
             url = "{0}/{1}/{2}/{3}".format(self.home,
@@ -1529,12 +1524,12 @@ class KEGG_API:
                                            names = ["ORF_id", "kegg_id"],
                                            header = None,
                                            sep = "\t")
-        if strip_ORF_prefix == True:
+        if strip_ORF_prefix is True:
             self.org_db_X_ref_df["ORF_id"] = self.org_db_X_ref_df["ORF_id"].replace({"{0}:".format(org_id): ""},
                                                                                     regex = True)
         else:
             pass
-        if strip_kegg_id_prefix == True:
+        if strip_kegg_id_prefix is True:
             self.org_db_X_ref_df["kegg_id"] = self.org_db_X_ref_df["kegg_id"].replace({"{0}:".format(self.databases[target_db]): ""},
                                                                                       regex=True)
         else:
@@ -1728,7 +1723,7 @@ class Ortho_Network:
                          node_color = "r",
                          node_alpha = 0.4,
                          with_labels = False)
-        if save_2_file == True:
+        if save_2_file is True:
             plt.savefig(out_file_name,
                         dpi = dpi)
         else:
@@ -1889,14 +1884,25 @@ class HTML_Generator:
 
     def save_template(self,
                       out_file_name):
+        """Save rendered template to file.
+
+        Args:
+            out_file_name (str): name for file to be saved
+        """
         with open("{0}.html".format(out_file_name), "w") as fout:
             fout.write(self.template_rendered)
 
     def print_template(self):
+        """Print template as it is rendered to str(). Just for debugging. Will
+        be removed.
+        """
         print self.template.render()
 
 
 def main():
+    """Temporary blank.
+    Will be replaced with proper argument parser in the future.
+    """
     pass
 
 if __name__ == "__main__":
