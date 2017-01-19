@@ -789,12 +789,12 @@ class Ortho_Interactions:
                                  self.ORF_KO_df,
                                  left_on = "ORF_Q",
                                  right_on = "ORF_id",
-                                 how = "inner")
+                                 how = "left")
         self.inter_df = pd.merge(self.inter_df,
                                  self.ORF_KO_df,
                                  left_on = "ORF_A",
                                  right_on = "ORF_id",
-                                 how = "inner",
+                                 how = "left",
                                  suffixes = ("_Q", "_A"))
         self.inter_df.drop(["ORF_id_Q", "ORF_id_A"],
                            axis = 1,
@@ -804,12 +804,12 @@ class Ortho_Interactions:
                                  self.KO_df,
                                  left_on = "kegg_id_Q",
                                  right_on = "ENTRY",
-                                 how = "inner")
+                                 how = "left")
         self.inter_df = pd.merge(self.inter_df,
                                  self.KO_df,
                                  left_on = "kegg_id_A",
                                  right_on = "ENTRY",
-                                 how = "inner",
+                                 how = "left",
                                  suffixes=('_Q', '_A'))
         self.inter_df.drop(["kegg_id_Q", "kegg_id_A"],
                            axis = 1,
