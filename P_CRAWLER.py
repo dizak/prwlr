@@ -21,12 +21,21 @@ __author__ = "Dariusz Izak"
 
 def all_possible_combinations_counter(subset_size,
                                       set_size):
-    """Return a number (int) of all possible combinations of elements in size
+    """
+    Return a number (int) of all possible combinations of elements in size
     of a subset of a set.
 
-    Args:
-        subset_size (int): size of the subset
-        set_size (int): size of the whole set
+    Parameters
+    -------
+    subset_size: int
+        Size of the subset.
+    set_size: int
+        Size of the whole set.
+
+    Returns
+    -------
+    int
+        Number of all combinations.
     """
     f = math.factorial
     return f(set_size) / f(subset_size) / f(set_size - subset_size)
@@ -37,21 +46,34 @@ def gene_finder_by_attrib(in_attr,
                           out_attr,
                           in_genes,
                           exact = True):
-    """Return an atrribute (dict value) of a gene from the Genome.genes found
+    """
+    Return an atrribute (dict value) of a gene from the Genome.genes found
     by another attribute of choice.
 
-    Args:
-        in_attr (str): attribute to search in
-        in_val (str): desired value of the attribute to look for
-        out_attr (str): attribute of which value is desired to be returned
-        in_genes (list of dicts): Genome.genes to search against
-        exact (bool): whole phrase when <True>. One word in phrase when <False>.
-                      Default <True>
+    Parameters
+    -------
+    in_attr: str
+        Attribute to search in.
+    in_val: str
+        Desired value of the attribute to look for.
+    out_attr: str
+        Attribute of which value is desired to be returned.
+    in_genes: list of dicts
+        Genome.genes to search against.
+    exact: bool
+        Whole phrase when <True>. One word in phrase when <False>.
+        Default <True>
 
-    Examples:
-        >>> print gene_finder_by_attrib("prot_id", "P22139", "description",
-                                        sc.genes)
-        DNA-directed RNA polymerases I, II, and III subunit RPABC5
+    Returns
+    -------
+    str
+        An attribute of a Genome.genes.
+
+    Examples
+    -------
+    >>> print gene_finder_by_attrib("prot_id", "P22139", "description",
+                                    sc.genes)
+    DNA-directed RNA polymerases I, II, and III subunit RPABC5
     """
     if exact is True:
         for i in in_genes:
@@ -66,24 +88,33 @@ def gene_finder_by_attrib(in_attr,
 def gene_profile_finder_by_name(in_gene_name,
                                 in_all_gene_profiles,
                                 conc = True):
-    """Return a gene profile (tuple of str) starting from the second position
+    """
+    Return a gene profile (tuple of str) starting from the second position
     within the tuple from Genome.gene_profiles found by its name.
 
-    Args:
-        in_gene_name (str): desired name to look for
-        in_all_gene_profiles (list of tuples): Genome.gene_profiles to search
-        against
-        conc (bool): elements of profile merged when <True>. Unmodified when
-        <False>
+    Parameters
+    -------
+    in_gene_name: str
+        Desired name to look for.
+    in_all_gene_profiles: list of tuples
+        Genome.gene_profiles to search against.
+    conc: bool
+        Elements of profile merged when <True>. Unmodified when <False>.
 
-    Examples:
-        >>> gene_profile_finder_by_name("SAL1", sc_gen.gene_profiles,
-                                        conc = False)
-        ('SAL1', '-', '-', '-', '+', '-', '+', '-', '+', '+', '-', '-', '+',
-        '+', '+', '-', '-', '+', '+', '+')
-        >>> gene_profile_finder_by_name("SAL1", sc_gen.gene_profiles,
-                                        conc = False)
-        '---+-+-++--+++--+++'
+    Returns
+    -------
+    tuple of str
+        Profile sequence, ("+-++") or ("+", "-", "+", "+").
+
+    Examples
+    -------
+    >>> gene_profile_finder_by_name("SAL1", sc_gen.gene_profiles,
+                                    conc = False)
+    ('SAL1', '-', '-', '-', '+', '-', '+', '-', '+', '+', '-', '-', '+',
+    '+', '+', '-', '-', '+', '+', '+')
+    >>> gene_profile_finder_by_name("SAL1", sc_gen.gene_profiles,
+                                    conc = False)
+    '---+-+-++--+++--+++'
     """
     for i in in_all_gene_profiles:
         if in_gene_name == i[0]:
