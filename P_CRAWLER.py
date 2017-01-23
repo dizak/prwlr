@@ -193,6 +193,13 @@ def df_qa_names_2_prof_score(in_genes_pair,
         return simple_profiles_scorer(gene_profile_1, gene_profile_2)
 
 
+class ParserError(Exception):
+    """
+    Inappropriate structure passed to parser.
+    """
+    pass
+
+
 class Genome:
     """Holds data about the reference organism genome extracted from its
     proteome (multifasta) and its genes orthologs (OrthoXML, ortho-finder csv).
@@ -324,6 +331,11 @@ class Genome:
             reference organism. Will NOT be inculuded in Genome.query_species
             or as +/- sign in Genome.gene_profiles.
         """
+        if in_col_name not in self.orthologous_groups_df.columns:
+            raise KeyError("{0} not in Genome.orthologous_groups_df.columns".
+                           format(in_col_name))
+        else:
+            pass
         temp_dict_list_1 = []
         self.orthologous_groups_df = pd.read_csv(in_file_name,
                                                  sep = "\t",
@@ -379,6 +391,8 @@ class Genome:
         with open(in_file_name, "r") as fin:
             file_str = fin.read()
             entries_list = file_str.split("///")
+            if len(entries_list) < 2:
+                raise ParserError("No split sign. Check if <///> in file.")
 
         def f(i):
             entry_dict = {}
