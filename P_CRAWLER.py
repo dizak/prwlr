@@ -1721,8 +1721,7 @@ class Ortho_Network:
                                              col_1_name,
                                              col_2_name)
 
-    def get_subgrps(self,
-                    sort=False):
+    def get_subgrps(self):
         self.sub_nwrk = [i for i in nx.connected_component_subgraphs(self.nwrk)]
 
     def write_nwrk(self,
