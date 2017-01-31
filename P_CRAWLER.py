@@ -1706,6 +1706,7 @@ class Ortho_Network:
                  inter_df):
         self.inter_df = inter_df
         self.nwrk = None
+        self.sub_nwrk = None
 
     def create_nwrk(self,
                     col_1_name,
@@ -1719,6 +1720,10 @@ class Ortho_Network:
         self.nwrk = nx.from_pandas_dataframe(self.inter_df,
                                              col_1_name,
                                              col_2_name)
+
+    def get_subgrps(self,
+                    sort=False):
+        self.sub_nwrk = [i for i in nx.connected_component_subgraphs(self.nwrk)]
 
     def write_nwrk(self,
                    out_file_name,
