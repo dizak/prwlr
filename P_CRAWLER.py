@@ -666,7 +666,7 @@ class Ortho_Interactions:
         negative_DMF_bool = (sga_df["DMF"] < sga_df["SMF_Q"]) &\
                             (sga_df["DMF"] < sga_df["SMF_A"]) &\
                             (sga_df["GIS_P"] <= p_value)
-        neutral_DMF_bool = (sga_df["DMF"].isnull() == False) &\
+        neutral_DMF_bool = (sga_df["DMF"].notnull()) &\
                            (sga_df["GIS_P"] <= p_value)
         print "\nselecting data...".format()
         if DMF_type == "positive":
