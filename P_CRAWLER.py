@@ -45,7 +45,7 @@ def gene_finder_by_attrib(in_attr,
                           in_val,
                           out_attr,
                           in_genes,
-                          exact = True):
+                          exact=True):
     """
     Return an atrribute (dict value) of a gene from the Genome.genes found
     by another attribute of choice.
@@ -87,7 +87,7 @@ def gene_finder_by_attrib(in_attr,
 
 def gene_profile_finder_by_name(in_gene_name,
                                 in_all_gene_profiles,
-                                conc = True):
+                                conc=True):
     """
     Return a gene profile (tuple of str) starting from the second position
     within the tuple from Genome.gene_profiles found by its name.
@@ -161,11 +161,11 @@ def df_based_profiles_scorer(in_df,
         prof_2 = np.array(list(getattr(i, prof_2_col_name)))
         temp_score_list.append(simple_profiles_scorer(prof_1, prof_2))
     temp_score_df = pd.DataFrame(temp_score_list,
-                                 index = in_df.index,
-                                 columns = [score_col_name])
+                                 index=in_df.index,
+                                 columns=[score_col_name])
     in_df = pd.concat([in_df,
                        temp_score_df],
-                      axis = 1)
+                      axis=1)
     return in_df
 
 
@@ -182,10 +182,10 @@ def df_qa_names_2_prof_score(in_genes_pair,
     """
     gene_profile_1 = gene_profile_finder_by_name(in_genes_pair[0],
                                                  in_all_gene_profiles,
-                                                 conc = False)
+                                                 conc=False)
     gene_profile_2 = gene_profile_finder_by_name(in_genes_pair[1],
                                                  in_all_gene_profiles,
-                                                 conc = False)
+                                                 conc=False)
     if isinstance(gene_profile_1, type(None)) or isinstance(gene_profile_2,
                                                             type(None)) is True:
         pass
@@ -338,8 +338,8 @@ class Genome:
             pass
         temp_dict_list_1 = []
         self.orthologous_groups_df = pd.read_csv(in_file_name,
-                                                 sep = "\t",
-                                                 index_col = 0)
+                                                 sep="\t",
+                                                 index_col=0)
         for i in self.orthologous_groups_df.columns:
             if i == in_col_name:
                 pass
@@ -451,7 +451,7 @@ class Genome:
                 self.ortho_genes.append(i)
 
     def profiler(self,
-                 id_type = "prot_id"):
+                 id_type="prot_id"):
         """Return Genome.gene_profiles (list of tuples) by iterating over
         Genome.query_species (tuple of str) Genome.ortho_genes (list of dicts)
         <orthologs><organism> values. +/- signs sequence resembles
@@ -472,13 +472,13 @@ class Genome:
 
     def KO_list_profiler(self,
                          species_ids,
-                         remove_empty = True,
-                         upperize_ids = True,
-                         profile_list = False,
-                         KO_list_2_df = True,
-                         profiles_df = True,
-                         remove_species_white_spaces = True,
-                         deduplicate = True):
+                         remove_empty=True,
+                         upperize_ids=True,
+                         profile_list=False,
+                         KO_list_2_df=True,
+                         profiles_df=True,
+                         remove_species_white_spaces=True,
+                         deduplicate=True):
         """Return Genome.KO_list (list of dict) or Genome.KO_df (pandas.DataFrame)
         appended with profiles (list of str or str).
 
@@ -517,8 +517,8 @@ class Genome:
             self.KO_df = self.KO_df[-self.KO_df["profile"].isnull()]
             self.KO_df.index = range(len(self.KO_df))
             if deduplicate is True:
-                self.KO_df = self.KO_df.drop_duplicates(subset = ["entry"],
-                                                        keep = "first")
+                self.KO_df = self.KO_df.drop_duplicates(subset=["entry"],
+                                                        keep="first")
                 self.KO_df.index = range(len(self.KO_df))
             else:
                 pass
@@ -527,13 +527,13 @@ class Genome:
                     profs_df = pd.DataFrame(self.KO_df.profile.map(lambda x:
                                                                    [i for i in x])
                                                               .tolist(),
-                                            columns = [i.replace(" ", "_") for i in self.query_species])
+                                            columns=[i.replace(" ", "_") for i in self.query_species])
                 else:
                     profs_df = pd.DataFrame(self.KO_df.profile.map(lambda x:
                                                                    [i for i in x])
                                                               .tolist(),
-                                            columns = self.query_species)
-                self.KO_df = pd.concat([self.KO_df, profs_df], axis = 1)
+                                            columns=self.query_species)
+                self.KO_df = pd.concat([self.KO_df, profs_df], axis=1)
                 self.KO_df.index = range(len(self.KO_df))
             else:
                 pass
@@ -617,12 +617,12 @@ class Ortho_Interactions:
 
     def parse_sgadata(self,
                       in_file_name,
-                      sga_ver = 1,
-                      excel = False,
-                      p_value = float(0.05),
-                      DMF_type = "neutral",
-                      remove_white_spaces = True,
-                      in_sep = ","):
+                      sga_ver=1,
+                      excel=False,
+                      p_value=float(0.05),
+                      DMF_type="neutral",
+                      remove_white_spaces=True,
+                      in_sep=","):
         """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
         parsed <csv> file. The minimal filtration is based of a given GIS_P
         and presence of DMF value. Further filtration results in DMF
@@ -644,20 +644,20 @@ class Ortho_Interactions:
         """
         print "\nreading in interactions csv...".format()
         if excel is False:
-            sga_df = pd.read_csv(in_file_name, sep = in_sep)
+            sga_df = pd.read_csv(in_file_name, sep=in_sep)
         else:
             sga_df = pd.read_excel(in_file_name)
         if remove_white_spaces is True:
             sga_df.columns = [i.replace(" ", "_") for i in sga_df.columns]
         if sga_ver == 1:
-            sga_df.rename(columns = self.sga1_heads, inplace = True)
+            sga_df.rename(columns=self.sga1_heads, inplace=True)
         elif sga_ver == 2:
-            sga_df.rename(columns = self.sga2_heads, inplace = True)
-            ORF_Q_col = sga_df["STR_ID_Q"].str.split("_", expand = True)[0]
-            ORF_A_col = sga_df["STR_ID_A"].str.split("_", expand = True)[0]
+            sga_df.rename(columns=self.sga2_heads, inplace=True)
+            ORF_Q_col = sga_df["STR_ID_Q"].str.split("_", expand=True)[0]
+            ORF_A_col = sga_df["STR_ID_A"].str.split("_", expand=True)[0]
             ORF_Q_col.name = "ORF_Q"
             ORF_A_col.name = "ORF_A"
-            sga_df = pd.concat([ORF_Q_col, ORF_A_col, sga_df], axis = 1)
+            sga_df = pd.concat([ORF_Q_col, ORF_A_col, sga_df], axis=1)
         else:
             pass
         positive_DMF_bool = (sga_df["DMF"] > sga_df["SMF_Q"]) &\
@@ -682,8 +682,8 @@ class Ortho_Interactions:
 
     def parse_bioprocesses(self,
                            in_file_name,
-                           excel = False,
-                           in_sep = ","):
+                           excel=False,
+                           in_sep=","):
         """Return Ortho_Interactions.bio_proc_df (pandas.DataFrame) from parsed
         <csv> or <xls> file.
 
@@ -694,14 +694,14 @@ class Ortho_Interactions:
             in_sep (str): separator for pandas.read_csv method
         """
         if excel is False:
-            self.bio_proc_df = pd.read_csv(in_file_name, sep = in_sep)
+            self.bio_proc_df = pd.read_csv(in_file_name, sep=in_sep)
         else:
             self.bio_proc_df = pd.read_excel(in_file_name)
-        self.bio_proc_df.rename(columns = self.bio_proc_heads, inplace = True)
+        self.bio_proc_df.rename(columns=self.bio_proc_heads, inplace=True)
 
     def gen_based_appender(self,
-                           bio_proc = True,
-                           profiles_df = True):
+                           bio_proc=True,
+                           profiles_df=True):
         """Return Ortho_Interactions.inter_df appended by concatenated
         Genome.gene_profiles (list of tuples), Genome.gene_profiles similarity
         score (float), Genome.genes(list of dicts) gene descriptors. Optionally
@@ -732,10 +732,10 @@ class Ortho_Interactions:
         print "\nconcatenating profiles...".format()
         conc_qa_prof_temp_list = ptmp.ProcessingPool().map(lambda x: [gene_profile_finder_by_name(x[0],
                                                                                                   self.gene_profiles,
-                                                                                                  conc = True),
+                                                                                                  conc=True),
                                                                       gene_profile_finder_by_name(x[1],
                                                                                                   self.gene_profiles,
-                                                                                                  conc = True)],
+                                                                                                  conc=True)],
                                                            qa_attrib_temp_list)
         print "\npreparing descriptors of query genes...".format()
         for i in self.inter_df.itertuples():
@@ -755,40 +755,40 @@ class Ortho_Interactions:
                                                           a_gene_name_temp_list)
         print "\ncreating temporary dataframes...".format()
         prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
-                                          index = self.inter_df.index,
-                                          columns = ["PSS"])
+                                          index=self.inter_df.index,
+                                          columns=["PSS"])
         conc_q_a_prof_temp_df = pd.DataFrame(conc_qa_prof_temp_list,
-                                             index = self.inter_df.index,
-                                             columns = ["PROF_Q", "PROF_A"])
+                                             index=self.inter_df.index,
+                                             columns=["PROF_Q", "PROF_A"])
         q_gene_head_temp_df = pd.DataFrame(q_gene_head_temp_list,
-                                           index = self.inter_df.index,
-                                           columns = ["DESC_Q"])
+                                           index=self.inter_df.index,
+                                           columns=["DESC_Q"])
         a_gene_head_temp_df = pd.DataFrame(a_gene_head_temp_list,
-                                           index = self.inter_df.index,
-                                           columns = ["DESC_A"])
+                                           index=self.inter_df.index,
+                                           columns=["DESC_A"])
         print "\nconcatenating dataframes...".format()
         self.inter_df = pd.concat([self.inter_df,
                                    prof_score_temp_df,
                                    conc_q_a_prof_temp_df,
                                    q_gene_head_temp_df,
                                    a_gene_head_temp_df],
-                                  axis = 1)
+                                  axis=1)
         if bio_proc is True:
             print "\nappending with bioprocesses info...".format()
             self.inter_df = pd.merge(self.inter_df,
                                      self.bio_proc_df,
-                                     left_on = "GENE_Q",
-                                     right_on = "GENE",
-                                     how = "left")
+                                     left_on="GENE_Q",
+                                     right_on="GENE",
+                                     how="left")
             self.inter_df = pd.merge(self.inter_df,
                                      self.bio_proc_df,
-                                     left_on = "GENE_A",
-                                     right_on = "GENE",
-                                     how = "left",
+                                     left_on="GENE_A",
+                                     right_on="GENE",
+                                     how="left",
                                      suffixes=("_Q", "_A"))
             self.inter_df.drop(["GENE_Q", "GENE_A"],
-                               axis = 1,
-                               inplace = True)
+                               axis=1,
+                               inplace=True)
             for i in self.inter_df.itertuples():
                 if getattr(i, "BIOPROC_Q") == getattr(i, "BIOPROC_A"):
                     if getattr(i, "BIOPROC_Q") == "unknown" or\
@@ -799,11 +799,11 @@ class Ortho_Interactions:
                 else:
                     bio_proc_temp_list.append("different")
             bio_proc_temp_df = pd.DataFrame(bio_proc_temp_list,
-                                            index = self.inter_df.index,
-                                            columns = ["BSS"])
+                                            index=self.inter_df.index,
+                                            columns=["BSS"])
             self.inter_df = pd.concat([self.inter_df,
                                        bio_proc_temp_df],
-                                      axis = 1)
+                                      axis=1)
         else:
             pass
         if profiles_df is True:
@@ -811,15 +811,15 @@ class Ortho_Interactions:
             cols_query_temp_list = ["GENE_Q"] + list(self.query_species)
             cols_array_temp_list = ["GENE_A"] + list(self.query_species)
             sep_prof_temp_df = pd.DataFrame(self.gene_profiles,
-                                            columns = cols_query_temp_list)
+                                            columns=cols_query_temp_list)
             self.inter_df = pd.merge(self.inter_df,
                                      sep_prof_temp_df,
-                                     on = "GENE_Q")
+                                     on="GENE_Q")
             sep_prof_temp_df.columns = cols_array_temp_list
             self.inter_df = pd.merge(self.inter_df,
                                      sep_prof_temp_df,
-                                     on = "GENE_A",
-                                     suffixes = ("_Q", "_A"))
+                                     on="GENE_A",
+                                     suffixes=("_Q", "_A"))
         else:
             pass
 
@@ -828,49 +828,49 @@ class Ortho_Interactions:
         Ortho_Interactions.KO_df. Merge key: ORF
         """
         temp_score_list = []
-        self.KO_df.rename(columns = self.KO_heads,
-                          inplace = True)
+        self.KO_df.rename(columns=self.KO_heads,
+                          inplace=True)
         self.inter_df = pd.merge(self.inter_df,
                                  self.ORF_KO_df,
-                                 left_on = "ORF_Q",
-                                 right_on = "ORF_id",
-                                 how = "left")
+                                 left_on="ORF_Q",
+                                 right_on="ORF_id",
+                                 how="left")
         self.inter_df = pd.merge(self.inter_df,
                                  self.ORF_KO_df,
-                                 left_on = "ORF_A",
-                                 right_on = "ORF_id",
-                                 how = "left",
-                                 suffixes = ("_Q", "_A"))
+                                 left_on="ORF_A",
+                                 right_on="ORF_id",
+                                 how="left",
+                                 suffixes=("_Q", "_A"))
         self.inter_df.drop(["ORF_id_Q", "ORF_id_A"],
-                           axis = 1,
-                           inplace = True)
-        self.inter_df.dropna(inplace = True)
+                           axis=1,
+                           inplace=True)
+        self.inter_df.dropna(inplace=True)
         self.inter_df = pd.merge(self.inter_df,
                                  self.KO_df,
-                                 left_on = "kegg_id_Q",
-                                 right_on = "ENTRY",
-                                 how = "left")
+                                 left_on="kegg_id_Q",
+                                 right_on="ENTRY",
+                                 how="left")
         self.inter_df = pd.merge(self.inter_df,
                                  self.KO_df,
-                                 left_on = "kegg_id_A",
-                                 right_on = "ENTRY",
-                                 how = "left",
+                                 left_on="kegg_id_A",
+                                 right_on="ENTRY",
+                                 how="left",
                                  suffixes=('_Q', '_A'))
         self.inter_df.drop(["kegg_id_Q", "kegg_id_A"],
-                           axis = 1,
-                           inplace = True)
-        self.inter_df.dropna(inplace = True)
+                           axis=1,
+                           inplace=True)
+        self.inter_df.dropna(inplace=True)
         for i in self.inter_df.itertuples():
             prof_1 = np.array(list(getattr(i, "PROF_Q")))
             prof_2 = np.array(list(getattr(i, "PROF_A")))
             temp_score_list.append(simple_profiles_scorer(prof_1,
                                                           prof_2))
         temp_score_df = pd.DataFrame(temp_score_list,
-                                     index = self.inter_df.index,
-                                     columns = ["PSS"])
+                                     index=self.inter_df.index,
+                                     columns=["PSS"])
         self.inter_df = pd.concat([self.inter_df,
                                    temp_score_df],
-                                  axis = 1)
+                                  axis=1)
 
     def bio_proc_appender(self):
         """Return Ortho_Interactions.inter_df appended by
@@ -879,21 +879,21 @@ class Ortho_Interactions:
         bio_proc_temp_list = []
         self.inter_df = pd.merge(self.inter_df,
                                  self.bio_proc_df,
-                                 left_on = "GENE_Q",
-                                 right_on = "GENE",
-                                 how = "left")
+                                 left_on="GENE_Q",
+                                 right_on="GENE",
+                                 how="left")
         self.inter_df.drop(["GENE"],
-                           axis = 1,
-                           inplace = True)
+                           axis=1,
+                           inplace=True)
         self.inter_df = pd.merge(self.inter_df,
                                  self.bio_proc_df,
-                                 left_on = "GENE_A",
-                                 right_on = "GENE",
-                                 how = "left",
+                                 left_on="GENE_A",
+                                 right_on="GENE",
+                                 how="left",
                                  suffixes=('_Q', '_A'))
         self.inter_df.drop(["GENE"],
-                           axis = 1,
-                           inplace = True)
+                           axis=1,
+                           inplace=True)
         for i in self.inter_df.itertuples():
             if getattr(i, "BIOPROC_Q") == getattr(i, "BIOPROC_A"):
                 if getattr(i, "BIOPROC_Q") == "unknown" or\
@@ -904,11 +904,11 @@ class Ortho_Interactions:
             else:
                 bio_proc_temp_list.append("different")
         bio_proc_temp_df = pd.DataFrame(bio_proc_temp_list,
-                                        index = self.inter_df.index,
-                                        columns = ["BSS"])
+                                        index=self.inter_df.index,
+                                        columns=["BSS"])
         self.inter_df = pd.concat([self.inter_df,
                                   bio_proc_temp_df],
-                                  axis = 1)
+                                  axis=1)
 
 
 class Ortho_Stats:
@@ -930,15 +930,15 @@ class Ortho_Stats:
         self.filters_name = "no_filters"
 
     def df_selector(self,
-                    DMF = None,
-                    SMF_below_one = True,
-                    inter_score_min = None,
-                    inter_score_max = None,
-                    no_flat_plus = False,
-                    no_flat_minus = False,
-                    process = None,
-                    profiles = None,
-                    prof_sim_lev = None):
+                    DMF=None,
+                    SMF_below_one=True,
+                    inter_score_min=None,
+                    inter_score_max=None,
+                    no_flat_plus=False,
+                    no_flat_minus=False,
+                    process=None,
+                    profiles=None,
+                    prof_sim_lev=None):
         """Return filtered Ortho_Stats.interact_df_stats passed from
         Ortho_Interactions (pandas.DataFrame). For each filter, type <None> to
         omit.
@@ -1063,7 +1063,7 @@ class Ortho_Stats:
             pass
 
     def df_num_prop(self,
-                    in_prof_sim_lev = None):
+                    in_prof_sim_lev=None):
         """Return Ortho_Stats.tot_inter_num (int),
         Ortho_Stats.DMF_positive_num (int),
         Ortho_Stats.DMF_negative_num (int),
@@ -1185,7 +1185,7 @@ class Ortho_Stats:
                                                     "PSS"] +
                                                    q_sign_per_col_profs_cols +
                                                    a_sign_per_col_profs_cols,
-                                                   axis = 1)
+                                                   axis=1)
             q_prof_perm_temp_df = q_prof_temp_df.sample(len(q_prof_temp_df))
             a_prof_perm_temp_df = a_prof_temp_df.sample(len(a_prof_temp_df))
             q_prof_perm_temp_df.index = drop_prof_temp_df.index
@@ -1193,7 +1193,7 @@ class Ortho_Stats:
             permuted_df = pd.concat([drop_prof_temp_df,
                                      q_prof_perm_temp_df,
                                      a_prof_perm_temp_df],
-                                    axis = 1)
+                                    axis=1)
             for ii in permuted_df.itertuples():
                 temp_score_list.append([simple_profiles_scorer(np.array(list(getattr(ii, "PROF_Q"))),
                                                                np.array(list(getattr(ii, "PROF_A"))))])
@@ -1202,7 +1202,7 @@ class Ortho_Stats:
                                          columns=["PSS"])
             permuted_profs_df = pd.concat([permuted_df,
                                           temp_score_df],
-                                          axis = 1)
+                                          axis=1)
             sim_prof_bool = (permuted_profs_df["PSS"] >=
                              in_prof_sim_lev)
             unsim_prof_bool = (permuted_profs_df["PSS"] <
@@ -1238,7 +1238,7 @@ class Ortho_Stats:
                                                 "PSS"] +
                                                q_sign_per_col_profs_cols +
                                                a_sign_per_col_profs_cols,
-                                               axis = 1)
+                                               axis=1)
 
         def f(in_iter):
             gene_profs_perm_arr_list = []
@@ -1253,7 +1253,7 @@ class Ortho_Stats:
             gene_profs_names_ser_perm.index = range(len(gene_profs_names_ser_perm))
             gene_profs_perm_df = pd.concat([gene_profs_names_ser_perm,
                                             gene_profs_profs_ser],
-                                           axis = 1)
+                                           axis=1)
             gene_profs_perm_df.columns = ["perm_names", "profiles"]
             for i in gene_profs_perm_df.itertuples():
                 name_arr = np.array(getattr(i, "perm_names"))
@@ -1267,20 +1267,20 @@ class Ortho_Stats:
                                                                      gene_profs_perm_arr_list))
                 conc_qa_prof_temp_list.append([gene_profile_finder_by_name(i[0],
                                                                            gene_profs_perm_arr_list,
-                                                                           conc = True),
+                                                                           conc=True),
                                                gene_profile_finder_by_name(i[1],
                                                                            gene_profs_perm_arr_list,
-                                                                           conc = True)])
+                                                                           conc=True)])
             prof_score_temp_df = pd.DataFrame(prof_score_temp_list,
-                                              index = drop_prof_temp_df.index,
-                                              columns = ["PSS"])
+                                              index=drop_prof_temp_df.index,
+                                              columns=["PSS"])
             profs_pairs_temp_df = pd.DataFrame(conc_qa_prof_temp_list,
-                                               index = drop_prof_temp_df.index,
-                                               columns = ["PROF_Q", "PROF_A"])
+                                               index=drop_prof_temp_df.index,
+                                               columns=["PROF_Q", "PROF_A"])
             permuted_df = pd.concat([drop_prof_temp_df,
                                      profs_pairs_temp_df,
                                      prof_score_temp_df],
-                                    axis = 1)
+                                    axis=1)
             sim_prof_bool = (permuted_df["PSS"] >=
                              in_prof_sim_lev)
             unsim_prof_bool = (permuted_df["PSS"] <
@@ -1329,35 +1329,35 @@ class Ortho_Stats:
             drop_prof_temp_df = self.inter_df.drop(["PROF_Q",
                                                     "PROF_A",
                                                     "PSS"],
-                                                   axis = 1)
+                                                   axis=1)
             q_ORF_prof_df.columns = range(len(q_ORF_prof_df.columns))
             a_ORF_prof_df.columns = range(len(a_ORF_prof_df.columns))
             stack_ORF_prof_df = pd.concat([q_ORF_prof_df,
                                            a_ORF_prof_df],
-                                          ignore_index = True)
-            stack_ORF_prof_df.drop_duplicates(inplace = True)
+                                          ignore_index=True)
+            stack_ORF_prof_df.drop_duplicates(inplace=True)
             stack_ORF_prof_df.columns = ["ORF", "PROF"]
             stack_ORF_prof_df.index = range(len(stack_ORF_prof_df))
             stack_prof_perm_df = stack_ORF_prof_df.PROF.sample(len(stack_ORF_prof_df))
             stack_prof_perm_df.index = range(len(stack_prof_perm_df))
             ORF_prof_perm_df = pd.concat([stack_ORF_prof_df.ORF,
                                           stack_prof_perm_df],
-                                         axis = 1)
+                                         axis=1)
             q_merged_df = pd.merge(drop_prof_temp_df,
                                    ORF_prof_perm_df,
-                                   left_on = "ORF_Q",
-                                   right_on = "ORF",
-                                   how = "left")
+                                   left_on="ORF_Q",
+                                   right_on="ORF",
+                                   how="left")
             qa_merged_df = pd.merge(q_merged_df,
                                     ORF_prof_perm_df,
-                                    left_on = "ORF_A",
-                                    right_on = "ORF",
-                                    how = "left",
+                                    left_on="ORF_A",
+                                    right_on="ORF",
+                                    how="left",
                                     suffixes=("_Q", "_A"))
             qa_merged_score_df = df_based_profiles_scorer(qa_merged_df,
-                                                          prof_1_col_name = "PROF_Q",
-                                                          prof_2_col_name = "PROF_A",
-                                                          score_col_name = "PSS")
+                                                          prof_1_col_name="PROF_Q",
+                                                          prof_2_col_name="PROF_A",
+                                                          score_col_name="PSS")
             sim_prof_bool = (qa_merged_score_df["PSS"] >=
                              in_prof_sim_lev)
             unsim_prof_bool = (qa_merged_score_df["PSS"] <
@@ -1429,7 +1429,7 @@ class KEGG_API:
 
     def get_organisms_ids(self,
                           out_file_name,
-                          skip_dwnld = False):
+                          skip_dwnld=False):
         """Get KEGG's organisms' IDs, genomes IDs and definitions. Data are
         downloaded to a local file and then made into pandas.DataFrame. File
         can be reused. Necessary for KEGG_API.org_name_2_kegg_id.
@@ -1448,15 +1448,15 @@ class KEGG_API:
             with open(out_file_name, "w") as fout:
                 fout.write(res.content)
         self.organisms_ids_df = pd.read_csv(out_file_name,
-                                            names = ["genome_id",
-                                                     "names",
-                                                     "description"],
+                                            names=["genome_id",
+                                                   "names",
+                                                   "description"],
                                             header=None,
-                                            sep = "\t|;",
-                                            engine = "python")
-        temp_sub_df = self.organisms_ids_df["names"].str.split(",", expand = True)
+                                            sep="\t|;",
+                                            engine="python")
+        temp_sub_df = self.organisms_ids_df["names"].str.split(",", expand=True)
         temp_sub_df.columns = ["kegg_org_id", "name", "taxon_id"]
-        self.organisms_ids_df.drop("names", axis = 1, inplace = True)
+        self.organisms_ids_df.drop("names", axis=1, inplace=True)
         self.organisms_ids_df = pd.concat([self.organisms_ids_df, temp_sub_df], axis=1)
         self.organisms_ids_df.replace({"genome:": ""},
                                       regex=True,
@@ -1465,7 +1465,7 @@ class KEGG_API:
 
     def org_name_2_kegg_id(self,
                            organism,
-                           assume_1st = True):
+                           assume_1st=True):
         """Return KEGG's organisms' IDs (str) when queried  with a regular
         (natural) biological name. Case-sensitive. Uses KEGG_API.organisms_ids_df
         generated by KEGG_API.get_organisms_ids. Necessary for creation of ids
@@ -1488,15 +1488,15 @@ class KEGG_API:
             print "More than one record for this query\n{}".format(organism_ser[["description",
                                                                                  "kegg_org_id"]])
         else:
-            return str(organism_ser.kegg_org_id.to_string(index = False,
-                                                          header = False))
+            return str(organism_ser.kegg_org_id.to_string(index=False,
+                                                          header=False))
 
     def get_id_conv_tbl(self,
                         source_id_type,
                         organism,
                         out_file_name,
-                        skip_dwnld = False,
-                        strip_pref = True):
+                        skip_dwnld=False,
+                        strip_pref=True):
         """Get genes or proteins IDs to KEGG IDs convertion table in
         pandas.DataFrame format. Data are downloaded to a local file and then
         made into pandas.DataFrame. File can be reused.
@@ -1520,10 +1520,10 @@ class KEGG_API:
             with open(out_file_name, "w") as fout:
                 fout.write(res.content)
         self.id_conversions_df = pd.read_csv(out_file_name,
-                                             names = [source_id_type,
-                                                      "kegg_id"],
-                                             header = None,
-                                             sep = "\t")
+                                             names=[source_id_type,
+                                                    "kegg_id"],
+                                             header=None,
+                                             sep="\t")
         if strip_pref is True:
             self.id_conversions_df.replace({"{0}:".format(org_id): ""},
                                            regex=True,
@@ -1538,9 +1538,9 @@ class KEGG_API:
                          organism,
                          target_db,
                          out_file_name,
-                         skip_dwnld = False,
-                         strip_ORF_prefix = True,
-                         strip_kegg_id_prefix = False):
+                         skip_dwnld=False,
+                         strip_ORF_prefix=True,
+                         strip_kegg_id_prefix=False):
         """Get desired KEGG's database entries linked with all the genes from
         given organism. Data are downloaded to a local file and then made into
         pandas.DataFrame. File can be reused. Necessary for
@@ -1566,12 +1566,12 @@ class KEGG_API:
             with open(out_file_name, "w") as fout:
                 fout.write(res.content)
         self.org_db_X_ref_df = pd.read_csv(out_file_name,
-                                           names = ["ORF_id", "kegg_id"],
-                                           header = None,
-                                           sep = "\t")
+                                           names=["ORF_id", "kegg_id"],
+                                           header=None,
+                                           sep="\t")
         if strip_ORF_prefix is True:
             self.org_db_X_ref_df["ORF_id"] = self.org_db_X_ref_df["ORF_id"].replace({"{0}:".format(org_id): ""},
-                                                                                    regex = True)
+                                                                                    regex=True)
         else:
             pass
         if strip_kegg_id_prefix is True:
@@ -1741,12 +1741,12 @@ class Ortho_Network:
                 fout.write(json.dumps(json_graph.node_link_data(self.nwrk)))
 
     def draw_nwrk(self,
-                  width = 20,
-                  height = 20,
-                  dpi = None,
-                  node_size = 5,
-                  save_2_file = False,
-                  out_file_name = "network.png"):
+                  width=20,
+                  height=20,
+                  dpi=None,
+                  node_size=5,
+                  save_2_file=False,
+                  out_file_name="network.png"):
         """Return matplotlib.pyplot.figure of Ortho_Network.nwrk and/or write it to
         <*.png> file.
 
@@ -1762,15 +1762,15 @@ class Ortho_Network:
             out_file_name (str): file name to save as
 
         """
-        plt.figure(figsize = (width, height))
+        plt.figure(figsize=(width, height))
         nx.draw_networkx(self.nwrk,
-                         node_size = node_size,
-                         node_color = "r",
-                         node_alpha = 0.4,
-                         with_labels = False)
+                         node_size=node_size,
+                         node_color="r",
+                         node_alpha=0.4,
+                         with_labels=False)
         if save_2_file is True:
             plt.savefig(out_file_name,
-                        dpi = dpi)
+                        dpi=dpi)
         else:
             pass
 
@@ -1809,33 +1809,33 @@ class HTML_Generator:
         """Load jinja2.environment.Template from HTML_Generator.template_file.
         Search path relative.
         """
-        template_Loader = jj2.FileSystemLoader(searchpath = ".")
-        template_Env = jj2.Environment(loader = template_Loader)
+        template_Loader = jj2.FileSystemLoader(searchpath=".")
+        template_Env = jj2.Environment(loader=template_Loader)
         self.template = template_Env.get_template(self.template_file)
 
     def render_template(self,
-                        name = None,
-                        filters_pos = None,
-                        filters_neg = None,
-                        filters_neu = None,
-                        num_prop_res = None,
-                        num_prop_perm = None,
-                        histogram_bins = None,
-                        e_value = None,
-                        histogram_gis_pos = None,
-                        bivar_pos = None,
-                        lin_regr_pos = None,
-                        histogram_gis_neg = None,
-                        bivar_neg = None,
-                        lin_regr_neg = None,
-                        histogram_gis_neu = None,
-                        bivar_neu = None,
-                        lin_regr_neu = None,
-                        dataframe_pos = None,
-                        dataframe_neg = None,
-                        dataframe_neu = None,
-                        results_type = "chart",
-                        skip_perm_res = False):
+                        name=None,
+                        filters_pos=None,
+                        filters_neg=None,
+                        filters_neu=None,
+                        num_prop_res=None,
+                        num_prop_perm=None,
+                        histogram_bins=None,
+                        e_value=None,
+                        histogram_gis_pos=None,
+                        bivar_pos=None,
+                        lin_regr_pos=None,
+                        histogram_gis_neg=None,
+                        bivar_neg=None,
+                        lin_regr_neg=None,
+                        histogram_gis_neu=None,
+                        bivar_neu=None,
+                        lin_regr_neu=None,
+                        dataframe_pos=None,
+                        dataframe_neg=None,
+                        dataframe_neu=None,
+                        results_type="chart",
+                        skip_perm_res=False):
         """Retrun HTML_Generator.rendered_template with vals from passed vars.
         Args:
             name (str): name for results, displayed in most upper h2 tag
@@ -1949,6 +1949,7 @@ def main():
     Will be replaced with proper argument parser in the future.
     """
     pass
+
 
 if __name__ == "__main__":
     main()
