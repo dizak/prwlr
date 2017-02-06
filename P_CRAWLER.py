@@ -1750,7 +1750,8 @@ class Ortho_Network:
                   dpi=None,
                   node_size=5,
                   save_2_file=False,
-                  out_file_name="network.png"):
+                  out_file_name="network.png",
+                  sub_nwrk=False):
         """Return matplotlib.pyplot.figure of Ortho_Network.nwrk and/or write it to
         <*.png> file.
 
@@ -1766,8 +1767,12 @@ class Ortho_Network:
             out_file_name (str): file name to save as
 
         """
+        if sub_nwrk is True:
+            nwrk = self.sub_nwrk
+        else:
+            nwrk = self.nwrk
         plt.figure(figsize=(width, height))
-        nx.draw_networkx(self.nwrk,
+        nx.draw_networkx(nwrk,
                          node_size=node_size,
                          node_color="r",
                          node_alpha=0.4,
