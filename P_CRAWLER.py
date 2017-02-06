@@ -1709,17 +1709,26 @@ class Ortho_Network:
         self.sub_nwrk = None
 
     def create_nwrk(self,
-                    col_1_name,
-                    col_2_name):
+                    nodes_cols,
+                    attribs_cols):
         """Return Ortho_Network.nwrk upon pandas.DataFrame.
 
-        Args:
-            col_1_name (str): column name to take as nodes
-            col_2_name (str): column name to take as nodes
+        Parameters
+        -------
+        nodes_cols: list
+            Columns to take as nodes.
+        attribs_cols: list
+            Columns to take as attributes.
+
+        Returns
+        -------
+        P_CRAWLER.Ortho_Network.nwrk
+            Interactions-based network. networkx.classes.graph.Graph derivate.
         """
         self.nwrk = nx.from_pandas_dataframe(self.inter_df,
-                                             col_1_name,
-                                             col_2_name)
+                                             nodes_cols[0],
+                                             nodes_cols[1],
+                                             attribs_cols)
 
     def get_subgrps(self):
         self.sub_nwrk = [i for i in nx.connected_component_subgraphs(self.nwrk)]
