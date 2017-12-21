@@ -19,8 +19,6 @@ from networkx.readwrite import json_graph
 from tqdm import tqdm
 
 
-
-
 def all_possible_combinations_counter(subset_size,
                                       set_size):
     """
