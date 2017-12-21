@@ -39,7 +39,7 @@ class HTML_Generator:
         """Load jinja2.environment.Template from HTML_Generator.template_file.
         Search path relative.
         """
-        template_Loader = jj2.FileSystemLoader(searchpath=".")
+        template_Loader = jj2.FileSystemLoader(searchpath="templates/")
         template_Env = jj2.Environment(loader=template_Loader)
         self.template = template_Env.get_template(self.template_file)
 
