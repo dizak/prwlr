@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __author import __author__
+from __version import __version__
 import lxml.etree as et
 import pandas as pd
 import re
@@ -16,7 +18,7 @@ import json
 from networkx.readwrite import json_graph
 from tqdm import tqdm
 
-__author__ = "Dariusz Izak"
+
 
 
 def all_possible_combinations_counter(subset_size,
@@ -1966,7 +1968,7 @@ def main():
     """Temporary blank.
     Will be replaced with proper argument parser in the future.
     """
-    pass
+    print __version__, __author__
 
 
 if __name__ == "__main__":
