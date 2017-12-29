@@ -17,7 +17,11 @@ class ApisTest(unittest.TestCase):
         self.orgs_ids_out = pd.read_csv("./test_data/test_orgs_ids_out.csv",
                                         sep="\t",
                                         dtype="object")
-        self.orgs_ids_in = "./test_data/test_orgs_ids_in.csv"
+        self.org_db_X_ref_out = pd.read_csv("./test_data/test_orgs_db_X_ref.csv",
+                                            sep="\t",
+                                            names=["ORF_id",
+                                                   "kegg_id"],
+                                            dtype="object")
         self.orgs_names = ["Haemophilus influenzae",
                            "Mycoplasma genitalium",
                            "Methanocaldococcus jannaschii",
@@ -40,8 +44,14 @@ class ApisTest(unittest.TestCase):
                          "bsu"]
         self.kegg_api = p.KEGG_API()
         self.cost_api = p.Costanzo_API()
-        self.kegg_api.get_organisms_ids(self.orgs_ids_in,
+        self.kegg_api.get_organisms_ids("./test_data/test_orgs_ids_in.csv",
                                         skip_dwnld=True)
+        self.kegg_api.get_org_db_X_ref(organism="Saccharomyces cerevisiae",
+                                       target_db="orthology",
+                                       out_file_name="./test_data/test_orgs_db_X_ref.csv",
+                                       skip_dwnld=True,
+                                       strip_ORF_prefix=False,
+                                       strip_kegg_id_prefix=False)
 
     def test_get_organisms_ids(self):
         """
@@ -58,6 +68,14 @@ class ApisTest(unittest.TestCase):
         """
         for org_name, org_id in zip(self.orgs_names, self.orgs_ids):
             self.kegg_api.org_name_2_kegg_id(org_name, org_id)
+
+    def test_get_org_db_X_ref(self):
+        """
+        Test if apis.get_org_db_X_ref returns correct KEGG database
+        cross-reference.
+        """
+        pd.testing.assert_frame_equal(self.kegg_api.org_db_X_ref_df,
+                                      self.org_db_X_ref_out)
 
 
 if __name__ == '__main__':
