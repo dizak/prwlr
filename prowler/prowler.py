@@ -1,17 +1,7 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __author import __author__
-from __version import __version__
-from utils import *
-from errors import *
-from genome import *
-from interactions import *
-from network import *
-from stats import *
-from templater import *
-from apis import *
 
+from prowler import
 
 def main():
     """Temporary blank.
