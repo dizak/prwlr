@@ -2,7 +2,7 @@
 
 
 import unittest
-import prowler as p
+from prowler import *
 import pandas as pd
 
 
@@ -42,8 +42,8 @@ class ApisTest(unittest.TestCase):
                          "hpy",
                          "mth",
                          "bsu"]
-        self.kegg_api = p.KEGG_API()
-        self.cost_api = p.Costanzo_API()
+        self.kegg_api = apis.KEGG_API()
+        self.cost_api = apis.Costanzo_API()
         self.kegg_api.get_organisms_ids("./test_data/test_orgs_ids_in.csv",
                                         skip_dwnld=True)
         self.kegg_api.get_org_db_X_ref(organism="Saccharomyces cerevisiae",
