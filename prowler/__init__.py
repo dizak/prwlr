@@ -1,2 +1,14 @@
-from __author import __author__
-from __version import __version__
+__author__ = "Dariusz Izak, IBB PAS"
+__version__ = "development"
+
+__all__ = ["apis",
+           "errors",
+           "genome",
+           "interactions",
+           "network",
+           "stats",
+           "templater",
+           "utils"]
+
+
+from prowler import *
