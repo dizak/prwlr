@@ -3,6 +3,7 @@
 
 import requests as rq
 import pandas as pd
+from tqdm import tqdm
 
 
 class KEGG_API:
