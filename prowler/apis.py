@@ -70,7 +70,9 @@ class KEGG_API:
                                                    "description"],
                                             header=None,
                                             sep="\t|;",
-                                            engine="python")
+                                            engine="python",
+                                            error_bad_lines=False,
+                                            warn_bad_lines=True)
         temp_sub_df = self.organisms_ids_df["names"].str.split(",", expand=True)
         temp_sub_df.columns = ["kegg_org_id", "name", "taxon_id"]
         self.organisms_ids_df.drop("names", axis=1, inplace=True)
