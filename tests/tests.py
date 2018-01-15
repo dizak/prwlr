@@ -66,7 +66,7 @@ class ApisTest(unittest.TestCase):
         """
         Destroys database downloaded during tests.
         """
-        sp.call("rm ./test_data/test_db", shell=True)
+        #sp.call("rm ./test_data/test_db", shell=True)
 
     def test_get_organisms_ids(self):
         """
@@ -97,6 +97,18 @@ class ApisTest(unittest.TestCase):
         Test if apis.get_db_entries returns correct KEGG database.
         """
         self.assertEqual(self.test_db, self.test_db_ref, "test_db and test_db_ref are not equal.")
+
+
+class GenomeTests(unittest.TestCase):
+    """
+    Tests for prowler.genome.
+    """
+    @classmethod
+    def setUpClass(cls):
+        """
+        Sets up class level attributes for the tests.
+        """
+        super(GenomeTests, cls).setUpClass()
 
 
 if __name__ == '__main__':
