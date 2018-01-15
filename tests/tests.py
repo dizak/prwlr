@@ -66,7 +66,7 @@ class ApisTest(unittest.TestCase):
         """
         Destroys database downloaded during tests.
         """
-        #sp.call("rm ./test_data/test_db", shell=True)
+        sp.call("rm ./test_data/test_db", shell=True)
 
     def test_get_organisms_ids(self):
         """
