@@ -100,65 +100,36 @@ class ApisTest(unittest.TestCase):
         self.assertEqual(self.test_db, self.test_db_ref, "test_db and test_db_ref are not equal.")
 
 
-class GenomeTests(unittest.TestCase):
-    """
-    Tests for prowler.genome.
-    """
-    @classmethod
-    def setUpClass(cls):
-        """
-        Sets up class level attributes for the tests.
-        """
-        super(GenomeTests, cls).setUpClass()
-
-
 class DatabasesTests(unittest.TestCase):
     """
     Tests for prowler.databases.
     """
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         """
         Sets up class level attributes for the tests.
         """
-        super(DatabasesTests, cls).setUpClass()
-        cls.query_species = ["Haemophilus influenzae",
-                             "Mycoplasma genitalium",
-                             "Methanocaldococcus jannaschii",
-                             "Synechocystis sp",
-                             "Saccharomyces cerevisiae",
-                             "Mycoplasma pneumoniae",
-                             "Escherichia coli",
-                             "Helicobacter pylori",
-                             "Methanothermobacter thermautotrophicus",
-                             "Bacillus subtilis"]
-        cls.query_ids = ["hin",
-                         "mge",
-                         "mja",
-                         "syn",
-                         "sce",
-                         "mpn",
-                         "eco",
-                         "hpy",
-                         "mth",
-                         "bsu"]
+        self.query_species = ["Haemophilus influenzae",
+                              "Mycoplasma genitalium",
+                              "Methanocaldococcus jannaschii",
+                              "Synechocystis sp",
+                              "Saccharomyces cerevisiae",
+                              "Mycoplasma pneumoniae",
+                              "Escherichia coli",
+                              "Helicobacter pylori",
+                              "Methanothermobacter thermautotrophicus",
+                              "Bacillus subtilis"]
+        self.query_ids = ["hin",
+                          "mge",
+                          "mja",
+                          "syn",
+                          "sce",
+                          "mpn",
+                          "eco",
+                          "hpy",
+                          "mth",
+                          "bsu"]
         with open("./test_data/test_orthology.json") as fin:
-            cls.orthology_listed_ref = json.load(fin)
-        cls.kegg_db = databases.Orthology()
-        cls.kegg_db.query_species = cls.query_species
-        cls.kegg_db.query_ids = cls.query_ids
-
-    def test_parse(self):
-        """
-        Test if databases.parse returns correctly split and RE searched
-        database from text file.
-
-        Expected values
-        -------
-            list of dicts
-        """
-        self.kegg_db.parse("./test_data/test_db_ref")
-        self.assertEqual(self.kegg_db.listed, self.orthology_listed_ref)
+            self.orthology_listed_ref = json.load(fin)
 
 
 if __name__ == '__main__':
