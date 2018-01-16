@@ -13,13 +13,10 @@ class KEGG:
     Parameters
     -------
     listed: list of dicts
-        Data from parsed KEGG ortho-database.
-    dataframe: pandas.DataFrame
-        listed converted to DataFrame.
+        Data from parsed KEGG database.
     """
     def __init__(self):
         self.listed = []
-        self.dataframe = None
 
     def parse(self,
               filename):
@@ -79,6 +76,21 @@ class KEGG:
                 entry_dict["orgs"] = orgs
             return entry_dict
         self.listed = ptmp.ProcessingPool().map(f, entries_list)
+
+
+class Orthology(KEGG):
+    """
+    Restructures and appends data from KO database.
+
+    Parameters
+    -------
+    dataframe: pandas.DataFrame
+        listed converted to DataFrame.
+    """
+
+    def __init__(self):
+        self.query_species = None
+        self.dataframe = None
 
     def profilize(self,
                   species_ids,
