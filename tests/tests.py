@@ -128,7 +128,7 @@ class DatabasesTests(unittest.TestCase):
                           "hpy",
                           "mth",
                           "bsu"]
-        with open("./test_data/test_orthology.json") as fin:
+        with open("./test_data/test_orthology_profilized.json") as fin:
             self.orthology_listed_ref = json.load(fin)
 
 
