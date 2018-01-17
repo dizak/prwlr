@@ -164,6 +164,7 @@ class Orthology(KEGG):
 
             pass
 
+
 class SGA1:
     """
     Port from interactions.Ortho_Interactions. Meant to work just with SGA v1.
@@ -188,10 +189,7 @@ class SGA1:
                       'p-value': 'GIS_P'}
 
     def parse(self,
-              sga=None,
-              bioprocesses=None,
-              p_value=float(0.05),
-              DMF_type="neutral",
+              filename,
               remove_white_spaces=True,
               in_sep=","):
         """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
@@ -213,27 +211,10 @@ class SGA1:
             with <_> when True (default)
             in_sep (str): separator for pandas.read_csv method
         """
-        if sga is not None:
-            sga_df = pd.read_csv(sga, sep=in_sep)
-            if remove_white_spaces is True:
-                sga_df.columns = [i.replace(" ", "_") for i in sga_df.columns]
-            sga_df.rename(columns=self.names, inplace=True)
-            positive_DMF_bool = (sga_df["DMF"] > sga_df["SMF_Q"]) &\
-                                (sga_df["DMF"] > sga_df["SMF_A"]) &\
-                                (sga_df["GIS_P"] <= p_value)
-            negative_DMF_bool = (sga_df["DMF"] < sga_df["SMF_Q"]) &\
-                                (sga_df["DMF"] < sga_df["SMF_A"]) &\
-                                (sga_df["GIS_P"] <= p_value)
-            neutral_DMF_bool = (sga_df["DMF"].notnull()) &\
-                               (sga_df["GIS_P"] <= p_value)
-            if DMF_type == "positive":
-                self.sga = sga_df[positive_DMF_bool]
-            elif DMF_type == "negative":
-                self.sga = sga_df[negative_DMF_bool]
-            elif DMF_type == "neutral":
-                self.sga = sga_df[neutral_DMF_bool]
-            elif DMF_type == "raw":
-                self.sga = sga_df
+        self.sga = pd.read_csv(filename, sep=in_sep)
+        if remove_white_spaces is True:
+            self.sga.columns = [i.replace(" ", "_") for i in self.sga.columns]
+        self.sga.rename(columns=self.names, inplace=True)
 
 
 class SGA2:
@@ -259,8 +240,6 @@ class SGA2:
 
     def parse(self,
               filename,
-              p_value=float(0.05),
-              DMF_type="neutral",
               remove_white_spaces=True,
               in_sep="\t"):
         """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
@@ -279,31 +258,15 @@ class SGA2:
             with <_> when True (default)
             in_sep (str): separator for pandas.read_csv method
         """
-        sga_df = pd.read_csv(filename, sep=in_sep)
+        self.sga = pd.read_csv(filename, sep=in_sep)
         if remove_white_spaces is True:
-            sga_df.columns = [i.replace(" ", "_") for i in sga_df.columns]
-        sga_df.rename(columns=self.names, inplace=True)
-        ORF_Q_col = sga_df["STR_ID_Q"].str.split("_", expand=True)[0]
-        ORF_A_col = sga_df["STR_ID_A"].str.split("_", expand=True)[0]
+            self.sga.columns = [i.replace(" ", "_") for i in self.sga.columns]
+        self.sga.rename(columns=self.names, inplace=True)
+        ORF_Q_col = self.sga["STR_ID_Q"].str.split("_", expand=True)[0]
+        ORF_A_col = self.sga["STR_ID_A"].str.split("_", expand=True)[0]
         ORF_Q_col.name = "ORF_Q"
         ORF_A_col.name = "ORF_A"
-        sga_df = pd.concat([ORF_Q_col, ORF_A_col, sga_df], axis=1)
-        positive_DMF_bool = (sga_df["DMF"] > sga_df["SMF_Q"]) &\
-                            (sga_df["DMF"] > sga_df["SMF_A"]) &\
-                            (sga_df["GIS_P"] <= p_value)
-        negative_DMF_bool = (sga_df["DMF"] < sga_df["SMF_Q"]) &\
-                            (sga_df["DMF"] < sga_df["SMF_A"]) &\
-                            (sga_df["GIS_P"] <= p_value)
-        neutral_DMF_bool = (sga_df["DMF"].notnull()) &\
-                           (sga_df["GIS_P"] <= p_value)
-        if DMF_type == "positive":
-            self.sga = sga_df[positive_DMF_bool]
-        elif DMF_type == "negative":
-            self.sga = sga_df[negative_DMF_bool]
-        elif DMF_type == "neutral":
-            self.sga = sga_df[neutral_DMF_bool]
-        elif DMF_type == "raw":
-            self.sga = sga_df
+        self.sga = pd.concat([ORF_Q_col, ORF_A_col, self.sga], axis=1)
 
 
 class Bioprocesses:
