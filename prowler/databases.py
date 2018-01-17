@@ -173,19 +173,19 @@ class SGA1:
 
     """
     def __init__(self):
-        self.sga1_heads = {'Array_ORF': 'ORF_A',
-                           'Array_gene_name': 'GENE_A',
-                           'Array_SMF': 'SMF_A',
-                           'Array_SMF_standard_deviation': 'SMF_SD_A',
-                           'Query_ORF': 'ORF_Q',
-                           'Query_gene_name': 'GENE_Q',
-                           'Query_SMF': 'SMF_Q',
-                           'Query_SMF_standard_deviation': 'SMF_SD_Q',
-                           'DMF': 'DMF',
-                           'DMF_standard_deviation': 'DMF_SD',
-                           'Genetic_interaction_score': 'GIS',
-                           'Standard_deviation': 'GIS_SD',
-                           'p-value': 'GIS_P'}
+        self.names = {'Array_ORF': 'ORF_A',
+                      'Array_gene_name': 'GENE_A',
+                      'Array_SMF': 'SMF_A',
+                      'Array_SMF_standard_deviation': 'SMF_SD_A',
+                      'Query_ORF': 'ORF_Q',
+                      'Query_gene_name': 'GENE_Q',
+                      'Query_SMF': 'SMF_Q',
+                      'Query_SMF_standard_deviation': 'SMF_SD_Q',
+                      'DMF': 'DMF',
+                      'DMF_standard_deviation': 'DMF_SD',
+                      'Genetic_interaction_score': 'GIS',
+                      'Standard_deviation': 'GIS_SD',
+                      'p-value': 'GIS_P'}
 
     def parse(self,
               sga=None,
@@ -217,7 +217,7 @@ class SGA1:
             sga_df = pd.read_csv(sga, sep=in_sep)
             if remove_white_spaces is True:
                 sga_df.columns = [i.replace(" ", "_") for i in sga_df.columns]
-            sga_df.rename(columns=self.sga1_heads, inplace=True)
+            sga_df.rename(columns=self.names, inplace=True)
             positive_DMF_bool = (sga_df["DMF"] > sga_df["SMF_Q"]) &\
                                 (sga_df["DMF"] > sga_df["SMF_A"]) &\
                                 (sga_df["GIS_P"] <= p_value)
@@ -227,13 +227,35 @@ class SGA1:
             neutral_DMF_bool = (sga_df["DMF"].notnull()) &\
                                (sga_df["GIS_P"] <= p_value)
             if DMF_type == "positive":
-                self.sga_df = sga_df[positive_DMF_bool]
+                self.sga = sga_df[positive_DMF_bool]
             elif DMF_type == "negative":
-                self.sga_df = sga_df[negative_DMF_bool]
+                self.sga = sga_df[negative_DMF_bool]
             elif DMF_type == "neutral":
-                self.sga_df = sga_df[neutral_DMF_bool]
+                self.sga = sga_df[neutral_DMF_bool]
             elif DMF_type == "raw":
-                self.sga_df = sga_df
-        if bioprocesses is not None:
-            self.bioproc_df = pd.read_excel(bioprocesses,
-                                            names=self.bioproc_heads)
+                self.sga = sga_df
+
+
+class Bioprocesses:
+    """
+    Port from interactions.Ortho_Interactions. Meant to work with
+    bioprocesses_annotations.costanzo2009.
+    """
+
+    def __init__(self):
+        self.names = ["ORF",
+                              "GENE",
+                              "BIOPROC"]
+
+    def parse(self,
+              filename):
+        """Return Ortho_Interactions.bio_proc_df (pandas.DataFrame) from parsed
+        <csv> or <xls> file.
+
+        Parameters
+        -------
+        filename: str
+            Name of file to parse.
+        """
+        self.bioprocesses = pd.read_excel(filename,
+                                          names=self.names)
