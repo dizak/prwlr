@@ -90,6 +90,7 @@ class Orthology(KEGG):
     """
 
     def __init__(self):
+        KEGG.__init__(self)
         self.query_species = None
         self.dataframe = None
 
