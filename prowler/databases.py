@@ -186,20 +186,6 @@ class SGA1:
                            'Genetic_interaction_score': 'GIS',
                            'Standard_deviation': 'GIS_SD',
                            'p-value': 'GIS_P'}
-        self.bioproc_heads = ["ORF",
-                              "GENE",
-                              "BIOPROC"]
-        self.KO_heads = {"authors": "AUTH",
-                         "definition": "DEF",
-                         "entry": "ENTRY",
-                         "genes": "GENES",
-                         "journal": "JOURN",
-                         "name": "NAME",
-                         "orgs": "ORGS",
-                         "profile": "PROF",
-                         "reference": "REF",
-                         "sequence": "SEQ",
-                         "title": "TITLE"}
 
     def parse(self,
               sga=None,
