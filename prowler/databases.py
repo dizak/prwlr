@@ -244,8 +244,8 @@ class Bioprocesses:
 
     def __init__(self):
         self.names = ["ORF",
-                              "GENE",
-                              "BIOPROC"]
+                      "GENE",
+                      "BIOPROC"]
 
     def parse(self,
               filename):
