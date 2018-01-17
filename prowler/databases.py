@@ -161,8 +161,8 @@ class Orthology(KEGG):
             else:
                 pass
         else:
-            pass
 
+            pass
 
 class SGA1:
     """
@@ -234,6 +234,76 @@ class SGA1:
                 self.sga = sga_df[neutral_DMF_bool]
             elif DMF_type == "raw":
                 self.sga = sga_df
+
+
+class SGA2:
+    """
+    Port from interactions.Ortho_Interactions. Meant to work just with SGA v1.
+
+    Notes
+    -------
+
+    """
+    def __init__(self):
+        self.names = {"Query_Strain_ID": "STR_ID_Q",
+                      "Query_allele_name": "GENE_Q",
+                      "Array_Strain_ID": "STR_ID_A",
+                      "Array_allele_name": "GENE_A",
+                      "Arraytype/Temp": "TEMP",
+                      "Genetic_interaction_score_(ε)": "GIS",
+                      "P-value": "GIS_P",
+                      "Query_single_mutant_fitness_(SMF)": "SMF_Q",
+                      "Array_SMF": "SMF_A",
+                      "Double_mutant_fitness": "DMF",
+                      "Double_mutant_fitness_standard_deviation": "DMF_SD"}
+
+    def parse(self,
+              filename,
+              p_value=float(0.05),
+              DMF_type="neutral",
+              remove_white_spaces=True,
+              in_sep="\t"):
+        """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
+        parsed <csv> file. The minimal filtration is based of a given GIS_P
+        and presence of DMF value. Further filtration results in DMF
+        higher/lower than both SMFs.
+
+        Args:
+            filename (str): name of file to parse
+            p_value (float): maximum GIS_P for filtering
+            DMF_type (str): positive -> DMF > both SMFs
+                            negative -> DMF < both SMFs
+                            neutral  -> DMF not <None> (default)
+                            raw      -> no filter
+            remove_white_spaces (bool): replaces whitespaces from col names
+            with <_> when True (default)
+            in_sep (str): separator for pandas.read_csv method
+        """
+        sga_df = pd.read_csv(filename, sep=in_sep)
+        if remove_white_spaces is True:
+            sga_df.columns = [i.replace(" ", "_") for i in sga_df.columns]
+        sga_df.rename(columns=self.names, inplace=True)
+        ORF_Q_col = sga_df["STR_ID_Q"].str.split("_", expand=True)[0]
+        ORF_A_col = sga_df["STR_ID_A"].str.split("_", expand=True)[0]
+        ORF_Q_col.name = "ORF_Q"
+        ORF_A_col.name = "ORF_A"
+        sga_df = pd.concat([ORF_Q_col, ORF_A_col, sga_df], axis=1)
+        positive_DMF_bool = (sga_df["DMF"] > sga_df["SMF_Q"]) &\
+                            (sga_df["DMF"] > sga_df["SMF_A"]) &\
+                            (sga_df["GIS_P"] <= p_value)
+        negative_DMF_bool = (sga_df["DMF"] < sga_df["SMF_Q"]) &\
+                            (sga_df["DMF"] < sga_df["SMF_A"]) &\
+                            (sga_df["GIS_P"] <= p_value)
+        neutral_DMF_bool = (sga_df["DMF"].notnull()) &\
+                           (sga_df["GIS_P"] <= p_value)
+        if DMF_type == "positive":
+            self.sga = sga_df[positive_DMF_bool]
+        elif DMF_type == "negative":
+            self.sga = sga_df[negative_DMF_bool]
+        elif DMF_type == "neutral":
+            self.sga = sga_df[neutral_DMF_bool]
+        elif DMF_type == "raw":
+            self.sga = sga_df
 
 
 class Bioprocesses:
