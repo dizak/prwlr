@@ -3,6 +3,7 @@
 
 import re
 import pathos.multiprocessing as ptmp
+import numpy as np
 import pandas as pd
 
 
@@ -161,3 +162,92 @@ class Orthology(KEGG):
                 pass
         else:
             pass
+
+
+class SGA1:
+    """
+    Port from interactions.Ortho_Interactions. Meant to work just with SGA v1.
+
+    Notes
+    -------
+
+    """
+    def __init__(self):
+        self.sga1_heads = {'Array_ORF': 'ORF_A',
+                           'Array_gene_name': 'GENE_A',
+                           'Array_SMF': 'SMF_A',
+                           'Array_SMF_standard_deviation': 'SMF_SD_A',
+                           'Query_ORF': 'ORF_Q',
+                           'Query_gene_name': 'GENE_Q',
+                           'Query_SMF': 'SMF_Q',
+                           'Query_SMF_standard_deviation': 'SMF_SD_Q',
+                           'DMF': 'DMF',
+                           'DMF_standard_deviation': 'DMF_SD',
+                           'Genetic_interaction_score': 'GIS',
+                           'Standard_deviation': 'GIS_SD',
+                           'p-value': 'GIS_P'}
+        self.bioproc_heads = ["ORF",
+                              "GENE",
+                              "BIOPROC"]
+        self.KO_heads = {"authors": "AUTH",
+                         "definition": "DEF",
+                         "entry": "ENTRY",
+                         "genes": "GENES",
+                         "journal": "JOURN",
+                         "name": "NAME",
+                         "orgs": "ORGS",
+                         "profile": "PROF",
+                         "reference": "REF",
+                         "sequence": "SEQ",
+                         "title": "TITLE"}
+
+    def parse(self,
+              sga=None,
+              bioprocesses=None,
+              p_value=float(0.05),
+              DMF_type="neutral",
+              remove_white_spaces=True,
+              in_sep=","):
+        """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
+        parsed <csv> file. The minimal filtration is based of a given GIS_P
+        and presence of DMF value. Further filtration results in DMF
+        higher/lower than both SMFs.
+
+        Args:
+            sga (str): name of file to parse
+            sga_ver (int) = costanzo dataframe version
+            excel (bool): pandas.read_excel when <True>. pandas.read_csv when
+            <False> (default).
+            p_value (float): maximum GIS_P for filtering
+            DMF_type (str): positive -> DMF > both SMFs
+                            negative -> DMF < both SMFs
+                            neutral  -> DMF not <None> (default)
+                            raw      -> no filter
+            remove_white_spaces (bool): replaces whitespaces from col names
+            with <_> when True (default)
+            in_sep (str): separator for pandas.read_csv method
+        """
+        if sga is not None:
+            sga_df = pd.read_csv(sga, sep=in_sep)
+            if remove_white_spaces is True:
+                sga_df.columns = [i.replace(" ", "_") for i in sga_df.columns]
+            sga_df.rename(columns=self.sga1_heads, inplace=True)
+            positive_DMF_bool = (sga_df["DMF"] > sga_df["SMF_Q"]) &\
+                                (sga_df["DMF"] > sga_df["SMF_A"]) &\
+                                (sga_df["GIS_P"] <= p_value)
+            negative_DMF_bool = (sga_df["DMF"] < sga_df["SMF_Q"]) &\
+                                (sga_df["DMF"] < sga_df["SMF_A"]) &\
+                                (sga_df["GIS_P"] <= p_value)
+            neutral_DMF_bool = (sga_df["DMF"].notnull()) &\
+                               (sga_df["GIS_P"] <= p_value)
+            if DMF_type == "positive":
+                self.sga_df = sga_df[positive_DMF_bool]
+            elif DMF_type == "negative":
+                self.sga_df = sga_df[negative_DMF_bool]
+            elif DMF_type == "neutral":
+                self.sga_df = sga_df[neutral_DMF_bool]
+            elif DMF_type == "raw":
+                self.sga_df = sga_df
+        if bioprocesses is not None:
+            self.bioproc_df = pd.read_excel(bioprocesses,
+                                            names=self.bioproc_heads)
