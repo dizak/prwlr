@@ -5,6 +5,7 @@ import re
 import pathos.multiprocessing as ptmp
 import numpy as np
 import pandas as pd
+from apis import KEGG_API as _KEGG_API
 
 
 class KEGG:
@@ -16,11 +17,14 @@ class KEGG:
     listed: list of dicts
         Data from parsed KEGG database.
     """
-    def __init__(self):
+    def __init__(self,
+                 database):
+        self.database = database.lower()
+        self._api = _KEGG_API()
         self.listed = []
 
-    def parse(self,
-              filename):
+    def parse_database(self,
+                       filename):
         """Return KEGG.listed (list of dicts) which contains information from
         the file downloaded by KEGG_API.get_ortho_db_entries.
 
@@ -77,6 +81,20 @@ class KEGG:
                 entry_dict["orgs"] = orgs
             return entry_dict
         self.listed = ptmp.ProcessingPool().map(f, entries_list)
+
+    def parse_organism_info(self,
+                            organism,
+                            IDs,
+                            X_ref,
+                            strip_kegg_id_prefix):
+        self._api.get_organisms_ids(IDs, skip_dwnld=True)
+        self.IDs_table = self._api.organisms_ids_df
+        self._api.get_org_db_X_ref(organism=organism,
+                                   target_db=self.database,
+                                   out_file_name=X_ref,
+                                   skip_dwnld=True,
+                                   strip_kegg_id_prefix=strip_kegg_id_prefix)
+        self.X_reference = self._api.org_db_X_ref_df
 
 
 class Orthology(KEGG):
