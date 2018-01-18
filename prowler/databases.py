@@ -18,13 +18,13 @@ class KEGG:
         Data from parsed KEGG database.
     """
     def __init__(self,
-                 database):
-        self.database = database.lower()
+                 database_type):
+        self.database_type = database_type.lower()
         self._api = _KEGG_API()
-        self.listed = []
 
     def parse_database(self,
-                       filename):
+                       filename,
+                       cleanup=True):
         """Return KEGG.listed (list of dicts) which contains information from
         the file downloaded by KEGG_API.get_ortho_db_entries.
 
@@ -80,7 +80,18 @@ class KEGG:
                 entry_dict["genes"] = genes
                 entry_dict["orgs"] = orgs
             return entry_dict
-        self.listed = ptmp.ProcessingPool().map(f, entries_list)
+        listed = ptmp.ProcessingPool().map(f, entries_list)
+        df = pd.DataFrame(listed)
+        if cleanup is True:
+            df = df.drop_duplicates(subset=["entry"],
+                                    keep="first")
+            df.index = range(len(df))
+            df.dropna(how="all",
+                      inplace=True)
+            df.dropna(subset=["entry",
+                              "orgs"],
+                      inplace=True)
+        self.database = df
 
     def parse_organism_info(self,
                             organism,
@@ -90,7 +101,7 @@ class KEGG:
         self._api.get_organisms_ids(IDs, skip_dwnld=True)
         self.IDs_table = self._api.organisms_ids_df
         self._api.get_org_db_X_ref(organism=organism,
-                                   target_db=self.database,
+                                   target_db=self.database_type,
                                    out_file_name=X_ref,
                                    skip_dwnld=True,
                                    strip_kegg_id_prefix=strip_kegg_id_prefix)
