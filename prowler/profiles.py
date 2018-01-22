@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 
-class Profile(object):
+class Profile:
     """
     Profile object.
     """
@@ -102,3 +102,26 @@ class Profile(object):
                                            negative_sign))
         else:
             return pd.Series(self.profile)
+
+
+class ProfilesScorer:
+    """
+    Calculating Profiles Similarity Score.
+    """
+
+    def __init__(self,
+                 profile_1,
+                 profile_2):
+        if isinstance(profile_1, Profile) is False:
+            raise TypeError("Not a prowler.profiles.Profile.")
+        if isinstance(profile_2, Profile) is False:
+            raise TypeError("Not a prowler.profiles.Profile.")
+        self.profile_1 = profile_1.to_array()
+        self.profile_2 = profile_2dd.to_array()
+        self._calculate()
+
+    def _calculate(self):
+        """
+        Calculate Profiles Similarity Score.
+        """
+        self.score = (self.profile_1 == self.profile_2).sum()
