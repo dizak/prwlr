@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-from weakref import WeakKeyDictionary
 from errors import *
 import numpy as np
 import pandas as pd
@@ -108,4 +107,7 @@ class Profile:
         """
         Calculate Profiles Similarity Score.
         """
-        return (self.to_array() == profile.to_array()).sum()
+        return (self.to_array(positive_sign=None,
+                              negative_sign=None) ==
+                profile.to_array(positive_sign=None,
+                                 negative_sign=None)).sum()
