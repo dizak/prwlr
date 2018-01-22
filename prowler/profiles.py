@@ -41,7 +41,7 @@ class Profile:
         """
         Convert profile to given sign.
         """
-        return [positive_sign if True else negative_sign for i in self.profile]
+        return [positive_sign if i is True else negative_sign for i in self.profile]
 
     def to_string(self,
                   positive_sign="+",
