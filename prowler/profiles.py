@@ -22,8 +22,8 @@ class Profile:
             iter(query)
         except TypeError:
             raise ProfileConstructorError("Query must be an iterable.")
-        if len(reference) < len(query):
-            raise ProfileLengthError("Reference longer than query")
+        # if len(reference) < len(query):
+        #     raise ProfileLengthError("Reference longer than query")
         self.reference = tuple(reference)
         self.query = tuple(query)
         self._construct()
