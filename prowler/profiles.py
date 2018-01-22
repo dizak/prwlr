@@ -49,8 +49,11 @@ class Profile(object):
         """
         Return profile as str.
         """
-        return "".join(self._convert(positive_sign,
-                                     negative_sign))
+        if positive_sign is not None and negative_sign is not None:
+            return "".join(self._convert(positive_sign,
+                                         negative_sign))
+        else:
+            return str(self.profile)
 
     def to_list(self,
                 positive_sign="+",
@@ -58,8 +61,11 @@ class Profile(object):
         """
         Retrun profile as list.
         """
-        return list(self._convert(positive_sign,
-                                  negative_sign))
+        if positive_sign is not None and negative_sign is not None:
+            return list(self._convert(positive_sign,
+                                      negative_sign))
+        else:
+            list(self.profile)
 
     def to_tuple(self,
                  positive_sign="+",
@@ -67,8 +73,11 @@ class Profile(object):
         """
         Return profile as tuple.
         """
-        return tuple(self._convert(positive_sign,
-                                   negative_sign))
+        if positive_sign is not None and negative_sign is not None:
+            return tuple(self._convert(positive_sign,
+                                       negative_sign))
+        else:
+            return tuple(self.profile)
 
     def to_array(self,
                  positive_sign="+",
@@ -76,8 +85,11 @@ class Profile(object):
         """
         Return profile as an numpy.array.
         """
-        return np.array(self._convert(positive_sign,
-                                      negative_sign))
+        if positive_sign is not None and negative_sign is not None:
+            return np.array(self._convert(positive_sign,
+                                          negative_sign))
+        else:
+            return np.array(self.profile)
 
     def to_series(self,
                   positive_sign="+",
@@ -85,5 +97,8 @@ class Profile(object):
         """
         Return profile as pandas.Series
         """
-        return pd.Series(self._convert(positive_sign,
-                                       negative_sign))
+        if positive_sign is not None and negative_sign is not None:
+            return pd.Series(self._convert(positive_sign,
+                                           negative_sign))
+        else:
+            return pd.Series(self.profile)
