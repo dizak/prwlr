@@ -7,6 +7,7 @@ __all__ = ["apis",
            "genome",
            "interactions",
            "network",
+           "profiles",
            "stats",
            "templater",
            "utils"]
