@@ -6,6 +6,7 @@ import pathos.multiprocessing as ptmp
 import numpy as np
 import pandas as pd
 from apis import KEGG_API as _KEGG_API
+from errors import ParserError
 
 
 class KEGG:
