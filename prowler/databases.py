@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from apis import KEGG_API as _KEGG_API
 from errors import ParserError
+from profiles import Profile as _Profile
 
 
 class KEGG:
@@ -107,6 +108,15 @@ class KEGG:
                                    skip_dwnld=True,
                                    strip_kegg_id_prefix=strip_kegg_id_prefix)
         self.X_reference = self._api.org_db_X_ref_df
+
+    def profilize(self,
+                  species_ids,
+                  name):
+        """
+        Append the database with phylogenetic profiles.
+        """
+        self.database[name] = self.database["orgs"].apply(lambda x:
+                                                          _Profile(x, species_ids).to_string())
 
 
 class Orthology(KEGG):
