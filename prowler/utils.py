@@ -6,6 +6,30 @@ import requests as rq
 import numpy as np
 
 
+def remove_from_list(element,
+                     iterable):
+    """
+    Return list without given element from that list. Conversely to built-in
+    methods it is fruitful function.
+
+    Parameters
+    -------
+    element: object
+        Element to be removed from the list.
+    iterable: list, tuple, set
+        Iterable from with the element should be removed.
+
+    Returns
+    -------
+    list
+        Cleaned up from the element.
+
+    """
+    if element in list(iterable):
+        iterable.remove(element)
+    return iterable
+
+
 def all_possible_combinations_counter(subset_size,
                                       set_size):
     """
