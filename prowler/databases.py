@@ -8,6 +8,7 @@ import pandas as pd
 from apis import KEGG_API as _KEGG_API
 from errors import ParserError
 from profiles import Profile as _Profile
+from utils import remove_from_list
 
 
 class KEGG:
@@ -26,7 +27,8 @@ class KEGG:
 
     def parse_database(self,
                        filename,
-                       cleanup=True):
+                       cleanup=True,
+                       remove_from_orgs=None):
         """Return KEGG.listed (list of dicts) which contains information from
         the file downloaded by KEGG_API.get_ortho_db_entries.
 
@@ -93,15 +95,22 @@ class KEGG:
             df.dropna(subset=["entry",
                               "orgs"],
                       inplace=True)
+        if remove_from_orgs is not None:
+            for i in remove_from_orgs:
+                df["orgs"] = df["orgs"].apply(lambda x: remove_from_list(i, x))
         self.database = df
 
     def parse_organism_info(self,
                             organism,
+                            reference_species,
                             IDs,
                             X_ref,
                             strip_kegg_id_prefix):
         self._api.get_organisms_ids(IDs, skip_dwnld=True)
         self.IDs_table = self._api.organisms_ids_df
+        self.reference_species = [self._api.org_name_2_kegg_id(i) for i in reference_species
+                                  if i not in self._api.query_ids_not_found]
+        self.reference_species = [i.upper() for i in self.reference_species if i is not None]
         self._api.get_org_db_X_ref(organism=organism,
                                    target_db=self.database_type,
                                    out_file_name=X_ref,
@@ -110,13 +119,12 @@ class KEGG:
         self.X_reference = self._api.org_db_X_ref_df
 
     def profilize(self,
-                  species_ids,
-                  name):
+                  name="profiles"):
         """
         Append the database with phylogenetic profiles.
         """
         self.database[name] = self.database["orgs"].apply(lambda x:
-                                                          _Profile(x, species_ids).to_string())
+                                                          _Profile(x, self.reference_species).to_string())
 
 
 class Orthology(KEGG):
