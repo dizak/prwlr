@@ -8,6 +8,34 @@ import pathos.multiprocessing as ptmp
 from tqdm import tqdm
 
 
+class Stats:
+    """
+    Calculates and holds data about interactions array statistical
+    properties.
+    """
+    def __init__(self,
+                 inter_df,
+                 p_value=0.05,
+                 inter_score_min=0.04,
+                 inter_score_max=-0.04):
+        self.inter_df = inter_df
+        self.filters_used = "No filters"
+        self.filters_name = "no_filters"
+        self.inter_score_min = inter_score_min
+        self.inter_score_max = inter_score_max
+        self.p_value = (self.inter_df["GIS_P"] <= p_value)
+        self.positive_DMF_bool = ((self.inter_df["DMF"] >
+                                   self.inter_df["SMF_Q"]) &
+                                  (self.inter_df["DMF"] >
+                                   self.inter_df["SMF_A"]))
+        self.negative_DMF_bool = ((self.inter_df["DMF"] <
+                                   self.inter_df["SMF_Q"]) &
+                                  (self.inter_df["DMF"] <
+                                   self.inter_df["SMF_A"]))
+        self.SMF_below_one_bool = (self.inter_df["SMF_Q"] < 1.0) &\
+                                  (self.inter_df["SMF_A"] < 1.0)
+
+
 class Ortho_Stats:
     """Calculates and holds data about interactions array statistical
     properties.
