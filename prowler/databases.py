@@ -400,14 +400,26 @@ class ProfInt:
                          axis=1,
                          inplace=True)
         self.merged.dropna(inplace=True)
-        for i in self.merged.itertuples():
-            prof_1 = np.array(list(getattr(i, "PROF_Q")))
-            prof_2 = np.array(list(getattr(i, "PROF_A")))
-            temp_score_list.append(simple_profiles_scorer(prof_1,
-                                                          prof_2))
-        temp_score_df = pd.DataFrame(temp_score_list,
-                                     index=self.merged.index,
-                                     columns=["PSS"])
-        self.merged = pd.concat([sga,
-                                temp_score_df],
-                                axis=1)
+        # for i in self.merged.itertuples():
+        #     prof_1 = np.array(list(getattr(i, "PROF_Q")))
+        #     prof_2 = np.array(list(getattr(i, "PROF_A")))
+        #     temp_score_list.append(simple_profiles_scorer(prof_1,
+        #                                                   prof_2))
+        # temp_score_df = pd.DataFrame(temp_score_list,
+        #                              index=self.merged.index,
+        #                              columns=["PSS"])
+        # self.merged = pd.concat([sga,
+        #                         temp_score_df],
+        #                         axis=1)
+
+    def profilize(self,
+                  reference_species):
+        """
+        Append databases.merged with Profiles Similarity Score.
+        """
+        self.merged["PSS"] = self.merged.apply(lambda x:
+                                               _Profile(x["ORGS_Q"],
+                                                        reference_species).
+                                               calculate_pss(_Profile(x["ORGS_A"],
+                                                                      reference_species)),
+                                               axis=1)
