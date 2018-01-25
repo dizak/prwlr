@@ -16,24 +16,38 @@ class Stats:
     def __init__(self,
                  inter_df,
                  p_value=0.05,
-                 inter_score_min=0.04,
-                 inter_score_max=-0.04):
+                 GIS_min=0.04,
+                 GIS_max=-0.04):
+        if not isinstance(inter_df, pd.DataFrame):
+            raise TypeError("Must be pandas.DataFrame")
+        if not all([isinstance(i, float) for i in [p_value,
+                                                   GIS_min,
+                                                   GIS_max]]):
+            raise TypeError("Must be float.")
         self.inter_df = inter_df
         self.filters_used = "No filters"
         self.filters_name = "no_filters"
-        self.inter_score_min = inter_score_min
-        self.inter_score_max = inter_score_max
         self.p_value = (self.inter_df["GIS_P"] <= p_value)
-        self.positive_DMF_bool = ((self.inter_df["DMF"] >
-                                   self.inter_df["SMF_Q"]) &
-                                  (self.inter_df["DMF"] >
-                                   self.inter_df["SMF_A"]))
-        self.negative_DMF_bool = ((self.inter_df["DMF"] <
-                                   self.inter_df["SMF_Q"]) &
-                                  (self.inter_df["DMF"] <
-                                   self.inter_df["SMF_A"]))
-        self.SMF_below_one_bool = (self.inter_df["SMF_Q"] < 1.0) &\
-                                  (self.inter_df["SMF_A"] < 1.0)
+        self.GIS_max = (self.inter_df["GIS"] < GIS_max)
+        self.GIS_min = (self.inter_df["GIS"] > GIS_min)
+        self.positive_DMF = ((self.inter_df["DMF"] >
+                              self.inter_df["SMF_Q"]) &
+                             (self.inter_df["DMF"] >
+                              self.inter_df["SMF_A"]))
+        self.negative_DMF = ((self.inter_df["DMF"] <
+                              self.inter_df["SMF_Q"]) &
+                             (self.inter_df["DMF"] <
+                              self.inter_df["SMF_A"]))
+        self.SMF_below_one = (self.inter_df["SMF_Q"] < 1.0) &\
+                             (self.inter_df["SMF_A"] < 1.0)
+        self.no_flat_plu_q = (self.inter_df["PROF_Q"] !=
+                              "+" * len(self.reference_species))
+        self.no_flat_min_q = (self.inter_df["PROF_Q"] !=
+                              "-" * len(self.reference_species))
+        self.no_flat_plu_a = (self.inter_df["PROF_A"] !=
+                              "+" * len(self.reference_species))
+        self.no_flat_min_a = (self.inter_df["PROF_A"] !=
+                              "-" * len(self.reference_species))
 
 
 class Ortho_Stats:
