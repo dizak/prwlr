@@ -423,3 +423,7 @@ class ProfInt:
                                                calculate_pss(_Profile(x["ORGS_A"],
                                                                       reference_species)),
                                                axis=1)
+        self.merged["PROF_Q"] = self.merged["ORGS_Q"].apply(lambda x:
+                                                            _Profile(x, reference_species).to_string())
+        self.merged["PROF_A"] = self.merged["ORGS_A"].apply(lambda x:
+                                                            _Profile(x, reference_species).to_string())
