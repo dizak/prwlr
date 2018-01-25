@@ -15,6 +15,7 @@ class Stats:
     """
     def __init__(self,
                  inter_df,
+                 reference_species,
                  p_value=0.05,
                  GIS_min=0.04,
                  GIS_max=-0.04):
@@ -25,8 +26,7 @@ class Stats:
                                                    GIS_max]]):
             raise TypeError("Must be float.")
         self.inter_df = inter_df
-        self.filters_used = "No filters"
-        self.filters_name = "no_filters"
+        self.reference_species = reference_species
         self.p_value = (self.inter_df["GIS_P"] <= p_value)
         self.GIS_max = (self.inter_df["GIS"] < GIS_max)
         self.GIS_min = (self.inter_df["GIS"] > GIS_min)
