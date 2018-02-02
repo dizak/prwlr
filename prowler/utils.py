@@ -4,6 +4,7 @@
 import math
 import requests as rq
 import numpy as np
+import pandas as pd
 
 
 def remove_from_list(element,
