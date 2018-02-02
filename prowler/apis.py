@@ -159,8 +159,7 @@ class KEGG_API:
                          target_db,
                          out_file_name,
                          skip_dwnld=False,
-                         strip_ORF_prefix=True,
-                         strip_kegg_id_prefix=False):
+                         strip_prefix=True):
         """Get desired KEGG's database entries linked with all the genes from
         given organism. Data are downloaded to a local file and then made into
         pandas.DataFrame. File can be reused. Necessary for
@@ -189,16 +188,11 @@ class KEGG_API:
                                            names=["ORF_id", "kegg_id"],
                                            header=None,
                                            sep="\t")
-        if strip_ORF_prefix is True:
-            self.org_db_X_ref_df["ORF_id"] = self.org_db_X_ref_df["ORF_id"].replace({"{0}:".format(org_id): ""},
-                                                                                    regex=True)
-        else:
-            pass
-        if strip_kegg_id_prefix is True:
-            self.org_db_X_ref_df["kegg_id"] = self.org_db_X_ref_df["kegg_id"].replace({"{0}:".format(self.databases[target_db]): ""},
-                                                                                      regex=True)
-        else:
-            pass
+        if strip_prefix is True:
+            self.org_db_X_ref_df.replace({"{}:".format(org_id): "",
+                                          "{}:".format(self.databases[target_db]): ""},
+                                         regex=True,
+                                         inplace=True)
 
     def get_db_entries(self,
                        out_file_name):
