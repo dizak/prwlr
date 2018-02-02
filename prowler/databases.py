@@ -105,7 +105,7 @@ class KEGG:
                             reference_species,
                             IDs,
                             X_ref,
-                            strip_kegg_id_prefix):
+                            strip_prefix=True):
         self._api.get_organisms_ids(IDs, skip_dwnld=True)
         self.IDs_table = self._api.organisms_ids_df
         self.reference_species = [self._api.org_name_2_kegg_id(i) for i in reference_species
@@ -115,7 +115,7 @@ class KEGG:
                                    target_db=self.database_type,
                                    out_file_name=X_ref,
                                    skip_dwnld=True,
-                                   strip_kegg_id_prefix=strip_kegg_id_prefix)
+                                   strip_prefix=True)
         self.X_reference = self._api.org_db_X_ref_df
 
     def profilize(self,
