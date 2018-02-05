@@ -15,40 +15,38 @@ class Stats:
     properties.
     """
     def __init__(self,
-                 inter_df,
-                 reference_species,
+                 dataframe,
                  p_value=0.05,
                  GIS_min=0.04,
                  GIS_max=-0.04):
-        if not isinstance(inter_df, pd.DataFrame):
+        if not isinstance(dataframe, pd.DataFrame):
             raise TypeError("Must be pandas.DataFrame")
         if not all([isinstance(i, float) for i in [p_value,
                                                    GIS_min,
                                                    GIS_max]]):
             raise TypeError("Must be float.")
-        self.inter_df = inter_df
-        self.reference_species = reference_species
-        self.p_value = (self.inter_df["GIS_P"] <= p_value)
-        self.GIS_max = (self.inter_df["GIS"] < GIS_max)
-        self.GIS_min = (self.inter_df["GIS"] > GIS_min)
-        self.positive_DMF = ((self.inter_df["DMF"] >
-                              self.inter_df["SMF_Q"]) &
-                             (self.inter_df["DMF"] >
-                              self.inter_df["SMF_A"]))
-        self.negative_DMF = ((self.inter_df["DMF"] <
-                              self.inter_df["SMF_Q"]) &
-                             (self.inter_df["DMF"] <
-                              self.inter_df["SMF_A"]))
-        self.SMF_below_one = (self.inter_df["SMF_Q"] < 1.0) &\
-                             (self.inter_df["SMF_A"] < 1.0)
-        self.no_flat_plu_q = (self.inter_df["PROF_Q"] !=
-                              "+" * len(self.reference_species))
-        self.no_flat_min_q = (self.inter_df["PROF_Q"] !=
-                              "-" * len(self.reference_species))
-        self.no_flat_plu_a = (self.inter_df["PROF_A"] !=
-                              "+" * len(self.reference_species))
-        self.no_flat_min_a = (self.inter_df["PROF_A"] !=
-                              "-" * len(self.reference_species))
+        self.dataframe = dataframe
+        self.p_value = (self.dataframe["GIS_P"] <= p_value)
+        self.GIS_max = (self.dataframe["GIS"] < GIS_max)
+        self.GIS_min = (self.dataframe["GIS"] > GIS_min)
+        self.positive_DMF = ((self.dataframe["DMF"] >
+                              self.dataframe["SMF_Q"]) &
+                             (self.dataframe["DMF"] >
+                              self.dataframe["SMF_A"]))
+        self.negative_DMF = ((self.dataframe["DMF"] <
+                              self.dataframe["SMF_Q"]) &
+                             (self.dataframe["DMF"] <
+                              self.dataframe["SMF_A"]))
+        self.SMF_below_one = (self.dataframe["SMF_Q"] < 1.0) &\
+                             (self.dataframe["SMF_A"] < 1.0)
+        self.no_flat_plu_q = (self.dataframe["PROF_Q"] !=
+                              "+" * len(self.dataframe.PROF_Q[0]))
+        self.no_flat_min_q = (self.dataframe["PROF_Q"] !=
+                              "-" * len(self.dataframe.PROF_Q[0]))
+        self.no_flat_plu_a = (self.dataframe["PROF_A"] !=
+                              "+" * len(self.dataframe.PROF_Q[0]))
+        self.no_flat_min_a = (self.dataframe["PROF_A"] !=
+                              "-" * len(self.dataframe.PROF_Q[0]))
 
     def permute_profiles(self,
                          dataframe,
