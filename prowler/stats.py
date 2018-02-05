@@ -50,9 +50,10 @@ class Stats:
         self.no_flat_min_a = (self.inter_df["PROF_A"] !=
                               "-" * len(self.reference_species))
 
-    def KO_profs_perm(self,
-                      e_value,
-                      in_prof_sim_lev):
+    def permute_profiles(self,
+                         dataframe,
+                         in_prof_sim_lev,
+                         e_value):
         """Return Ortho_Stats.prof_arr_perm_results pandas.DataFrame containing
         number of similar, dissimilar, mirror profiles and complete permuted
         pandas.DataFrame itself. Return Ortho_Stats.prof_arr_perm_res_avg
@@ -71,14 +72,14 @@ class Stats:
             not
         """
         def f(in_iter):
-            q_ORF_prof_df = self.inter_df[["ORF_Q",
-                                           "PROF_Q"]]
-            a_ORF_prof_df = self.inter_df[["ORF_A",
-                                           "PROF_A"]]
-            drop_prof_temp_df = self.inter_df.drop(["PROF_Q",
-                                                    "PROF_A",
-                                                    "PSS"],
-                                                   axis=1)
+            q_ORF_prof_df = dataframe[["ORF_Q",
+                                       "PROF_Q"]]
+            a_ORF_prof_df = dataframe[["ORF_A",
+                                       "PROF_A"]]
+            drop_prof_temp_df = dataframe.drop(["PROF_Q",
+                                                "PROF_A",
+                                                "PSS"],
+                                               axis=1)
             q_ORF_prof_df.columns = range(len(q_ORF_prof_df.columns))
             a_ORF_prof_df.columns = range(len(a_ORF_prof_df.columns))
             stack_ORF_prof_df = pd.concat([q_ORF_prof_df,
@@ -117,18 +118,15 @@ class Stats:
             unsim_prof_perm_num = len(qa_merged_score_df[unsim_prof_bool])
             mir_prof_perm_num = len(qa_merged_score_df[mir_prof_bool])
             return {"similar": sim_prof_perm_num,
-                    "unsimilar": unsim_prof_perm_num,
+                    "dissimilar": unsim_prof_perm_num,
                     "mirror": mir_prof_perm_num,
                     "iteration": in_iter + 1,
                     "dataframe": qa_merged_score_df}
         permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
-        self.prof_KO_perm_results = pd.DataFrame(permuted_df_results_temp)
-        self.prof_KO_perm_res_avg = pd.Series({"mirror_profiles": sum(self.prof_KO_perm_results.mirror) /
-                                              len(self.prof_KO_perm_results),
-                                              "similar_profiles": sum(self.prof_KO_perm_results.similar) /
-                                               len(self.prof_KO_perm_results),
-                                               "unsimilar": sum(self.prof_KO_perm_results.unsimilar) /
-                                               len(self.prof_KO_perm_results)})
+        prof_KO_perm_results = pd.DataFrame(permuted_df_results_temp)
+        return pd.Series({"mirror": float(sum(prof_KO_perm_results.mirror)) / float(len(prof_KO_perm_results)),
+                          "similar": float(sum(prof_KO_perm_results.similar)) / float(len(prof_KO_perm_results)),
+                          "dissimilar": float(sum(prof_KO_perm_results.dissimilar)) / float(len(prof_KO_perm_results))})
 
 
 class Ortho_Stats:
