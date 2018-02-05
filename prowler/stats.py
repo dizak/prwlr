@@ -6,6 +6,7 @@ import math
 import numpy as np
 import pathos.multiprocessing as ptmp
 from tqdm import tqdm
+from errors import *
 from utils import *
 
 
@@ -47,6 +48,80 @@ class Stats:
                               "+" * len(self.dataframe.PROF_Q[0]))
         self.no_flat_min_a = (self.dataframe["PROF_A"] !=
                               "-" * len(self.dataframe.PROF_Q[0]))
+
+    def _log_binomial_coeff(self,
+                            n,
+                            k):
+        # use multiplicative formula and calculate logarithms on the fly
+        n = float(n)
+        w = 0.0
+        if k > n / 2:    # shorter loop
+            k = int(n - k)
+
+        for i in range(1, k + 1):
+            w += math.log((n - i + 1.0) / float(i))
+        return w
+
+    def _score(self,
+               hit_num,
+               prot_num,
+               background_p):
+        """
+        Calculate logarithm of probability that given term was found hit_num times by chance.
+        Use binomial distribution:
+        log(P) = log((N  k)  * p**k * (1-p)**(N-k)) = log(N k) + k*log(p) + (N-k)*log(1-p)
+        """
+        prot_num = int(prot_num)
+        hit_num = int(hit_num)
+        log_p = (self._log_binomial_coeff(prot_num, hit_num) +
+                 hit_num * math.log(background_p) +
+                 (prot_num - hit_num) * math.log(1.0 - background_p))
+
+        return log_p
+
+    def calculate_enrichment(self,
+                             selected,
+                             total,
+                             col="PSS"):
+        """
+        Returns enrichment table.
+
+        Parameters
+        -------
+        selected: pandas.DataFrame
+            Dataframe containing data of interest.
+        total: pandas.DataFrame
+            Dataframe containing all the samples.
+        col: str
+            Column name holding attribute to calculate enrichment on.
+
+        Returns
+        -------
+            pandas.DataFrame
+        Dataframe with enrichment scores and fold change.
+        """
+        if len(selected) == 0 or len(total) == 0:
+            raise ValueError("selected and total dataframes must not be empty.")
+        if len(selected) > len(total):
+            raise ValueError("selected must not be longer bigger than total.")
+        selected_bins = pd.DataFrame(selected.groupby(by=[col]).size(),
+                                     columns=["COUNT"]).reset_index()
+        expected_bins = pd.DataFrame(total.groupby(by=[col]).size(),
+                                     columns=["COUNT"]).reset_index()
+        selected_bins["P"] = expected_bins["COUNT"].apply(lambda x: float(x) / float(len(total)))
+        selected_bins["COUNT_EXP"] = selected_bins.apply(lambda x: len(selected) * x["P"],
+                                                         axis=1)
+        selected_bins["SCORE"] = selected_bins.apply(lambda x: self._score(x["COUNT"],
+                                                                           len(selected),
+                                                                           x["P"]),
+                                                     axis=1)
+        selected_bins["SCORE_EXP"] = selected_bins.apply(lambda x: self._score(x["COUNT_EXP"],
+                                                                               len(selected),
+                                                                               x["P"]),
+                                                         axis=1)
+        selected_bins["FOLD_CHNG"] = np.log2(selected_bins["COUNT"] /
+                                             selected_bins["P"])
+        return selected_bins
 
     def permute_profiles(self,
                          dataframe,
