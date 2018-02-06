@@ -120,7 +120,7 @@ class Stats:
                                                                                x["P"]),
                                                          axis=1)
         selected_bins["FOLD_CHNG"] = np.log2(selected_bins["COUNT"] /
-                                             selected_bins["P"])
+                                             selected_bins["COUNT_EXP"])
         return selected_bins
 
     def permute_profiles(self,
