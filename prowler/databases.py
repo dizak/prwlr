@@ -413,17 +413,36 @@ class ProfInt:
         #                         axis=1)
 
     def profilize(self,
-                  reference_species):
+                  reference_species,
+                  input_col_query="ORGS_Q",
+                  input_col_array="ORGS_A",
+                  output_score_col="PSS",
+                  output_profile_col_query="PROF_Q",
+                  output_profile_col_array="PROF_A"):
         """
-        Append databases.merged with Profiles Similarity Score.
+        Append databases.merged with Profiles Similarity Score and/or string
+        representation of the phylogenetic profiles.
+
+        Parameters
+        -------
+        reference_species: list of str
+            Species list compared to contained in the orthogroup. Basis for the
+            profiles construction.
+        input_col_query: str, default <"ORGS_Q">
+            Name of the column holding organisms names in the orthogroup of the
+            query.
+        input_col_array: str, default <"ORGS_Q">
+            Name of the column holding organisms names in the orthogroup of the
+            query.
         """
-        self.merged["PSS"] = self.merged.apply(lambda x:
-                                               _Profile(x["ORGS_Q"],
-                                                        reference_species).
-                                               calculate_pss(_Profile(x["ORGS_A"],
-                                                                      reference_species)),
-                                               axis=1)
-        self.merged["PROF_Q"] = self.merged["ORGS_Q"].apply(lambda x:
-                                                            _Profile(x, reference_species).to_string())
-        self.merged["PROF_A"] = self.merged["ORGS_A"].apply(lambda x:
-                                                            _Profile(x, reference_species).to_string())
+        self.merged[output_score_col] = self.merged.apply(lambda x:
+                                                          _Profile(x[input_col_query],
+                                                                   reference_species).
+                                                          calculate_pss(_Profile(x[input_col_array],
+                                                                                 reference_species)),
+                                                          axis=1)
+        if output_profile_col_query is not None and output_profile_col_array is not None:
+            self.merged[output_profile_col_query] = self.merged[input_col_query].apply(lambda x:
+                                                                                       _Profile(x, reference_species).to_string())
+            self.merged[output_profile_col_array] = self.merged[input_col_array].apply(lambda x:
+                                                                                       _Profile(x, reference_species).to_string())
