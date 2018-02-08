@@ -8,7 +8,7 @@ import pandas as pd
 from apis import KEGG_API as _KEGG_API
 from errors import ParserError
 from profiles import Profile as _Profile
-from utils import remove_from_list
+from utils import *
 
 
 class KEGG:
