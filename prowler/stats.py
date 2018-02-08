@@ -8,9 +8,25 @@ import pathos.multiprocessing as ptmp
 from tqdm import tqdm
 from errors import *
 from utils import *
+from databases import Columns as _DatabasesColumns
+from profiles import Profile as _Profile
 
 
-class Stats:
+class Columns:
+    """
+    Container for the columns names defined in this module.
+    """
+    P = "P"
+    COUNT = "COUNT"
+    COUNT_EXP = "COUNT_EXP"
+    SCORE = "SCORE"
+    SCORE_EXP = "SCORE_EXP"
+    FOLD_CHNG = "FOLD_CHNG"
+
+
+class Stats(_DatabasesColumns,
+            Columns,
+            _Profile):
     """
     Calculates and holds data about interactions array statistical
     properties.
@@ -27,27 +43,27 @@ class Stats:
                                                    GIS_max]]):
             raise TypeError("Must be float.")
         self.dataframe = dataframe
-        self.p_value = (self.dataframe["GIS_P"] <= p_value)
-        self.GIS_max = (self.dataframe["GIS"] < GIS_max)
-        self.GIS_min = (self.dataframe["GIS"] > GIS_min)
-        self.positive_DMF = ((self.dataframe["DMF"] >
-                              self.dataframe["SMF_Q"]) &
-                             (self.dataframe["DMF"] >
-                              self.dataframe["SMF_A"]))
-        self.negative_DMF = ((self.dataframe["DMF"] <
-                              self.dataframe["SMF_Q"]) &
-                             (self.dataframe["DMF"] <
-                              self.dataframe["SMF_A"]))
-        self.SMF_below_one = (self.dataframe["SMF_Q"] < 1.0) &\
-                             (self.dataframe["SMF_A"] < 1.0)
-        self.no_flat_plu_q = (self.dataframe["PROF_Q"] !=
-                              "+" * len(self.dataframe.PROF_Q[0]))
-        self.no_flat_min_q = (self.dataframe["PROF_Q"] !=
-                              "-" * len(self.dataframe.PROF_Q[0]))
-        self.no_flat_plu_a = (self.dataframe["PROF_A"] !=
-                              "+" * len(self.dataframe.PROF_Q[0]))
-        self.no_flat_min_a = (self.dataframe["PROF_A"] !=
-                              "-" * len(self.dataframe.PROF_Q[0]))
+        self.p_value = (self.dataframe[self.GIS_P] <= p_value)
+        self.GIS_max = (self.dataframe[self.GIS] < GIS_max)
+        self.GIS_min = (self.dataframe[self.GIS] > GIS_min)
+        self.positive_DMF = ((self.dataframe[self.DMF] >
+                              self.dataframe[self.SMF_Q]) &
+                             (self.dataframe[self.DMF] >
+                              self.dataframe[self.SMF_A]))
+        self.negative_DMF = ((self.dataframe[self.DMF] <
+                              self.dataframe[self.SMF_Q]) &
+                             (self.dataframe[self.DMF] <
+                              self.dataframe[self.SMF_A]))
+        self.SMF_below_one = (self.dataframe[self.SMF_Q] < 1.0) &\
+                             (self.dataframe[self.SMF_A] < 1.0)
+        self.no_flat_plu_q = (self.dataframe[self.PROF_Q] !=
+                              _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
+        self.no_flat_min_q = (self.dataframe[self.PROF_Q] !=
+                              _Profile._negative_sign * len(self.dataframe.PROF_Q[0]))
+        self.no_flat_plu_a = (self.dataframe[self.PROF_A] !=
+                              _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
+        self.no_flat_min_a = (self.dataframe[self.PROF_A] !=
+                              _Profile._negative_sign * len(self.dataframe.PROF_Q[0]))
 
     def _log_binomial_coeff(self,
                             n,
@@ -105,22 +121,22 @@ class Stats:
         if len(selected) > len(total):
             raise ValueError("selected must not be longer bigger than total.")
         selected_bins = pd.DataFrame(selected.groupby(by=[col]).size(),
-                                     columns=["COUNT"]).reset_index()
+                                     columns=[self.COUNT]).reset_index()
         expected_bins = pd.DataFrame(total.groupby(by=[col]).size(),
-                                     columns=["COUNT"]).reset_index()
-        selected_bins["P"] = expected_bins["COUNT"].apply(lambda x: float(x) / float(len(total)))
-        selected_bins["COUNT_EXP"] = selected_bins.apply(lambda x: len(selected) * x["P"],
-                                                         axis=1)
-        selected_bins["SCORE"] = selected_bins.apply(lambda x: self._score(x["COUNT"],
-                                                                           len(selected),
-                                                                           x["P"]),
-                                                     axis=1)
-        selected_bins["SCORE_EXP"] = selected_bins.apply(lambda x: self._score(x["COUNT_EXP"],
-                                                                               len(selected),
-                                                                               x["P"]),
-                                                         axis=1)
-        selected_bins["FOLD_CHNG"] = np.log2(selected_bins["COUNT"] /
-                                             selected_bins["COUNT_EXP"])
+                                     columns=[self.COUNT]).reset_index()
+        selected_bins[self.P] = expected_bins[self.COUNT].apply(lambda x: float(x) / float(len(total)))
+        selected_bins[self.COUNT_EXP] = selected_bins.apply(lambda x: len(selected) * x[self.P],
+                                                            axis=1)
+        selected_bins[self.SCORE] = selected_bins.apply(lambda x: self._score(x[self.COUNT],
+                                                                              len(selected),
+                                                                              x[self.P]),
+                                                        axis=1)
+        selected_bins[self.SCORE_EXP] = selected_bins.apply(lambda x: self._score(x[self.COUNT_EXP],
+                                                                                  len(selected),
+                                                                                  x[self.P]),
+                                                            axis=1)
+        selected_bins[self.FOLD_CHNG] = np.log2(selected_bins[self.COUNT] /
+                                                selected_bins[self.COUNT_EXP])
         return selected_bins
 
     def permute_profiles(self,
@@ -145,13 +161,13 @@ class Stats:
             not
         """
         def f(in_iter):
-            q_ORF_prof_df = dataframe[["ORF_Q",
-                                       "PROF_Q"]]
-            a_ORF_prof_df = dataframe[["ORF_A",
-                                       "PROF_A"]]
-            drop_prof_temp_df = dataframe.drop(["PROF_Q",
-                                                "PROF_A",
-                                                "PSS"],
+            q_ORF_prof_df = dataframe[[self.ORF_Q,
+                                       self.PROF_Q]]
+            a_ORF_prof_df = dataframe[[self.ORF_A,
+                                       self.PROF_A]]
+            drop_prof_temp_df = dataframe.drop([self.PROF_Q,
+                                                self.PROF_A,
+                                                self.PSS],
                                                axis=1)
             q_ORF_prof_df.columns = range(len(q_ORF_prof_df.columns))
             a_ORF_prof_df.columns = range(len(a_ORF_prof_df.columns))
@@ -168,25 +184,25 @@ class Stats:
                                          axis=1)
             q_merged_df = pd.merge(drop_prof_temp_df,
                                    ORF_prof_perm_df,
-                                   left_on="ORF_Q",
+                                   left_on=self.ORF_Q,
                                    right_on="ORF",
                                    how="left")
             qa_merged_df = pd.merge(q_merged_df,
                                     ORF_prof_perm_df,
-                                    left_on="ORF_A",
+                                    left_on=self.ORF_A,
                                     right_on="ORF",
                                     how="left",
-                                    suffixes=("_Q", "_A"))
+                                    suffixes=(self.QUERY_SUF, self.ARRAY_SUF))
             qa_merged_score_df = df_based_profiles_scorer(qa_merged_df,
-                                                          prof_1_col_name="PROF_Q",
-                                                          prof_2_col_name="PROF_A",
-                                                          score_col_name="PSS")
-            sim_prof_bool = (qa_merged_score_df["PSS"] >=
+                                                          prof_1_col_name=self.PROF_Q,
+                                                          prof_2_col_name=self.PROF_A,
+                                                          score_col_name=self.PSS)
+            sim_prof_bool = (qa_merged_score_df[self.PSS] >=
                              in_prof_sim_lev)
-            unsim_prof_bool = (qa_merged_score_df["PSS"] <
+            unsim_prof_bool = (qa_merged_score_df[self.PSS] <
                                in_prof_sim_lev) &\
-                              (qa_merged_score_df["PSS"] > 0)
-            mir_prof_bool = (qa_merged_score_df["PSS"] == 0)
+                              (qa_merged_score_df[self.PSS] > 0)
+            mir_prof_bool = (qa_merged_score_df[self.PSS] == 0)
             sim_prof_perm_num = len(qa_merged_score_df[sim_prof_bool])
             unsim_prof_perm_num = len(qa_merged_score_df[unsim_prof_bool])
             mir_prof_perm_num = len(qa_merged_score_df[mir_prof_bool])

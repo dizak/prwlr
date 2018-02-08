@@ -6,7 +6,21 @@ import pandas as pd
 from tqdm import tqdm
 
 
-class KEGG_API:
+class Columns:
+    """
+    Container for the columns names defined in this module.
+    """
+    GENOME_ID = "GENOME_ID"
+    NAMES = "NAMES"
+    DESCRIPTION = "DESCRIPTION"
+    KEGG_ORG_ID = "KEGG_ORG_ID"
+    NAME = "NAME"
+    TAXON_ID = "TAXON_ID"
+    KEGG_ID = "KEGG_ID"
+    ORF_ID = "ORF_ID"
+
+
+class KEGG_API(Columns):
     """Provides connectivity with the KEGG database. Functions ending with <tbl>
     download files provided by KEGG but DO NOT modify them. Modifications
     needed for data processing are made on pandas.DataFrame.
@@ -66,17 +80,17 @@ class KEGG_API:
             with open(out_file_name, "w") as fout:
                 fout.write(res.content)
         self.organisms_ids_df = pd.read_csv(out_file_name,
-                                            names=["genome_id",
-                                                   "names",
-                                                   "description"],
+                                            names=[self.GENOME_ID,
+                                                   self.NAMES,
+                                                   self.DESCRIPTION],
                                             header=None,
                                             sep="\t|;",
                                             engine="python",
                                             error_bad_lines=False,
                                             warn_bad_lines=True)
-        temp_sub_df = self.organisms_ids_df["names"].str.split(",", expand=True)
-        temp_sub_df.columns = ["kegg_org_id", "name", "taxon_id"]
-        self.organisms_ids_df.drop("names", axis=1, inplace=True)
+        temp_sub_df = self.organisms_ids_df[self.NAMES].str.split(",", expand=True)
+        temp_sub_df.columns = [self.KEGG_ORG_ID, self.NAME, self.TAXON_ID]
+        self.organisms_ids_df.drop(self.NAMES, axis=1, inplace=True)
         self.organisms_ids_df = pd.concat([self.organisms_ids_df, temp_sub_df], axis=1)
         self.organisms_ids_df.replace({"genome:": ""},
                                       regex=True,
@@ -97,19 +111,19 @@ class KEGG_API:
             assume_1st (bool): return the first item if more than one hit when
             <True> (default)
         """
-        org_bool = self.organisms_ids_df.description.str.contains(organism)
+        org_bool = self.organisms_ids_df[self.DESCRIPTION].str.contains(organism)
         organism_ser = self.organisms_ids_df[org_bool]
         if len(organism_ser) == 0:
             print "No record found for {}".format(organism)
             self.query_ids_not_found.append(organism)
         elif len(organism_ser) > 1:
             if assume_1st is True:
-                return organism_ser.kegg_org_id.iloc[0]
-            print "More than one record for this query\n{}".format(organism_ser[["description",
-                                                                                 "kegg_org_id"]])
+                return organism_ser[self.KEGG_ORG_ID].iloc[0]
+            print "More than one record for this query\n{}".format(organism_ser[[self.DESCRIPTION,
+                                                                                 self.KEGG_ORG_ID]])
         else:
-            return str(organism_ser.kegg_org_id.to_string(index=False,
-                                                          header=False))
+            return str(organism_ser[self.KEGG_ORG_ID].to_string(index=False,
+                                                                header=False))
 
     def get_id_conv_tbl(self,
                         source_id_type,
@@ -141,7 +155,7 @@ class KEGG_API:
                 fout.write(res.content)
         self.id_conversions_df = pd.read_csv(out_file_name,
                                              names=[source_id_type,
-                                                    "kegg_id"],
+                                                    self.KEGG_ID],
                                              header=None,
                                              sep="\t")
         if strip_pref is True:
@@ -185,7 +199,7 @@ class KEGG_API:
             with open(out_file_name, "w") as fout:
                 fout.write(res.content)
         self.org_db_X_ref_df = pd.read_csv(out_file_name,
-                                           names=["ORF_id", "kegg_id"],
+                                           names=[self.ORF_ID, self.KEGG_ID],
                                            header=None,
                                            sep="\t")
         if strip_prefix is True:
@@ -204,7 +218,7 @@ class KEGG_API:
         Args:
             out_file_name (str): name for file to be downloaded
         """
-        entries = self.org_db_X_ref_df["kegg_id"].drop_duplicates()
+        entries = self.org_db_X_ref_df[self.KEGG_ID].drop_duplicates()
         for i in tqdm(entries):
             url = "{0}/{1}/{2}".format(self.home,
                                        self.operations["get_by_entry_no"],

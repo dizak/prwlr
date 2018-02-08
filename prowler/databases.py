@@ -6,12 +6,66 @@ import pathos.multiprocessing as ptmp
 import numpy as np
 import pandas as pd
 from apis import KEGG_API as _KEGG_API
+from apis import Columns as _ApisColumns
 from errors import ParserError
 from profiles import Profile as _Profile
 from utils import *
 
 
-class KEGG:
+class Columns(_ApisColumns):
+    """
+    Container for the columns names defined in this module.
+    """
+    # Query and Array suffixes for query and array discrimination.
+    QUERY_SUF = "_Q"
+    ARRAY_SUF = "_A"
+    # apis column names suffixed.
+    KEGG_ID_A = "{}{}".format(_ApisColumns.KEGG_ID, ARRAY_SUF)
+    KEGG_ID_Q = "{}{}".format(_ApisColumns.KEGG_ID, QUERY_SUF)
+    ORF_ID_A = "{}{}".format(_ApisColumns.ORF_ID, ARRAY_SUF)
+    ORF_ID_Q = "{}{}".format(_ApisColumns.ORF_ID, QUERY_SUF)
+    # SGAs column names
+    ORF_A = "ORF{}".format(ARRAY_SUF)
+    GENE_A = "GENE{}".format(ARRAY_SUF)
+    SMF_A = "SMF{}".format(ARRAY_SUF)
+    SMF_SD_A = "SMF_SD{}".format(ARRAY_SUF)
+    ORF_Q = "ORF_Q".format(QUERY_SUF)
+    GENE_Q = "GENE_Q".format(QUERY_SUF)
+    SMF_Q = "SMF_Q".format(QUERY_SUF)
+    SMF_SD_Q = "SMF_SD_Q".format(QUERY_SUF)
+    DMF = "DMF"
+    DMF_SD = "DMF_SD"
+    GIS = "GIS"
+    GIS_SD = "GIS_SD"
+    GIS_P = "GIS_P"
+    STR_ID_Q = "STR_ID_Q".format(QUERY_SUF)
+    GENE_Q = "GENE_Q".format(QUERY_SUF)
+    STR_ID_A = "STR_ID{}".format(ARRAY_SUF)
+    TEMP = "TEMP"
+    # Bioprocesses column names.
+    ORF = "ORF"
+    GENE = "GENE"
+    BIOPROC = "BIOPROC"
+    # KEGG and ProfInt column names
+    AUTH = "AUTH"
+    DEF = "DEF"
+    ENTRY = "ENTRY"
+    GENES = "GENES"
+    JOURN = "JOURN"
+    NAME = "NAME"
+    ORGS = "ORGS"
+    ORGS_A = "ORGS{}".format(ARRAY_SUF)
+    ORGS_Q = "ORGS{}".format(QUERY_SUF)
+    PROF = "PROF"
+    REF = "REF"
+    SEQ = "SEQ"
+    TITLE = "TITLE"
+    PSS = "PSS"
+    PROF_Q = "PROF_Q".format(QUERY_SUF)
+    PROF_A = "PROF{}".format(ARRAY_SUF)
+
+
+class KEGG(Columns):
     """
     Parses data downloaded with prowler.apis and restructures them.
 
@@ -45,28 +99,28 @@ class KEGG:
             entry_dict = {}
             entry = re.findall("ENTRY.+", i)
             if len(entry) > 0:
-                entry_dict["entry"] = entry[0].replace("ENTRY", "").replace("KO", "").strip()
+                entry_dict[self.ENTRY] = entry[0].replace("ENTRY", "").replace("KO", "").strip()
             name = re.findall("NAME.+", i)
             if len(name) > 0:
-                entry_dict["name"] = name[0].replace("NAME", "").strip()
+                entry_dict[self.NAME] = name[0].replace("NAME", "").strip()
             definition = re.findall("DEFINITION.+", i)
             if len(definition):
-                entry_dict["definition"] = definition[0].replace("DEFINITION", "").strip()
+                entry_dict[self.DEF] = definition[0].replace("DEFINITION", "").strip()
             reference = re.findall("REFERENCE.+", i)
             if len(reference) > 0:
-                entry_dict["reference"] = reference[0].replace("REFERENCE", "").strip()
+                entry_dict[self.REF] = reference[0].replace("REFERENCE", "").strip()
             authors = re.findall("AUTHORS.+", i)
             if len(authors) > 0:
-                entry_dict["authors"] = authors[0].replace("AUTHORS", "").strip()
+                entry_dict[self.AUTH] = authors[0].replace("AUTHORS", "").strip()
             title = re.findall("TITLE.+", i)
             if len(title) > 0:
-                entry_dict["title"] = title[0].replace("TITLE", "").strip()
+                entry_dict[self.TITLE] = title[0].replace("TITLE", "").strip()
             journal = re.findall("JOURNAL.+", i)
             if len(journal) > 0:
-                entry_dict["journal"] = journal[0].replace("JOURNAL", "").strip()
+                entry_dict[self.JOURN] = journal[0].replace("JOURNAL", "").strip()
             sequence = re.findall("SEQUENCE.+", i)
             if len(sequence) > 0:
-                entry_dict["sequence"] = sequence[0].replace("SEQUENCE", "").replace("[", "").replace("]", "").strip()
+                entry_dict[self.SEQ] = sequence[0].replace("SEQUENCE", "").replace("[", "").replace("]", "").strip()
             genes_blk_comp = re.compile("GENES.+\n^\s+\w{3}:\s.+^\w", re.DOTALL | re.MULTILINE)
             genes_blk_list = genes_blk_comp.findall(i)
             re.purge()
@@ -81,23 +135,23 @@ class KEGG:
                         genes.append(i.split(": ")[1])
                     except:
                         orgs.append(i)
-                entry_dict["genes"] = genes
-                entry_dict["orgs"] = orgs
+                entry_dict[self.GENES] = genes
+                entry_dict[self.ORGS] = orgs
             return entry_dict
         listed = ptmp.ProcessingPool().map(f, entries_list)
         df = pd.DataFrame(listed)
         if cleanup is True:
-            df = df.drop_duplicates(subset=["entry"],
+            df = df.drop_duplicates(subset=[self.ENTRY],
                                     keep="first")
             df.index = range(len(df))
             df.dropna(how="all",
                       inplace=True)
-            df.dropna(subset=["entry",
-                              "orgs"],
+            df.dropna(subset=[self.ENTRY,
+                              self.ORGS],
                       inplace=True)
         if remove_from_orgs is not None:
             for i in remove_from_orgs:
-                df["orgs"] = df["orgs"].apply(lambda x: remove_from_list(i, x))
+                df[self.ORGS] = df[self.ORGS].apply(lambda x: remove_from_list(i, x))
         self.database = df
 
     def parse_organism_info(self,
@@ -118,103 +172,15 @@ class KEGG:
                                    strip_prefix=True)
         self.X_reference = self._api.org_db_X_ref_df
 
-    def profilize(self,
-                  name="profiles"):
+    def profilize(self):
         """
         Append the database with phylogenetic profiles.
         """
-        self.database[name] = self.database["orgs"].apply(lambda x:
-                                                          _Profile(x, self.reference_species).to_string())
+        self.database[self.PROF] = self.database[self.ORGS].apply(lambda x:
+                                                                  _Profile(x, self.reference_species).to_string())
 
 
-class Orthology(KEGG):
-    """
-    Restructures and appends data from KO database.
-
-    Parameters
-    -------
-    dataframe: pandas.DataFrame
-        listed converted to DataFrame.
-    """
-
-    def __init__(self):
-        KEGG.__init__(self)
-        self.query_species = None
-        self.dataframe = None
-
-    def profilize(self,
-                  species_ids,
-                  remove_empty=True,
-                  upperize_ids=True,
-                  profile_list=False,
-                  KO_list_2_df=True,
-                  profiles_df=True,
-                  remove_species_white_spaces=True,
-                  deduplicate=True):
-        """Return KEGG.listed (list of dict) or KEGG.dataframe (pandas.DataFrame)
-        appended with profiles (list of str or str).
-
-        Args:
-            species_ids (list of str): KEGG's IDs (3-letters) of reference
-            species upon which are built.
-            remove_empty (bool): remove inplace None types from the species_ids
-            (list) <True> (default)
-            upperize_ids (bool): make the items from the species_ids (list)
-            upper-case as it is in the KEGG.listed orgs key when <True>
-            (default)
-            profile_list (bool): return each profile as the list of separate
-            "+" or "-" when <True> or as one str when <False> (default)
-            KO_list_2_df (bool): convert KEGG.listed to pandas.DataFrame.
-            Rows NOT containing profiles are removed and resulting
-            pandas.DataFrame is reindexed as continuous int sequence!
-            profiles_df (bool): append KEGG.dataframe with sign-per-column
-            profiles list
-        """
-        if remove_empty is True:
-            species_ids = [i for i in species_ids if i is not None]
-        if upperize_ids is True:
-            species_ids = [i.upper() for i in species_ids]
-        for i in self.listed:
-            if "orgs" in i.keys():
-                profile = ["+" if ii in i["orgs"] else "-" for ii in species_ids]
-                if profile_list is False:
-                    profile = "".join(profile)
-                else:
-                    pass
-                i["profile"] = profile
-            else:
-                pass
-        if KO_list_2_df is True:
-            self.dataframe = pd.DataFrame(self.listed)
-            self.dataframe = self.dataframe[-self.dataframe["profile"].isnull()]
-            self.dataframe.index = range(len(self.dataframe))
-            if deduplicate is True:
-                self.dataframe = self.dataframe.drop_duplicates(subset=["entry"],
-                                                                keep="first")
-                self.dataframe.index = range(len(self.dataframe))
-            else:
-                pass
-            if profiles_df is True:
-                if remove_species_white_spaces is True:
-                    profs_df = pd.DataFrame(self.dataframe.profile.map(lambda x:
-                                                                       [i for i in x])
-                                                          .tolist(),
-                                            columns=[i.replace(" ", "_") for i in self.query_species])
-                else:
-                    profs_df = pd.DataFrame(self.dataframe.profile.map(lambda x:
-                                                                       [i for i in x])
-                                                          .tolist(),
-                                            columns=self.query_species)
-                self.dataframe = pd.concat([self.dataframe, profs_df], axis=1)
-                self.dataframe.index = range(len(self.dataframe))
-            else:
-                pass
-        else:
-
-            pass
-
-
-class SGA1:
+class SGA1(Columns):
     """
     Port from interactions.Ortho_Interactions. Meant to work just with SGA v1.
 
@@ -223,19 +189,19 @@ class SGA1:
 
     """
     def __init__(self):
-        self.names = {'Array_ORF': 'ORF_A',
-                      'Array_gene_name': 'GENE_A',
-                      'Array_SMF': 'SMF_A',
-                      'Array_SMF_standard_deviation': 'SMF_SD_A',
-                      'Query_ORF': 'ORF_Q',
-                      'Query_gene_name': 'GENE_Q',
-                      'Query_SMF': 'SMF_Q',
-                      'Query_SMF_standard_deviation': 'SMF_SD_Q',
-                      'DMF': 'DMF',
-                      'DMF_standard_deviation': 'DMF_SD',
-                      'Genetic_interaction_score': 'GIS',
-                      'Standard_deviation': 'GIS_SD',
-                      'p-value': 'GIS_P'}
+        self.names = {'Array_ORF': self.ORF_A,
+                      'Array_gene_name': self.GENE_A,
+                      'Array_SMF': self.SMF_A,
+                      'Array_SMF_standard_deviation': self.SMF_SD_A,
+                      'Query_ORF': self.ORF_Q,
+                      'Query_gene_name': self.GENE_Q,
+                      'Query_SMF': self.SMF_Q,
+                      'Query_SMF_standard_deviation': self.SMF_SD_Q,
+                      'DMF': self.DMF,
+                      'DMF_standard_deviation': self.DMF_SD,
+                      'Genetic_interaction_score': self.GIS,
+                      'Standard_deviation': self.GIS_SD,
+                      'p-value': self.GIS_P}
 
     def parse(self,
               filename,
@@ -266,26 +232,26 @@ class SGA1:
         self.sga.rename(columns=self.names, inplace=True)
 
 
-class SGA2:
+class SGA2(Columns):
     """
-    Port from interactions.Ortho_Interactions. Meant to work just with SGA v1.
+    Port from interactions.Ortho_Interactions. Meant to work just with SGA v2.
 
     Notes
     -------
 
     """
     def __init__(self):
-        self.names = {"Query_Strain_ID": "STR_ID_Q",
-                      "Query_allele_name": "GENE_Q",
-                      "Array_Strain_ID": "STR_ID_A",
-                      "Array_allele_name": "GENE_A",
-                      "Arraytype/Temp": "TEMP",
-                      "Genetic_interaction_score_(ε)": "GIS",
-                      "P-value": "GIS_P",
-                      "Query_single_mutant_fitness_(SMF)": "SMF_Q",
-                      "Array_SMF": "SMF_A",
-                      "Double_mutant_fitness": "DMF",
-                      "Double_mutant_fitness_standard_deviation": "DMF_SD"}
+        self.names = {"Query_Strain_ID": self.STR_ID_Q,
+                      "Query_allele_name": self.GENE_Q,
+                      "Array_Strain_ID": self.STR_ID_A,
+                      "Array_allele_name": self.GENE_A,
+                      "Arraytype/Temp": self.TEMP,
+                      "Genetic_interaction_score_(ε)": self.GIS,
+                      "P-value": self.GIS_P,
+                      "Query_single_mutant_fitness_(SMF)": self.SMF_Q,
+                      "Array_SMF": self.SMF_A,
+                      "Double_mutant_fitness": self.DMF,
+                      "Double_mutant_fitness_standard_deviation": self.DMF_SD}
 
     def parse(self,
               filename,
@@ -311,23 +277,23 @@ class SGA2:
         if remove_white_spaces is True:
             self.sga.columns = [i.replace(" ", "_") for i in self.sga.columns]
         self.sga.rename(columns=self.names, inplace=True)
-        ORF_Q_col = self.sga["STR_ID_Q"].str.split("_", expand=True)[0]
-        ORF_A_col = self.sga["STR_ID_A"].str.split("_", expand=True)[0]
-        ORF_Q_col.name = "ORF_Q"
-        ORF_A_col.name = "ORF_A"
+        ORF_Q_col = self.sga[self.STR_ID_Q].str.split("_", expand=True)[0]
+        ORF_A_col = self.sga[self.STR_ID_A].str.split("_", expand=True)[0]
+        ORF_Q_col.name = self.ORF_Q
+        ORF_A_col.name = self.ORF_A
         self.sga = pd.concat([ORF_Q_col, ORF_A_col, self.sga], axis=1)
 
 
-class Bioprocesses:
+class Bioprocesses(Columns):
     """
     Port from interactions.Ortho_Interactions. Meant to work with
     bioprocesses_annotations.costanzo2009.
     """
 
     def __init__(self):
-        self.names = ["ORF",
-                      "GENE",
-                      "BIOPROC"]
+        self.names = [self.ORF,
+                      self.GENE,
+                      self.BIOPROC]
 
     def parse(self,
               filename):
@@ -343,22 +309,22 @@ class Bioprocesses:
                                           names=self.names)
 
 
-class ProfInt:
+class ProfInt(Columns):
     """
     Concatenation of SGA and profilized KO.
     """
     def __init__(self):
-        self.names = {"authors": "AUTH",
-                      "definition": "DEF",
-                      "entry": "ENTRY",
-                      "genes": "GENES",
-                      "journal": "JOURN",
-                      "name": "NAME",
-                      "orgs": "ORGS",
-                      "profile": "PROF",
-                      "reference": "REF",
-                      "sequence": "SEQ",
-                      "title": "TITLE"}
+        self.names = {"authors": self.AUTH,
+                      "definition": self.DEF,
+                      "entry": self.ENTRY,
+                      "genes": self.GENES,
+                      "journal": self.JOURN,
+                      "name": self.NAME,
+                      "orgs": self.ORGS,
+                      "profile": self.PROF,
+                      "reference": self.REF,
+                      "sequence": self.SEQ,
+                      "title": self.TITLE}
 
     def merger(self,
                KO_df,
@@ -372,31 +338,33 @@ class ProfInt:
                      inplace=True)
         self.merged = pd.merge(sga,
                                ORF_KO,
-                               left_on="ORF_Q",
-                               right_on="ORF_id",
+                               left_on=self.ORF_Q,
+                               right_on=self.ORF_ID,
                                how="left")
         self.merged = pd.merge(self.merged,
                                ORF_KO,
-                               left_on="ORF_A",
-                               right_on="ORF_id",
+                               left_on=self.ORF_A,
+                               right_on=self.ORF_ID,
                                how="left",
-                               suffixes=("_Q", "_A"))
-        self.merged.drop(["ORF_id_Q", "ORF_id_A"],
+                               suffixes=(self.QUERY_SUF, self.ARRAY_SUF))
+        self.merged.drop([self.ORF_ID_Q,
+                          self.ORF_ID_A],
                          axis=1,
                          inplace=True)
         self.merged.dropna(inplace=True)
         self.merged = pd.merge(self.merged,
                                KO_df,
-                               left_on="kegg_id_Q",
-                               right_on="ENTRY",
+                               left_on=self.KEGG_ID_Q,
+                               right_on=self.ENTRY,
                                how="left")
         self.merged = pd.merge(self.merged,
                                KO_df,
-                               left_on="kegg_id_A",
-                               right_on="ENTRY",
+                               left_on=self.KEGG_ID_A,
+                               right_on=self.ENTRY,
                                how="left",
-                               suffixes=('_Q', '_A'))
-        self.merged.drop(["kegg_id_Q", "kegg_id_A"],
+                               suffixes=(self.QUERY_SUF, self.ARRAY_SUF))
+        self.merged.drop([self.KEGG_ID_Q,
+                          self.KEGG_ID_A],
                          axis=1,
                          inplace=True)
         self.merged.dropna(inplace=True)
@@ -413,12 +381,7 @@ class ProfInt:
         #                         axis=1)
 
     def profilize(self,
-                  reference_species,
-                  input_col_query="ORGS_Q",
-                  input_col_array="ORGS_A",
-                  output_score_col="PSS",
-                  output_profile_col_query="PROF_Q",
-                  output_profile_col_array="PROF_A"):
+                  reference_species):
         """
         Append databases.merged with Profiles Similarity Score and/or string
         representation of the phylogenetic profiles.
@@ -428,21 +391,14 @@ class ProfInt:
         reference_species: list of str
             Species list compared to contained in the orthogroup. Basis for the
             profiles construction.
-        input_col_query: str, default <"ORGS_Q">
-            Name of the column holding organisms names in the orthogroup of the
-            query.
-        input_col_array: str, default <"ORGS_Q">
-            Name of the column holding organisms names in the orthogroup of the
-            query.
         """
-        self.merged[output_score_col] = self.merged.apply(lambda x:
-                                                          _Profile(x[input_col_query],
-                                                                   reference_species).
-                                                          calculate_pss(_Profile(x[input_col_array],
-                                                                                 reference_species)),
-                                                          axis=1)
-        if output_profile_col_query is not None and output_profile_col_array is not None:
-            self.merged[output_profile_col_query] = self.merged[input_col_query].apply(lambda x:
-                                                                                       _Profile(x, reference_species).to_string())
-            self.merged[output_profile_col_array] = self.merged[input_col_array].apply(lambda x:
-                                                                                       _Profile(x, reference_species).to_string())
+        self.merged[self.PSS] = self.merged.apply(lambda x:
+                                                  _Profile(x[self.ORGS_A],
+                                                           reference_species).
+                                                  calculate_pss(_Profile(x[self.ORGS_Q],
+                                                                         reference_species)),
+                                                  axis=1)
+        self.merged[self.PROF_A] = self.merged[self.ORGS_A].apply(lambda x:
+                                                                  _Profile(x, reference_species).to_string())
+        self.merged[self.PROF_Q] = self.merged[self.ORGS_Q].apply(lambda x:
+                                                                  _Profile(x, reference_species).to_string())

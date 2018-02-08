@@ -10,6 +10,8 @@ class Profile:
     """
     Profile object.
     """
+    _positive_sign = "+"
+    _negative_sign = "-"
 
     def __init__(self,
                  reference,
@@ -43,8 +45,8 @@ class Profile:
         return [positive_sign if i is True else negative_sign for i in self.profile]
 
     def to_string(self,
-                  positive_sign="+",
-                  negative_sign="-"):
+                  positive_sign=_positive_sign,
+                  negative_sign=_negative_sign):
         """
         Return profile as str.
         """
