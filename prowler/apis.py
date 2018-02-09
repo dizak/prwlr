@@ -39,17 +39,7 @@ class KEGG_API(Columns):
                           "orthology": "ko",
                           "genome": "genome",
                           "genomes": "gn",
-                          "ligand": "ligand",
-                          "compound": "cpd",
-                          "glycan": "gl",
-                          "reaction": "rn",
-                          "rpair": "rp",
-                          "rclass": "rc",
-                          "enzyme": "ec",
-                          "disease": "ds",
-                          "drug": "dr",
-                          "dgroup": "dg",
-                          "environ": "ev"}
+                          "enzyme": "ec"}
         self.organisms_ids_df = None
         self.id_conversions = {"ncbi_gene": "ncbi-geneid",
                                "ncbi_prot": "ncbi-proteinid",
