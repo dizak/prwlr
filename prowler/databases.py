@@ -161,7 +161,6 @@ class KEGG(Columns):
                             X_ref,
                             strip_prefix=True):
         self._api.get_organisms_ids(IDs, skip_dwnld=True)
-        self.IDs_table = self._api.organisms_ids_df
         self.reference_species = [self._api.org_name_2_kegg_id(i) for i in reference_species
                                   if i not in self._api.query_ids_not_found]
         self.reference_species = [i.upper() for i in self.reference_species if i is not None]
