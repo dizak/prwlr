@@ -3,6 +3,8 @@
 
 import networkx as nx
 from networkx.readwrite import json_graph
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import json
 
