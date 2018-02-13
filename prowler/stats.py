@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import gc
 import pandas as pd
 import math
 import numpy as np
@@ -142,7 +143,8 @@ class Stats(_DatabasesColumns,
     def permute_profiles(self,
                          dataframe,
                          in_prof_sim_lev,
-                         e_value):
+                         e_value,
+                         store_dataframe=True):
         """Return Ortho_Stats.prof_arr_perm_results pandas.DataFrame containing
         number of similar, dissimilar, mirror profiles and complete permuted
         pandas.DataFrame itself. Return Ortho_Stats.prof_arr_perm_res_avg
@@ -206,11 +208,19 @@ class Stats(_DatabasesColumns,
             sim_prof_perm_num = len(qa_merged_score_df[sim_prof_bool])
             unsim_prof_perm_num = len(qa_merged_score_df[unsim_prof_bool])
             mir_prof_perm_num = len(qa_merged_score_df[mir_prof_bool])
-            return {"similar": sim_prof_perm_num,
-                    "dissimilar": unsim_prof_perm_num,
-                    "mirror": mir_prof_perm_num,
-                    "iteration": in_iter + 1,
-                    "dataframe": qa_merged_score_df}
+            if store_dataframe is True:
+                return {"similar": sim_prof_perm_num,
+                        "dissimilar": unsim_prof_perm_num,
+                        "mirror": mir_prof_perm_num,
+                        "iteration": in_iter + 1,
+                        "dataframe": qa_merged_score_df}
+            else:
+                del qa_merged_score_df
+                gc.collect()
+                return {"similar": sim_prof_perm_num,
+                        "dissimilar": unsim_prof_perm_num,
+                        "mirror": mir_prof_perm_num,
+                        "iteration": in_iter + 1}
         permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
         prof_KO_perm_results = pd.DataFrame(permuted_df_results_temp)
         return pd.Series({"mirror": float(sum(prof_KO_perm_results.mirror)) / float(len(prof_KO_perm_results)),
