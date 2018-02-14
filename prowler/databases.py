@@ -130,10 +130,10 @@ class KEGG(Columns):
                 orgs = []
                 genes = []
                 for i in orgs_n_genes:
-                    try:
+                    if ": " in i:
                         orgs.append(i.split(": ")[0])
                         genes.append(i.split(": ")[1])
-                    except:
+                    else:
                         orgs.append(i)
                 entry_dict[self.GENES] = genes
                 entry_dict[self.ORGS] = orgs
