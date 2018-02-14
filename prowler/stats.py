@@ -208,6 +208,8 @@ class Stats(_DatabasesColumns,
             sim_prof_perm_num = len(qa_merged_score_df[sim_prof_bool])
             unsim_prof_perm_num = len(qa_merged_score_df[unsim_prof_bool])
             mir_prof_perm_num = len(qa_merged_score_df[mir_prof_bool])
+            del q_ORF_prof_df, a_ORF_prof_df, drop_prof_temp_df, stack_ORF_prof_df, stack_prof_perm_df, q_merged_df, qa_merged_df, qa_merged_score_df
+            gc.collect()
             if store_dataframe is True:
                 return {"similar": sim_prof_perm_num,
                         "dissimilar": unsim_prof_perm_num,
