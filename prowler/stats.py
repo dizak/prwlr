@@ -34,6 +34,7 @@ class Stats(_DatabasesColumns,
     """
     def __init__(self,
                  dataframe,
+                 profiles_similarity_threshold,
                  p_value=0.05,
                  GIS_min=0.04,
                  GIS_max=-0.04):
@@ -57,6 +58,12 @@ class Stats(_DatabasesColumns,
                               self.dataframe[self.SMF_A]))
         self.SMF_below_one = (self.dataframe[self.SMF_Q] < 1.0) &\
                              (self.dataframe[self.SMF_A] < 1.0)
+        self.similar_profiles = (self.dataframe["PSS"] >=
+                                 profiles_similarity_threshold)
+        self.dissimilar_profiles = (self.dataframe["PSS"] <=
+                                    profiles_similarity_threshold)
+        self.mirror_profiles = (self.dataframe["PSS"] <=
+                                profiles_similarity_threshold)
         self.no_flat_plu_q = (self.dataframe[self.PROF_Q] !=
                               _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
         self.no_flat_min_q = (self.dataframe[self.PROF_Q] !=
@@ -65,6 +72,14 @@ class Stats(_DatabasesColumns,
                               _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
         self.no_flat_min_a = (self.dataframe[self.PROF_A] !=
                               _Profile._negative_sign * len(self.dataframe.PROF_Q[0]))
+        self.summary = pd.DataFrame({"total": len(self.dataframe),
+                                     "DMF_positive": len(self.dataframe[self.positive_DMF]),
+                                     "DMF_negative": len(self.dataframe[self.negative_DMF]),
+                                     "similar_profiles": len(self.dataframe[self.similar_profiles]),
+                                     "dissimilar": len(self.dataframe[self.dissimilar_profiles]),
+                                     "mirror_profiles": len(self.dataframe[self.mirror_profiles])},
+                                    index=[0])
+        self.PSS_bins = pd.DataFrame(self.dataframe.groupby(by=[self.PSS]).size())
 
     def _log_binomial_coeff(self,
                             n,
