@@ -93,7 +93,6 @@ class Stats(_DatabasesColumns,
         log_p = (self._log_binomial_coeff(prot_num, hit_num) +
                  hit_num * math.log(background_p) +
                  (prot_num - hit_num) * math.log(1.0 - background_p))
-
         return log_p
 
     def calculate_enrichment(self,
