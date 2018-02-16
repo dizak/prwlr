@@ -76,7 +76,7 @@ class Stats(_DatabasesColumns,
                                      "DMF_positive": len(self.dataframe[self.positive_DMF]),
                                      "DMF_negative": len(self.dataframe[self.negative_DMF]),
                                      "similar_profiles": len(self.dataframe[self.similar_profiles]),
-                                     "dissimilar": len(self.dataframe[self.dissimilar_profiles]),
+                                     "dissimilar_profiles": len(self.dataframe[self.dissimilar_profiles]),
                                      "mirror_profiles": len(self.dataframe[self.mirror_profiles])},
                                     index=[0])
         self.PSS_bins = pd.DataFrame(self.dataframe.groupby(by=[self.PSS]).size())
