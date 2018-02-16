@@ -13,7 +13,7 @@ from databases import Columns as _DatabasesColumns
 from profiles import Profile as _Profile
 
 
-class Columns:
+class Columns(_DatabasesColumns):
     """
     Container for the columns names defined in this module.
     """
@@ -28,10 +28,20 @@ class Columns:
     MIR = "MIRROR"
     ITER = "ITERATION"
     DATAFRAME = "DATAFRAME"
+    dtypes = {SIM: "uint32",
+              DIS: "uint32",
+              MIR: "uint32",
+              ITER: "uint32",
+              COUNT: "uint8",
+              COUNT_EXP: "float32",
+              SCORE: "float32",
+              SCORE_EXP: "float32",
+              FOLD_CHNG: "float32",
+              P: "float32",
+              _DatabasesColumns.PSS: _DatabasesColumns.dtypes[_DatabasesColumns.PSS]}
 
 
-class Stats(_DatabasesColumns,
-            Columns,
+class Stats(Columns,
             _Profile):
     """
     Calculates and holds data about interactions array statistical
