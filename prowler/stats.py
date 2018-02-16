@@ -23,6 +23,11 @@ class Columns:
     SCORE = "SCORE"
     SCORE_EXP = "SCORE_EXP"
     FOLD_CHNG = "FOLD_CHNG"
+    SIM = "SIMILAR"
+    DIS = "DISSIMILAR"
+    MIR = "MIRROR"
+    ITER = "ITERATION"
+    DATAFRAME = "DATAFRAME"
 
 
 class Stats(_DatabasesColumns,
@@ -224,24 +229,21 @@ class Stats(_DatabasesColumns,
             mir_prof_perm_num = len(qa_merged_score_df[mir_prof_bool])
             del q_ORF_prof_df, a_ORF_prof_df, drop_prof_temp_df, stack_ORF_prof_df, stack_prof_perm_df, q_merged_df, qa_merged_df
             gc.collect()
+            out_dict = {self.SIM: sim_prof_perm_num,
+                        self.DIS: unsim_prof_perm_num,
+                        self.MIR: mir_prof_perm_num,
+                        self.ITER: in_iter + 1}
             if store_dataframe is True:
-                return {"similar": sim_prof_perm_num,
-                        "dissimilar": unsim_prof_perm_num,
-                        "mirror": mir_prof_perm_num,
-                        "iteration": in_iter + 1,
-                        "dataframe": qa_merged_score_df}
+                out_dict[self.DATAFRAME] = qa_merged_score_df
             else:
                 del qa_merged_score_df
                 gc.collect()
-                return {"similar": sim_prof_perm_num,
-                        "dissimilar": unsim_prof_perm_num,
-                        "mirror": mir_prof_perm_num,
-                        "iteration": in_iter + 1}
+            return out_dict
         permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
         prof_KO_perm_results = pd.DataFrame(permuted_df_results_temp)
-        return {"average": pd.DataFrame({"mirror": float(sum(prof_KO_perm_results.mirror)) / float(len(prof_KO_perm_results)),
-                                         "similar": float(sum(prof_KO_perm_results.similar)) / float(len(prof_KO_perm_results)),
-                                         "dissimilar": float(sum(prof_KO_perm_results.dissimilar)) / float(len(prof_KO_perm_results))},
+        return {"average": pd.DataFrame({self.MIR: float(sum(prof_KO_perm_results[self.MIR])) / float(len(prof_KO_perm_results)),
+                                         self.SIM: float(sum(prof_KO_perm_results[self.SIM])) / float(len(prof_KO_perm_results)),
+                                         self.DIS: float(sum(prof_KO_perm_results[self.DIS])) / float(len(prof_KO_perm_results))},
                                         index=[0]),
                 "complete": prof_KO_perm_results}
 
