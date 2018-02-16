@@ -63,6 +63,13 @@ class Columns(_ApisColumns):
     PSS = "PSS"
     PROF_Q = "PROF_Q".format(QUERY_SUF)
     PROF_A = "PROF{}".format(ARRAY_SUF)
+    dtypes = {GIS: "float32",
+              GIS_SD: "float32",
+              SMF_Q: "float32",
+              SMF_A: "float32",
+              DMF: "float32",
+              DMF_SD: "float32",
+              PSS: "uint8"}
 
 
 class KEGG(Columns):
@@ -229,6 +236,8 @@ class SGA1(Columns):
         if remove_white_spaces is True:
             self.sga.columns = [i.replace(" ", "_") for i in self.sga.columns]
         self.sga.rename(columns=self.names, inplace=True)
+        self.sga = self.sga.astype({k: v for k, v in self.dtypes.iteritems()
+                                    if k in self.sga.columns})
 
 
 class SGA2(Columns):
@@ -281,6 +290,8 @@ class SGA2(Columns):
         ORF_Q_col.name = self.ORF_Q
         ORF_A_col.name = self.ORF_A
         self.sga = pd.concat([ORF_Q_col, ORF_A_col, self.sga], axis=1)
+        self.sga = self.sga.astype({k: v for k, v in self.dtypes.iteritems()
+                                    if k in self.sga.columns})
 
 
 class Bioprocesses(Columns):
@@ -306,6 +317,8 @@ class Bioprocesses(Columns):
         """
         self.bioprocesses = pd.read_excel(filename,
                                           names=self.names)
+        self.bioprocesses = self.bioprocesses.astype({k: v for k, v in self.dtypes.iteritems()
+                                                     if k in self.bioprocesses.columns})
 
 
 class ProfInt(Columns):
@@ -396,8 +409,10 @@ class ProfInt(Columns):
                                                            reference_species).
                                                   calculate_pss(_Profile(x[self.ORGS_Q],
                                                                          reference_species)),
-                                                  axis=1).astype("uint8")
+                                                  axis=1).astype(self.dtypes[self.PSS])
         self.merged[self.PROF_A] = self.merged[self.ORGS_A].apply(lambda x:
                                                                   _Profile(x, reference_species).to_string())
         self.merged[self.PROF_Q] = self.merged[self.ORGS_Q].apply(lambda x:
                                                                   _Profile(x, reference_species).to_string())
+        self.merged = self.merged.astype({k: v for k, v in self.dtypes.iteritems()
+                                          if k in self.merged.columns})
