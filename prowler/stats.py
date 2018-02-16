@@ -158,7 +158,7 @@ class Stats(_DatabasesColumns,
                          dataframe,
                          in_prof_sim_lev,
                          e_value,
-                         store_dataframe=True):
+                         store_dataframe=False):
         """Return Ortho_Stats.prof_arr_perm_results pandas.DataFrame containing
         number of similar, dissimilar, mirror profiles and complete permuted
         pandas.DataFrame itself. Return Ortho_Stats.prof_arr_perm_res_avg
@@ -239,9 +239,11 @@ class Stats(_DatabasesColumns,
                         "iteration": in_iter + 1}
         permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
         prof_KO_perm_results = pd.DataFrame(permuted_df_results_temp)
-        return pd.Series({"mirror": float(sum(prof_KO_perm_results.mirror)) / float(len(prof_KO_perm_results)),
-                          "similar": float(sum(prof_KO_perm_results.similar)) / float(len(prof_KO_perm_results)),
-                          "dissimilar": float(sum(prof_KO_perm_results.dissimilar)) / float(len(prof_KO_perm_results))})
+        return {"average": pd.DataFrame({"mirror": float(sum(prof_KO_perm_results.mirror)) / float(len(prof_KO_perm_results)),
+                                         "similar": float(sum(prof_KO_perm_results.similar)) / float(len(prof_KO_perm_results)),
+                                         "dissimilar": float(sum(prof_KO_perm_results.dissimilar)) / float(len(prof_KO_perm_results))},
+                                        index=[0]),
+                "complete": prof_KO_perm_results}
 
 
 class Ortho_Stats:
