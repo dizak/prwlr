@@ -167,6 +167,8 @@ class Stats(Columns,
                                                             axis=1)
         selected_bins[self.FOLD_CHNG] = np.log2(selected_bins[self.COUNT] /
                                                 selected_bins[self.COUNT_EXP])
+        selected_bins = selected_bins.astype({k: v for k, v in self.dtypes.iteritems()
+                                             if k in selected_bins.columns})
         return selected_bins
 
     def permute_profiles(self,
@@ -206,7 +208,7 @@ class Stats(Columns,
                                            a_ORF_prof_df],
                                           ignore_index=True)
             stack_ORF_prof_df.drop_duplicates(inplace=True)
-            stack_ORF_prof_df.columns = ["ORF", "PROF"]
+            stack_ORF_prof_df.columns = [self.ORF, self.PROF]
             stack_ORF_prof_df.index = range(len(stack_ORF_prof_df))
             stack_prof_perm_df = stack_ORF_prof_df.PROF.sample(len(stack_ORF_prof_df))
             stack_prof_perm_df.index = range(len(stack_prof_perm_df))
@@ -216,12 +218,12 @@ class Stats(Columns,
             q_merged_df = pd.merge(drop_prof_temp_df,
                                    ORF_prof_perm_df,
                                    left_on=self.ORF_Q,
-                                   right_on="ORF",
+                                   right_on=self.ORF,
                                    how="left")
             qa_merged_df = pd.merge(q_merged_df,
                                     ORF_prof_perm_df,
                                     left_on=self.ORF_A,
-                                    right_on="ORF",
+                                    right_on=self.ORF,
                                     how="left",
                                     suffixes=(self.QUERY_SUF, self.ARRAY_SUF))
             qa_merged_score_df = df_based_profiles_scorer(qa_merged_df,
