@@ -42,11 +42,11 @@ class Columns(_ApisColumns):
     GENE_Q = "GENE_Q".format(QUERY_SUF)
     STR_ID_A = "STR_ID{}".format(ARRAY_SUF)
     TEMP = "TEMP"
-    # Bioprocesses column names.
+    # Bioprocesses and permutation internal dataframe column names.
     ORF = "ORF"
     GENE = "GENE"
     BIOPROC = "BIOPROC"
-    # KEGG and ProfInt column names
+    # KEGG and ProfInt and permutation internal dataframe column names
     AUTH = "AUTH"
     DEF = "DEF"
     ENTRY = "ENTRY"
