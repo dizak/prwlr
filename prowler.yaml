@@ -53,6 +53,7 @@ dependencies:
 - pandas=0.22.0=py27_0
 - pathlib2=2.3.0=py27_0
 - pathos=0.2.1=py27_1
+- patsy=0.5.0=py27_0
 - pcre=8.39=0
 - pexpect=4.3.1=py27_0
 - pickleshare=0.7.4=py27_0
@@ -75,6 +76,8 @@ dependencies:
 - readline=7.0=0
 - requests=2.18.4=py27_1
 - scandir=1.6=py27_0
+- scipy=1.0.0=py27_blas_openblas_201
+- seaborn=0.8.1=py27_0
 - setuptools=38.4.0=py27_0
 - simplegeneric=0.8.1=py27_0
 - singledispatch=3.4.0.3=py27_0
@@ -82,6 +85,7 @@ dependencies:
 - six=1.11.0=py27_1
 - sqlite=3.20.1=2
 - ssl_match_hostname=3.5.0.1=py27_1
+- statsmodels=0.8.0=py27_0
 - subprocess32=3.2.7=py27_0
 - tk=8.6.7=0
 - tornado=4.5.3=py27_0
