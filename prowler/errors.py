@@ -13,3 +13,10 @@ class ProfileLengthError(Exception):
     Different length of the reference and query.
     """
     pass
+
+
+class SelectionFailWarning(Warning):
+    """
+    Dataframe boolean selection failure.
+    """
+    pass
