@@ -2,6 +2,7 @@
 
 
 import gc
+import warnings
 import pandas as pd
 import math
 import numpy as np
@@ -59,42 +60,60 @@ class Stats(Columns,
                                                    GIS_min,
                                                    GIS_max]]):
             raise TypeError("Must be float.")
+        self._summary_dict = {}
         self.dataframe = dataframe
-        self.p_value = (self.dataframe[self.GIS_P] <= p_value)
-        self.GIS_max = (self.dataframe[self.GIS] < GIS_max)
-        self.GIS_min = (self.dataframe[self.GIS] > GIS_min)
-        self.positive_DMF = ((self.dataframe[self.DMF] >
-                              self.dataframe[self.SMF_Q]) &
-                             (self.dataframe[self.DMF] >
-                              self.dataframe[self.SMF_A]))
-        self.negative_DMF = ((self.dataframe[self.DMF] <
-                              self.dataframe[self.SMF_Q]) &
-                             (self.dataframe[self.DMF] <
-                              self.dataframe[self.SMF_A]))
-        self.SMF_below_one = (self.dataframe[self.SMF_Q] < 1.0) &\
-                             (self.dataframe[self.SMF_A] < 1.0)
-        self.similar_profiles = (self.dataframe["PSS"] >=
-                                 profiles_similarity_threshold)
-        self.dissimilar_profiles = (self.dataframe["PSS"] <=
+        self._summary_dict["total"] = len(self.dataframe)
+        try:
+            self.positive_DMF = ((self.dataframe[self.DMF] >
+                                  self.dataframe[self.SMF_Q]) &
+                                 (self.dataframe[self.DMF] >
+                                  self.dataframe[self.SMF_A]))
+            self.negative_DMF = ((self.dataframe[self.DMF] <
+                                  self.dataframe[self.SMF_Q]) &
+                                 (self.dataframe[self.DMF] <
+                                  self.dataframe[self.SMF_A]))
+            self.SMF_below_one = (self.dataframe[self.SMF_Q] < 1.0) &\
+                                 (self.dataframe[self.SMF_A] < 1.0)
+            self._summary_dict["DMF_positive"] = len(self.dataframe[self.positive_DMF]),
+            self._summary_dict["DMF_negative"] = len(self.dataframe[self.negative_DMF]),
+        except KeyError:
+            warnings.warn("Failed to make fitness-based booleans.",
+                          SelectionFailWarning)
+        try:
+            self.p_value = (self.dataframe[self.GIS_P] <= p_value)
+        except KeyError:
+            warnings.warn("Failed to make p-value-based booleans.",
+                          SelectionFailWarning)
+        try:
+            self.GIS_max = (self.dataframe[self.GIS] < GIS_max)
+            self.GIS_min = (self.dataframe[self.GIS] > GIS_min)
+        except KeyError:
+            warnings.warn("Failed to make Genetic Interactions Score-based booleans.",
+                          SelectionFailWarning)
+        try:
+            self.PSS_bins = pd.DataFrame(self.dataframe.groupby(by=[self.PSS]).size())
+            self.similar_profiles = (self.dataframe["PSS"] >=
+                                     profiles_similarity_threshold)
+            self.dissimilar_profiles = (self.dataframe["PSS"] <=
+                                        profiles_similarity_threshold)
+            self.mirror_profiles = (self.dataframe["PSS"] <=
                                     profiles_similarity_threshold)
-        self.mirror_profiles = (self.dataframe["PSS"] <=
-                                profiles_similarity_threshold)
-        self.no_flat_plu_q = (self.dataframe[self.PROF_Q] !=
-                              _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
-        self.no_flat_min_q = (self.dataframe[self.PROF_Q] !=
-                              _Profile._negative_sign * len(self.dataframe.PROF_Q[0]))
-        self.no_flat_plu_a = (self.dataframe[self.PROF_A] !=
-                              _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
-        self.no_flat_min_a = (self.dataframe[self.PROF_A] !=
-                              _Profile._negative_sign * len(self.dataframe.PROF_Q[0]))
-        self.summary = pd.DataFrame({"total": len(self.dataframe),
-                                     "DMF_positive": len(self.dataframe[self.positive_DMF]),
-                                     "DMF_negative": len(self.dataframe[self.negative_DMF]),
-                                     "similar_profiles": len(self.dataframe[self.similar_profiles]),
-                                     "dissimilar_profiles": len(self.dataframe[self.dissimilar_profiles]),
-                                     "mirror_profiles": len(self.dataframe[self.mirror_profiles])},
+            self.no_flat_plu_q = (self.dataframe[self.PROF_Q] !=
+                                  _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
+            self.no_flat_min_q = (self.dataframe[self.PROF_Q] !=
+                                  _Profile._negative_sign * len(self.dataframe.PROF_Q[0]))
+            self.no_flat_plu_a = (self.dataframe[self.PROF_A] !=
+                                  _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
+            self.no_flat_min_a = (self.dataframe[self.PROF_A] !=
+                                  _Profile._negative_sign * len(self.dataframe.PROF_Q[0]))
+            self._summary_dict["similar_profiles"] = len(self.dataframe[self.similar_profiles])
+            self._summary_dict["dissimilar_profiles"] = len(self.dataframe[self.dissimilar_profiles])
+            self._summary_dict["mirror_profiles"] = len(self.dataframe[self.mirror_profiles])
+        except KeyError:
+            warnings.warn("Failed to make phylogenetic profiles-based booleans",
+                          SelectionFailWarning)
+        self.summary = pd.DataFrame(self._summary_dict,
                                     index=[0])
-        self.PSS_bins = pd.DataFrame(self.dataframe.groupby(by=[self.PSS]).size())
 
     def _log_binomial_coeff(self,
                             n,
