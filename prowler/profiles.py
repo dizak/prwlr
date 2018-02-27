@@ -30,6 +30,9 @@ class Profile:
         self.query = tuple(query)
         self._construct()
 
+    def __repr__(self):
+        return self.to_string()
+
     def _construct(self):
         """
         Construct profile from Profile.reference and Profile.query.
