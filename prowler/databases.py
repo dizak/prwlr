@@ -411,8 +411,8 @@ class ProfInt(Columns):
                                                                          reference_species)),
                                                   axis=1).astype(self.dtypes[self.PSS])
         self.merged[self.PROF_A] = self.merged[self.ORGS_A].apply(lambda x:
-                                                                  _Profile(x, reference_species).to_string())
+                                                                  _Profile(x, reference_species))
         self.merged[self.PROF_Q] = self.merged[self.ORGS_Q].apply(lambda x:
-                                                                  _Profile(x, reference_species).to_string())
+                                                                  _Profile(x, reference_species))
         self.merged = self.merged.astype({k: v for k, v in self.dtypes.iteritems()
                                           if k in self.merged.columns})
