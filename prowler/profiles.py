@@ -30,6 +30,9 @@ class Profile:
         self.query = tuple(query)
         self._construct()
 
+    def __len__(self):
+        return len(self.profile)
+
     def __repr__(self):
         return self.to_string()
 
