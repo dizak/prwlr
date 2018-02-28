@@ -190,6 +190,29 @@ class Stats(Columns,
                                              if k in selected_bins.columns})
         return selected_bins
 
+    def permute_profiles_2(self,
+                           dataframe):
+        profs = pd.concat([dataframe[[self.PROF_Q]].drop_duplicates().rename(columns={self.PROF_Q: self.PROF}),
+                           dataframe[[self.PROF_A]].drop_duplicates().rename(columns={self.PROF_A: self.PROF})],
+                          axis=0).reset_index(drop=True)
+        orfs = pd.concat([dataframe[[self.ORF_Q]].drop_duplicates().rename(columns={self.ORF_Q: self.ORF}),
+                          dataframe[[self.ORF_A]].drop_duplicates().rename(columns={self.ORF_A: self.ORF})],
+                         axis=0).reset_index(drop=True)
+        orfs_profs = pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1)
+        dataframe = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
+                             right=pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
+                             left_on=[self.ORF_Q],
+                             right_on=[self.ORF],
+                             how="left").merge(pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
+                                               left_on=[self.ORF_A],
+                                               right_on=[self.ORF],
+                                               how="left",
+                                               suffixes=[self.QUERY_SUF, self.ARRAY_SUF])
+        dataframe[self.PSS] = dataframe.apply(lambda x:
+                                              x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
+                                              axis=1)
+        return pd.DataFrame(dataframe.groupby(by=[self.PSS]).size())
+
     def permute_profiles(self,
                          dataframe,
                          in_prof_sim_lev,
