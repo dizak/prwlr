@@ -191,27 +191,61 @@ class Stats(Columns,
         return selected_bins
 
     def permute_profiles_2(self,
-                           dataframe):
-        profs = pd.concat([dataframe[[self.PROF_Q]].drop_duplicates().rename(columns={self.PROF_Q: self.PROF}),
-                           dataframe[[self.PROF_A]].drop_duplicates().rename(columns={self.PROF_A: self.PROF})],
-                          axis=0).reset_index(drop=True)
-        orfs = pd.concat([dataframe[[self.ORF_Q]].drop_duplicates().rename(columns={self.ORF_Q: self.ORF}),
-                          dataframe[[self.ORF_A]].drop_duplicates().rename(columns={self.ORF_A: self.ORF})],
-                         axis=0).reset_index(drop=True)
-        orfs_profs = pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1)
-        dataframe = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
-                             right=pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
-                             left_on=[self.ORF_Q],
-                             right_on=[self.ORF],
-                             how="left").merge(pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
-                                               left_on=[self.ORF_A],
-                                               right_on=[self.ORF],
-                                               how="left",
-                                               suffixes=[self.QUERY_SUF, self.ARRAY_SUF])
-        dataframe[self.PSS] = dataframe.apply(lambda x:
-                                              x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
-                                              axis=1)
-        return pd.DataFrame(dataframe.groupby(by=[self.PSS]).size())
+                           dataframe,
+                           iterations,
+                           multiprocessing=False):
+        """
+        Returns list of PSS bins after each permutation.
+
+        The algorithm:
+            1. Extract ORFs and PROFs columns.
+            2. Make the non-redundant list of ORF-PROF.
+            4. Shuffle PROF column using pandas.Series.sample method.
+            5. Merge with the stripped DataFrame on ORF (how="left").
+            6. Calculate the results.
+
+        Parameters
+        -------
+        dataframe: pandas.DataFrame
+            Dataframe on which test is performed.
+        iterations: int
+            Number of permutations to perform.
+        multiprocessing: bool, default <False>
+            pathos multiprocessing is used if <True>. Divides iterations
+            between cores.
+
+        Notes
+        ------
+        multiprocessing DOES NOT work properly yet!
+        """
+        def f(iteration):
+            profs = pd.concat([dataframe[[self.PROF_Q]].drop_duplicates().rename(columns={self.PROF_Q: self.PROF}),
+                               dataframe[[self.PROF_A]].drop_duplicates().rename(columns={self.PROF_A: self.PROF})],
+                              axis=0).reset_index(drop=True)
+            orfs = pd.concat([dataframe[[self.ORF_Q]].drop_duplicates().rename(columns={self.ORF_Q: self.ORF}),
+                              dataframe[[self.ORF_A]].drop_duplicates().rename(columns={self.ORF_A: self.ORF})],
+                             axis=0).reset_index(drop=True)
+            orfs_profs = pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1)
+            permuted = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
+                                right=pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
+                                left_on=[self.ORF_Q],
+                                right_on=[self.ORF],
+                                how="left").merge(pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
+                                                  left_on=[self.ORF_A],
+                                                  right_on=[self.ORF],
+                                                  how="left",
+                                                  suffixes=[self.QUERY_SUF, self.ARRAY_SUF])
+            permuted[self.PSS] = permuted.apply(lambda x:
+                                                x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
+                                                axis=1)
+            del profs, orfs, orfs_profs
+            gc.collect()
+            return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
+        if multiprocessing is True:
+            print "MP sucks here!"
+            return ptmp.ProcessingPool().map(f, range(iterations))
+        else:
+            return [f(i) for i in range(iterations)]
 
     def permute_profiles(self,
                          dataframe,
