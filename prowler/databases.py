@@ -404,15 +404,11 @@ class ProfInt(Columns):
             Species list compared to contained in the orthogroup. Basis for the
             profiles construction.
         """
-        self.merged[self.PSS] = self.merged.apply(lambda x:
-                                                  _Profile(x[self.ORGS_A],
-                                                           reference_species).
-                                                  calculate_pss(_Profile(x[self.ORGS_Q],
-                                                                         reference_species)),
-                                                  axis=1).astype(self.dtypes[self.PSS])
         self.merged[self.PROF_A] = self.merged[self.ORGS_A].apply(lambda x:
                                                                   _Profile(x, reference_species))
         self.merged[self.PROF_Q] = self.merged[self.ORGS_Q].apply(lambda x:
                                                                   _Profile(x, reference_species))
+        self.merged[self.PSS] = self.merged.apply(lambda x:
+                                                  x[self.PROF_Q].calculate_pss(x[self.PROF_A]))
         self.merged = self.merged.astype({k: v for k, v in self.dtypes.iteritems()
                                           if k in self.merged.columns})
