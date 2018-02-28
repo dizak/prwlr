@@ -409,6 +409,7 @@ class ProfInt(Columns):
         self.merged[self.PROF_Q] = self.merged[self.ORGS_Q].apply(lambda x:
                                                                   _Profile(x, reference_species))
         self.merged[self.PSS] = self.merged.apply(lambda x:
-                                                  x[self.PROF_Q].calculate_pss(x[self.PROF_A]))
+                                                  x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
+                                                  axis=1).astype(self.dtypes[self.PSS])
         self.merged = self.merged.astype({k: v for k, v in self.dtypes.iteritems()
                                           if k in self.merged.columns})
