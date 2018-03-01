@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from apis import KEGG_API as _KEGG_API
 from apis import Columns as _ApisColumns
-from errors import ParserError
+from errors import *
 from profiles import Profile as _Profile
 from utils import *
 
@@ -292,6 +292,39 @@ class SGA2(Columns):
         self.sga = pd.concat([ORF_Q_col, ORF_A_col, self.sga], axis=1)
         self.sga = self.sga.astype({k: v for k, v in self.dtypes.iteritems()
                                     if k in self.sga.columns})
+
+
+class AnyNetwork(Columns):
+    """
+    Parses and holds data of any type of network.
+    """
+    def __init__(self):
+        pass
+
+    def parse(self,
+              filename,
+              sep="\t",
+              excel=False,
+              sheet_name=None,
+              ORF_query_col=None,
+              ORF_array_col=None,
+              **kwargs):
+        """
+        Parses network csv file. Checks whether columns names in the csv file
+        correspond with the databases.Columns.
+        """
+        if ORF_query_col is None or ORF_array_col is None:
+            raise ParserError("No ORF_query or ORF_array column name.")
+        if excel is True:
+            self.sga = pd.read_excel(filename, sheet_name=sheet_name)
+        else:
+            self.sga = pd.read_csv(filename, sep=sep)
+        self.sga.rename(columns={ORF_query_col: self.ORF_Q,
+                                 ORF_array_col: self.ORF_A},
+                        inplace=True)
+        if len(kwargs) > 0:
+            self.sga.rename(columns=kwargs,
+                            inplace=True)
 
 
 class Bioprocesses(Columns):
