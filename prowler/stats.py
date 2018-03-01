@@ -241,11 +241,15 @@ class Stats(Columns,
             del profs, orfs, orfs_profs
             gc.collect()
             return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
+
         if multiprocessing is True:
             print "MP sucks here!"
             return ptmp.ProcessingPool().map(f, range(iterations))
         else:
-            return [f(i) for i in range(iterations)]
+            out = []
+            for i in tqdm(range(iterations)):
+                out.append(f(i))
+            return out
 
     def permute_profiles(self,
                          dataframe,
