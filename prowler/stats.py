@@ -144,6 +144,43 @@ class Stats(Columns,
                  (prot_num - hit_num) * math.log(1.0 - background_p))
         return log_p
 
+    def _permute_profiles(self,
+                          dataframe):
+        """
+        Returns a interactions network with permuted profiles and re-calculated
+        PSS.
+
+        Parameters
+        ------
+        dataframe: pandas.DataFrame
+
+        Return
+        -------
+            pandas.DataFrame
+        """
+        profs = pd.concat([dataframe[[self.PROF_Q]].drop_duplicates().rename(columns={self.PROF_Q: self.PROF}),
+                           dataframe[[self.PROF_A]].drop_duplicates().rename(columns={self.PROF_A: self.PROF})],
+                          axis=0).reset_index(drop=True)
+        orfs = pd.concat([dataframe[[self.ORF_Q]].drop_duplicates().rename(columns={self.ORF_Q: self.ORF}),
+                          dataframe[[self.ORF_A]].drop_duplicates().rename(columns={self.ORF_A: self.ORF})],
+                         axis=0).reset_index(drop=True)
+        orfs_profs = pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1)
+        permuted = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
+                            right=pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
+                            left_on=[self.ORF_Q],
+                            right_on=[self.ORF],
+                            how="left").merge(pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
+                                              left_on=[self.ORF_A],
+                                              right_on=[self.ORF],
+                                              how="left",
+                                              suffixes=[self.QUERY_SUF, self.ARRAY_SUF])
+        permuted[self.PSS] = permuted.apply(lambda x:
+                                            x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
+                                            axis=1)
+        del profs, orfs, orfs_profs
+        gc.collect()
+        return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
+
     def calculate_enrichment(self,
                              selected,
                              total,
@@ -190,10 +227,10 @@ class Stats(Columns,
                                              if k in selected_bins.columns})
         return selected_bins
 
-    def permute_profiles_2(self,
-                           dataframe,
-                           iterations,
-                           multiprocessing=False):
+    def permute_profiles(self,
+                         dataframe,
+                         iterations,
+                         multiprocessing=False):
         """
         Returns list of PSS bins after each permutation.
 
@@ -218,127 +255,15 @@ class Stats(Columns,
         ------
         multiprocessing DOES NOT work properly yet!
         """
-        def f(dataframe):
-            profs = pd.concat([dataframe[[self.PROF_Q]].drop_duplicates().rename(columns={self.PROF_Q: self.PROF}),
-                               dataframe[[self.PROF_A]].drop_duplicates().rename(columns={self.PROF_A: self.PROF})],
-                              axis=0).reset_index(drop=True)
-            orfs = pd.concat([dataframe[[self.ORF_Q]].drop_duplicates().rename(columns={self.ORF_Q: self.ORF}),
-                              dataframe[[self.ORF_A]].drop_duplicates().rename(columns={self.ORF_A: self.ORF})],
-                             axis=0).reset_index(drop=True)
-            orfs_profs = pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1)
-            permuted = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
-                                right=pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
-                                left_on=[self.ORF_Q],
-                                right_on=[self.ORF],
-                                how="left").merge(pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
-                                                  left_on=[self.ORF_A],
-                                                  right_on=[self.ORF],
-                                                  how="left",
-                                                  suffixes=[self.QUERY_SUF, self.ARRAY_SUF])
-            permuted[self.PSS] = permuted.apply(lambda x:
-                                                x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
-                                                axis=1)
-            del profs, orfs, orfs_profs
-            gc.collect()
-            return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
-
         if multiprocessing is True:
             warnings.warn("Not tested. Probably does not work at all since joblib supports pickling inside a function.",
                           ExperimentalFeature)
-            out = Parallel(n_jobs=-1, verbose=3)(delayed(f)(dataframe) for i in range(iterations))
+            out = Parallel(n_jobs=-1, verbose=3)(delayed(self._permute_profiles)(dataframe) for i in range(iterations))
         else:
             out = []
             for i in tqdm(range(iterations)):
-                out.append(f(dataframe))
+                out.append(self._permute_profiles(dataframe))
             return out
-
-    def permute_profiles(self,
-                         dataframe,
-                         in_prof_sim_lev,
-                         e_value,
-                         store_dataframe=False):
-        """Return Ortho_Stats.prof_arr_perm_results pandas.DataFrame containing
-        number of similar, dissimilar, mirror profiles and complete permuted
-        pandas.DataFrame itself. Return Ortho_Stats.prof_arr_perm_res_avg
-        containing average numbers of similar, dissimilar and mirror profiles.
-        The algorithm:
-            1. Extract Ortho_Stats.inter_df["ORF", "PROF"].
-            2. Strip the original DataFrame from these 2 cols.
-            3. Make the non-redundant list.
-            4. Shuffle PROF col using pandas.Series.sample method.
-            5. Merge with the stripped DataFrame on ORF (how="left").
-            6. Calculate the results.
-
-        Args:
-            e_value (int): number of times to shuffle the pandas DataFrame
-            in_prof_sim_lev(int): treshold for assuming profiles as similar or
-            not
-        """
-        def f(in_iter):
-            q_ORF_prof_df = dataframe[[self.ORF_Q,
-                                       self.PROF_Q]]
-            a_ORF_prof_df = dataframe[[self.ORF_A,
-                                       self.PROF_A]]
-            drop_prof_temp_df = dataframe.drop([self.PROF_Q,
-                                                self.PROF_A,
-                                                self.PSS],
-                                               axis=1)
-            q_ORF_prof_df.columns = range(len(q_ORF_prof_df.columns))
-            a_ORF_prof_df.columns = range(len(a_ORF_prof_df.columns))
-            stack_ORF_prof_df = pd.concat([q_ORF_prof_df,
-                                           a_ORF_prof_df],
-                                          ignore_index=True)
-            stack_ORF_prof_df.drop_duplicates(inplace=True)
-            stack_ORF_prof_df.columns = [self.ORF, self.PROF]
-            stack_ORF_prof_df.index = range(len(stack_ORF_prof_df))
-            stack_prof_perm_df = stack_ORF_prof_df.PROF.sample(len(stack_ORF_prof_df))
-            stack_prof_perm_df.index = range(len(stack_prof_perm_df))
-            ORF_prof_perm_df = pd.concat([stack_ORF_prof_df.ORF,
-                                          stack_prof_perm_df],
-                                         axis=1)
-            q_merged_df = pd.merge(drop_prof_temp_df,
-                                   ORF_prof_perm_df,
-                                   left_on=self.ORF_Q,
-                                   right_on=self.ORF,
-                                   how="left")
-            qa_merged_df = pd.merge(q_merged_df,
-                                    ORF_prof_perm_df,
-                                    left_on=self.ORF_A,
-                                    right_on=self.ORF,
-                                    how="left",
-                                    suffixes=(self.QUERY_SUF, self.ARRAY_SUF))
-            qa_merged_score_df = df_based_profiles_scorer(qa_merged_df,
-                                                          prof_1_col_name=self.PROF_Q,
-                                                          prof_2_col_name=self.PROF_A,
-                                                          score_col_name=self.PSS)
-            sim_prof_bool = (qa_merged_score_df[self.PSS] >=
-                             in_prof_sim_lev)
-            unsim_prof_bool = (qa_merged_score_df[self.PSS] <
-                               in_prof_sim_lev) &\
-                              (qa_merged_score_df[self.PSS] > 0)
-            mir_prof_bool = (qa_merged_score_df[self.PSS] == 0)
-            sim_prof_perm_num = len(qa_merged_score_df[sim_prof_bool])
-            unsim_prof_perm_num = len(qa_merged_score_df[unsim_prof_bool])
-            mir_prof_perm_num = len(qa_merged_score_df[mir_prof_bool])
-            del q_ORF_prof_df, a_ORF_prof_df, drop_prof_temp_df, stack_ORF_prof_df, stack_prof_perm_df, q_merged_df, qa_merged_df
-            gc.collect()
-            out_dict = {self.SIM: sim_prof_perm_num,
-                        self.DIS: unsim_prof_perm_num,
-                        self.MIR: mir_prof_perm_num,
-                        self.ITER: in_iter + 1}
-            if store_dataframe is True:
-                out_dict[self.DATAFRAME] = qa_merged_score_df
-            else:
-                del qa_merged_score_df
-                gc.collect()
-            return out_dict
-        permuted_df_results_temp = ptmp.ProcessingPool().map(f, range(e_value))
-        prof_KO_perm_results = pd.DataFrame(permuted_df_results_temp)
-        return {"average": pd.DataFrame({self.MIR: float(sum(prof_KO_perm_results[self.MIR])) / float(len(prof_KO_perm_results)),
-                                         self.SIM: float(sum(prof_KO_perm_results[self.SIM])) / float(len(prof_KO_perm_results)),
-                                         self.DIS: float(sum(prof_KO_perm_results[self.DIS])) / float(len(prof_KO_perm_results))},
-                                        index=[0]),
-                "complete": prof_KO_perm_results}
 
 
 class Ortho_Stats:
