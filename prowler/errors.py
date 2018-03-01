@@ -8,7 +8,7 @@ class ParserError(Exception):
     pass
 
 
-class ProfileLengthError(Exception):
+class ProfileError(Exception):
     """
     Different length of the reference and query.
     """
