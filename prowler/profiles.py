@@ -24,8 +24,6 @@ class Profile:
             iter(query)
         except TypeError:
             raise ProfileConstructorError("Query must be an iterable.")
-        # if len(reference) < len(query):
-        #     raise ProfileLengthError("Reference longer than query")
         self.reference = tuple(reference)
         self.query = tuple(query)
         self._construct()
@@ -115,6 +113,8 @@ class Profile:
         """
         Calculate Profiles Similarity Score.
         """
+        if len(self) != len(profile):
+            raise ProfileError("Different profiles' lengths")
         return (self.to_array(positive_sign=None,
                               negative_sign=None) ==
                 profile.to_array(positive_sign=None,
