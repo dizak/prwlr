@@ -7,6 +7,8 @@ import pandas as pd
 import math
 import numpy as np
 import pathos.multiprocessing as ptmp
+from multiprocessing import cpu_count
+from joblib import Parallel, delayed
 from tqdm import tqdm
 from errors import *
 from utils import *
@@ -218,7 +220,7 @@ class Stats(Columns,
         ------
         multiprocessing DOES NOT work properly yet!
         """
-        def f(iteration):
+        def f(dataframe):
             profs = pd.concat([dataframe[[self.PROF_Q]].drop_duplicates().rename(columns={self.PROF_Q: self.PROF}),
                                dataframe[[self.PROF_A]].drop_duplicates().rename(columns={self.PROF_A: self.PROF})],
                               axis=0).reset_index(drop=True)
@@ -243,12 +245,11 @@ class Stats(Columns,
             return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
 
         if multiprocessing is True:
-            print "MP sucks here!"
-            return ptmp.ProcessingPool().map(f, range(iterations))
+            out = Parallel(n_jobs=cpu_count())(delayed(f)(dataframe) for i in tqdm(range(iterations)))
         else:
             out = []
             for i in tqdm(range(iterations)):
-                out.append(f(i))
+                out.append(f(dataframe))
             return out
 
     def permute_profiles(self,
