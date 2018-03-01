@@ -6,8 +6,6 @@ import warnings
 import pandas as pd
 import math
 import numpy as np
-import pathos.multiprocessing as ptmp
-from multiprocessing import cpu_count
 from joblib import Parallel, delayed
 from tqdm import tqdm
 from errors import *
@@ -245,7 +243,9 @@ class Stats(Columns,
             return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
 
         if multiprocessing is True:
-            out = Parallel(n_jobs=cpu_count())(delayed(f)(dataframe) for i in tqdm(range(iterations)))
+            warnings.warn("Not tested. Probably does not work at all since joblib supports pickling inside a function.",
+                          ExperimentalFeature)
+            out = Parallel(n_jobs=-1, verbose=3)(delayed(f)(dataframe) for i in range(iterations))
         else:
             out = []
             for i in tqdm(range(iterations)):
