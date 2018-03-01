@@ -110,3 +110,4 @@ dependencies:
   - jupyter-client==5.2.2
   - jupyter-core==4.4.0
   - prompt-toolkit==1.0.15
+  - "--editable=git+https://github.com/joblib/joblib@cd3136f0dc371a495aed21229a142a1d33e48d56#egg=joblib"
