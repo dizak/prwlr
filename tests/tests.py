@@ -153,5 +153,37 @@ class SGA2Test(unittest.TestCase):
                                       self.sga2.sga)
 
 
+class AnyNetworkTests(unittest.TestCase):
+    """
+    Tests for prowler.databases.SGA2
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        self.test_anynwrk_filename = "./test_data/test_anynetwork.xls"
+        self.ORF_query_col = "genotype"
+        self.ORF_array_col = "target"
+        self.sheet_name = "de novo SNPs"
+        self.anynwrk = databases.AnyNetwork()
+        self.ref_anynwrk = pd.read_csv("./test_data/ref_anynetwork.csv")
+
+    def test_parse(self):
+        """
+        Test if any interaction network in form of xls input file is properly parsed.
+        """
+        self.anynwrk.parse(self.test_anynwrk_filename,
+                           excel=True,
+                           sheet_name=self.sheet_name,
+                           ORF_query_col=self.ORF_query_col,
+                           ORF_array_col=self.ORF_array_col)
+        print self.ref_anynwrk.dtypes
+        print self.anynwrk.sga.dtypes
+        pd.testing.assert_frame_equal(self.ref_anynwrk,
+                                      self.anynwrk.sga,
+                                      check_dtype=False,
+                                      check_names=False)
+
+
 if __name__ == '__main__':
     unittest.main()
