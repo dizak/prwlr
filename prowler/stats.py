@@ -181,6 +181,27 @@ class Stats(Columns,
         gc.collect()
         return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
 
+    def filter_value(self,
+                     dataframe,
+                     value):
+        """
+        Returns interactions network without given values.
+
+        Parameters
+        -------
+        dataframe: pandas.DataFrame
+            Dataframe to be filtered.
+        value: any
+            Value to be filtered
+        """
+        for i in dataframe.columns:
+            try:
+                filtered = dataframe[dataframe[i] == value]
+            except TypeError:
+                pass
+            if filtered.size > 0:
+                return filtered
+
     def calculate_enrichment(self,
                              selected,
                              total,
