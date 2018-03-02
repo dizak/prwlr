@@ -256,7 +256,7 @@ class Stats(Columns,
         multiprocessing DOES NOT work properly yet!
         """
         if multiprocessing is True:
-            warnings.warn("Not tested. Probably does not work at all since joblib supports pickling inside a function.",
+            warnings.warn("Not tested. Probably will not work at all since joblib does not support pickling inside a function.",
                           ExperimentalFeature)
             out = Parallel(n_jobs=-1, verbose=3)(delayed(self._permute_profiles)(dataframe) for i in range(iterations))
         else:
