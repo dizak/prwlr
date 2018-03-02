@@ -284,7 +284,9 @@ class Stats(Columns,
             out = []
             for i in tqdm(range(iterations)):
                 out.append(self._permute_profiles(dataframe))
-        return out
+        return pd.concat([i[1].rename(columns={0: i[0]})
+                          for i in enumerate(out)],
+                         axis=1).fillna(value=0)
 
 
 class Ortho_Stats:
