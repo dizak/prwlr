@@ -284,7 +284,7 @@ class Stats(Columns,
             out = []
             for i in tqdm(range(iterations)):
                 out.append(self._permute_profiles(dataframe))
-            return out
+        return out
 
 
 class Ortho_Stats:
