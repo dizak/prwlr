@@ -95,6 +95,7 @@ dependencies:
 - urllib3=1.22=py27_0
 - wcwidth=0.1.7=py27_0
 - wheel=0.30.0=py27_2
+- xlrd=1.1.0=py_2
 - xorg-libxau=1.0.8=3
 - xorg-libxdmcp=1.1.2=3
 - xz=5.2.3=0
