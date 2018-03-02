@@ -1,4 +1,4 @@
-genome_id	description	kegg_org_id	name	taxon_id
+GENOME_ID	DESCRIPTION	KEGG_ORG_ID	NAME	TAXON_ID
 gn:T00001	 Haemophilus influenzae Rd KW20 (serotype d)	hin	 HAEIN	 71421
 gn:T00002	 Mycoplasma genitalium G37	mge	 MYCGE	 243273
 gn:T00003	 Methanocaldococcus jannaschii DSM 2661	mja	 METJA	 243232
