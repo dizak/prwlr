@@ -23,8 +23,8 @@ class ApisTest(unittest.TestCase):
                                        dtype="object")
         cls.org_db_X_ref_out = pd.read_csv("./test_data/test_orgs_db_X_ref.csv",
                                            sep="\t",
-                                           names=["ORF_id",
-                                                  "kegg_id"],
+                                           names=["ORF_ID",
+                                                  "KEGG_ID"],
                                            dtype="object")
         cls.orgs_names = ["Haemophilus influenzae",
                           "Mycoplasma genitalium",
@@ -54,19 +54,18 @@ class ApisTest(unittest.TestCase):
                                       target_db="orthology",
                                       out_file_name="./test_data/test_orgs_db_X_ref.csv",
                                       skip_dwnld=True)
-        cls.kegg_api.get_db_entries("./test_data/test_db")
+        '''cls.kegg_api.get_db_entries("./test_data/test_db")
         with open("./test_data/test_db") as fin:
             cls.test_db = fin.read()
         with open("./test_data/test_db_ref") as fin:
-            cls.test_db_ref = fin.read()
+            cls.test_db_ref = fin.read()'''
 
     @classmethod
-    def tearDownClass(cls):
-        """
-        Destroys database downloaded during tests.
-        """
-        sp.call("rm ./test_data/test_db", shell=True)
-
+    # def tearDownClass(cls):
+    #     """
+    #     Destroys database downloaded during tests.
+    #     """
+    #     sp.call("rm ./test_data/test_db", shell=True)
     def test_get_organisms_ids(self):
         """
         Test if apis.get_organisms_ids returns correct pandas.DataFrame from
@@ -177,8 +176,6 @@ class AnyNetworkTests(unittest.TestCase):
                            sheet_name=self.sheet_name,
                            ORF_query_col=self.ORF_query_col,
                            ORF_array_col=self.ORF_array_col)
-        print self.ref_anynwrk.dtypes
-        print self.anynwrk.sga.dtypes
         pd.testing.assert_frame_equal(self.ref_anynwrk,
                                       self.anynwrk.sga,
                                       check_dtype=False,
