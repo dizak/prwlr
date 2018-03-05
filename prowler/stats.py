@@ -145,7 +145,8 @@ class Stats(Columns,
         return log_p
 
     def _permute_profiles(self,
-                          dataframe):
+                          dataframe,
+                          drop_dups=False):
         """
         Returns a interactions network with permuted profiles and re-calculated
         PSS.
@@ -178,6 +179,40 @@ class Stats(Columns,
                                             x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
                                             axis=1)
         del profs, orfs, orfs_profs
+        gc.collect()
+        return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
+
+    def _permute_profiles_drop_dups(self,
+                                    dataframe):
+        sub_Q = dataframe[[self.ORF_Q,
+                           self.PROF_Q]].rename(columns={self.ORF_Q:
+                                                         self.ORF,
+                                                         self.PROF_Q:
+                                                         self.PROF}).drop_duplicates(subset=[self.ORF]).reset_index(drop=True)
+        sub_A = dataframe[[self.ORF_A,
+                           self.PROF_A]].rename(columns={self.ORF_A:
+                                                         self.ORF,
+                                                         self.PROF_A:
+                                                         self.PROF}).drop_duplicates(subset=[self.ORF]).reset_index(drop=True)
+        sub_QA = pd.concat([sub_Q,
+                            sub_A]).drop_duplicates(subset=[self.ORF])
+        permuted_sub_QA = pd.concat([sub_QA[self.ORF].reset_index(drop=True),
+                                     sub_QA[self.PROF].sample(n=len(sub_QA),
+                                                              replace=True).reset_index(drop=True)],
+                                    axis=1)
+        permuted = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
+                            right=permuted_sub_QA,
+                            left_on=[self.ORF_Q],
+                            right_on=[self.ORF],
+                            how="left").merge(permuted_sub_QA,
+                                              left_on=[self.ORF_A],
+                                              right_on=[self.ORF],
+                                              how="left",
+                                              suffixes=[self.QUERY_SUF, self.ARRAY_SUF])
+        permuted[self.PSS] = permuted.apply(lambda x:
+                                            x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
+                                            axis=1)
+        del sub_Q, sub_A, sub_QA
         gc.collect()
         return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
 
