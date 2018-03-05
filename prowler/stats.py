@@ -175,6 +175,7 @@ class Stats(Columns,
                               dataframe[[self.ORF_A]].drop_duplicates().rename(columns={self.ORF_A: self.ORF})],
                              axis=0).reset_index(drop=True).drop_duplicates()
             right_df = pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1)
+            del profs, orfs
         else:
             sub_Q = dataframe[[self.ORF_Q,
                                self.PROF_Q]].rename(columns={self.ORF_Q:
@@ -192,6 +193,7 @@ class Stats(Columns,
                                   sub_QA[self.PROF].sample(n=len(sub_QA),
                                                            replace=True).reset_index(drop=True)],
                                  axis=1)
+            del sub_Q, sub_A, sub_QA
         permuted = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
                             right=right_df,
                             left_on=[self.ORF_Q],
@@ -204,7 +206,7 @@ class Stats(Columns,
         permuted[self.PSS] = permuted.apply(lambda x:
                                             x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
                                             axis=1)
-        del profs, orfs, sub_Q, sub_A, sub_QA, right_df
+        del right_df
         gc.collect()
         return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
 
