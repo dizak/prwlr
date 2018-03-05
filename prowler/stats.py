@@ -163,7 +163,7 @@ class Stats(Columns,
                           axis=0).reset_index(drop=True)
         orfs = pd.concat([dataframe[[self.ORF_Q]].drop_duplicates().rename(columns={self.ORF_Q: self.ORF}),
                           dataframe[[self.ORF_A]].drop_duplicates().rename(columns={self.ORF_A: self.ORF})],
-                         axis=0).reset_index(drop=True)
+                         axis=0).reset_index(drop=True).drop_duplicates()
         orfs_profs = pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1)
         permuted = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
                             right=pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1),
