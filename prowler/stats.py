@@ -62,8 +62,16 @@ class Stats(Columns,
                                                    GIS_min,
                                                    GIS_max]]):
             raise TypeError("Must be float.")
+        if not isinstance(profiles_similarity_threshold, int):
+            raise TypeError("Must be int.")
         self._summary_dict = {}
         self.dataframe = dataframe
+        self._profiles_similarity_threshold = profiles_similarity_threshold
+        self._p_value = p_value
+        self._GIS_min = GIS_min
+        self._GIS_max = GIS_max
+        self._query_species_selector = query_species_selector
+        self._array_species_selector = array_species_selector
         self._summary_dict["total"] = len(self.dataframe)
         try:
             self.positive_DMF = ((self.dataframe[self.DMF] >
@@ -82,24 +90,24 @@ class Stats(Columns,
             warnings.warn("Failed to make fitness-based booleans.",
                           SelectionFailWarning)
         try:
-            self.p_value = (self.dataframe[self.GIS_P] <= p_value)
+            self.p_value = (self.dataframe[self.GIS_P] <= self._p_value)
         except KeyError:
             warnings.warn("Failed to make p-value-based booleans.",
                           SelectionFailWarning)
         try:
-            self.GIS_max = (self.dataframe[self.GIS] < GIS_max)
-            self.GIS_min = (self.dataframe[self.GIS] > GIS_min)
+            self.GIS_max = (self.dataframe[self.GIS] < self._GIS_max)
+            self.GIS_min = (self.dataframe[self.GIS] > self._GIS_min)
         except KeyError:
             warnings.warn("Failed to make Genetic Interactions Score-based booleans.",
                           SelectionFailWarning)
         try:
             self.PSS_bins = pd.DataFrame(self.dataframe.groupby(by=[self.PSS]).size())
             self.similar_profiles = (self.dataframe["PSS"] >=
-                                     profiles_similarity_threshold)
+                                     self._profiles_similarity_threshold)
             self.dissimilar_profiles = (self.dataframe["PSS"] <=
-                                        profiles_similarity_threshold)
+                                        self._profiles_similarity_threshold)
             self.mirror_profiles = (self.dataframe["PSS"] <=
-                                    profiles_similarity_threshold)
+                                    self._profiles_similarity_threshold)
             self.no_flat_plu_q = (self.dataframe[self.PROF_Q].apply(lambda x: x.to_string()) !=
                                   _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
             self.no_flat_min_q = (self.dataframe[self.PROF_Q].apply(lambda x: x.to_string()) !=
@@ -116,18 +124,22 @@ class Stats(Columns,
                           SelectionFailWarning)
         self.summary = pd.DataFrame(self._summary_dict,
                                     index=[0])
-        if query_species_selector is not None:
+        if self._query_species_selector is not None:
+            if not isinstance(self._query_species_selector, (list, tuple)):
+                raise TypeError("Must be list or tuple.")
             try:
                 self.species_query = self.dataframe[self.PROF_Q].apply(lambda x:
                                                                        all([True if i in x.reference else False
-                                                                            for i in query_species_selector]))
+                                                                            for i in self._query_species_selector]))
             except KeyError:
                 warnings.warn("Failed to make query-species-based selection.")
-        if array_species_selector is not None:
+        if self._array_species_selector is not None:
+            if not isinstance(self._array_species_selector, (list, tuple)):
+                raise TypeError("Must be list or tuple.")
             try:
                 self.species_array = self.dataframe[self.PROF_A].apply(lambda x:
                                                                        all([True if i in x.reference else False
-                                                                            for i in array_species_selector]))
+                                                                            for i in self._array_species_selector]))
             except KeyError:
                 warnings.warn("Failed to make array-species-based selection.")
 
