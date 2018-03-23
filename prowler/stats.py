@@ -116,6 +116,14 @@ class Stats(Columns,
                                   _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
             self.no_flat_min_a = (self.dataframe[self.PROF_A].apply(lambda x: x.to_string()) !=
                                   _Profile._negative_sign * len(self.dataframe.PROF_Q[0]))
+            self.flat_plu_q = (self.dataframe[self.PROF_Q].apply(lambda x: x.to_string()) ==
+                               _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
+            self.flat_min_q = (self.dataframe[self.PROF_Q].apply(lambda x: x.to_string()) ==
+                               _Profile._negative_sign * len(self.dataframe.PROF_Q[0]))
+            self.flat_plu_a = (self.dataframe[self.PROF_A].apply(lambda x: x.to_string()) ==
+                               _Profile._positive_sign * len(self.dataframe.PROF_Q[0]))
+            self.flat_min_a = (self.dataframe[self.PROF_A].apply(lambda x: x.to_string()) ==
+                               _Profile._negative_sign * len(self.dataframe.PROF_Q[0]))
             self._summary_dict["similar_profiles"] = len(self.dataframe[self.similar_profiles])
             self._summary_dict["dissimilar_profiles"] = len(self.dataframe[self.dissimilar_profiles])
             self._summary_dict["mirror_profiles"] = len(self.dataframe[self.mirror_profiles])
