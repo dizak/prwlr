@@ -53,7 +53,9 @@ class Stats(Columns,
                  profiles_similarity_threshold,
                  p_value=0.05,
                  GIS_min=0.04,
-                 GIS_max=-0.04):
+                 GIS_max=-0.04,
+                 query_species_selector=None,
+                 array_species_selector=None):
         if not isinstance(dataframe, pd.DataFrame):
             raise TypeError("Must be pandas.DataFrame")
         if not all([isinstance(i, float) for i in [p_value,
@@ -114,6 +116,20 @@ class Stats(Columns,
                           SelectionFailWarning)
         self.summary = pd.DataFrame(self._summary_dict,
                                     index=[0])
+        if query_species_selector is not None:
+            try:
+                self.species_query = self.dataframe[self.PROF_Q].apply(lambda x:
+                                                                       all([True if i in x.reference else False
+                                                                            for i in query_species_selector]))
+            except KeyError:
+                warnings.warn("Failed to make query-species-based selection.")
+        if array_species_selector is not None:
+            try:
+                self.species_array = self.dataframe[self.PROF_A].apply(lambda x:
+                                                                       all([True if i in x.reference else False
+                                                                            for i in array_species_selector]))
+            except KeyError:
+                warnings.warn("Failed to make array-species-based selection.")
 
     def _log_binomial_coeff(self,
                             n,
