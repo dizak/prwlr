@@ -182,5 +182,26 @@ class AnyNetworkTests(unittest.TestCase):
                                       check_names=False)
 
 
+class ProfileTests(unittest.TestCase):
+    """
+    Test for prowler.profiles.Profile.
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        self.ref_query = list("acdfhiklostuz")
+        self.ref_reference = list("bcefghijklmnprstuwxy")
+        self.ref_profile = '-+-+++++-+++-'
+
+    def test_Profile(self):
+        """
+        Test if profile is properly constructed.
+        """
+        self.assertEqual(profiles.Profile(reference=self.ref_reference,
+                                          query=self.ref_query).to_string(),
+                         self.ref_profile)
+
+
 if __name__ == '__main__':
     unittest.main()
