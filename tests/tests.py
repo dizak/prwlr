@@ -202,6 +202,14 @@ class ProfileTests(unittest.TestCase):
                                           query=self.ref_query).to_string(),
                          self.ref_profile)
 
+    def test_to_list(self):
+        """
+        Test if profile properly converted to list.
+        """
+        self.assertEqual(profiles.Profile(reference=self.ref_reference,
+                                          query=self.ref_query).to_list(),
+                         list(self.ref_profile))
+
 
 if __name__ == '__main__':
     unittest.main()
