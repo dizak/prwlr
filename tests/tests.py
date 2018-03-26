@@ -197,6 +197,7 @@ class ProfileTests(unittest.TestCase):
         self.alt_neg_sing = "#"
         self.ref_profile = "-+-+++++-+++-"
         self.ref_alt_profile = "#$#$$$$$#$$$#"
+        self.ref_pss = 13
 
     def test__convert(self):
         """
@@ -217,7 +218,7 @@ class ProfileTests(unittest.TestCase):
 
     def test_to_list(self):
         """
-        Test if profile properly converted to list.
+        Test if profile is properly converted to list.
         """
         self.assertEqual(profiles.Profile(reference=self.ref_reference,
                                           query=self.ref_query).to_list(),
@@ -229,7 +230,7 @@ class ProfileTests(unittest.TestCase):
 
     def test_to_tuple(self):
         """
-        Test if profile properly converted to list.
+        Test if profile is properly converted to list.
         """
         self.assertEqual(profiles.Profile(reference=self.ref_reference,
                                           query=self.ref_query).to_tuple(),
@@ -238,6 +239,15 @@ class ProfileTests(unittest.TestCase):
                                           query=self.ref_query).to_tuple(positive_sign=self.alt_pos_sing,
                                                                          negative_sign=self.alt_neg_sing),
                          tuple(self.ref_alt_profile))
+
+    def test_calculate_pss(self):
+        """
+        Test if Profiles Similarity Score (PSS) is properly calculated.
+        """
+        self.assertEqual(profiles.Profile(reference=self.ref_reference,
+                                          query=self.ref_query).calculate_pss(profiles.Profile(reference=self.ref_reference,
+                                                                                               query=self.ref_query)),
+                         self.ref_pss)
 
 
 if __name__ == '__main__':
