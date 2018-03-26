@@ -165,7 +165,7 @@ class AnyNetworkTests(unittest.TestCase):
         self.ORF_array_col = "target"
         self.sheet_name = "de novo SNPs"
         self.anynwrk = databases.AnyNetwork()
-        self.ref_anynwrk = pd.read_csv("./test_data/ref_anynetwork.csv")
+        self.ref_anynwrk = pd.read_pickle("./test_data/ref_anynetwork.pickle")
 
     def test_parse(self):
         """
