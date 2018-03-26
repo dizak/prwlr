@@ -4,6 +4,7 @@
 import unittest
 from prowler import *
 import pandas as pd
+import numpy as np
 import subprocess as sp
 import json
 
@@ -192,11 +193,23 @@ class ProfileTests(unittest.TestCase):
         """
         self.ref_query = list("acdfhiklostuz")
         self.ref_reference = list("bcefghijklmnprstuwxy")
-        self.ref_profile = '-+-+++++-+++-'
+        self.alt_pos_sing = "$"
+        self.alt_neg_sing = "#"
+        self.ref_profile = "-+-+++++-+++-"
+        self.ref_alt_profile = "#$#$$$$$#$$$#"
 
-    def test_Profile(self):
+    def test__convert(self):
         """
-        Test if profile is properly constructed.
+        Test if profile is properly converted.
+        """
+        self.assertEqual(profiles.Profile(reference=self.ref_reference,
+                                          query=self.ref_query)._convert(positive_sign=self.alt_pos_sing,
+                                                                         negative_sign=self.alt_neg_sing),
+                         list(self.ref_alt_profile))
+
+    def test_to_string(self):
+        """
+        Test if profile is properly converted to string.
         """
         self.assertEqual(profiles.Profile(reference=self.ref_reference,
                                           query=self.ref_query).to_string(),
@@ -209,6 +222,22 @@ class ProfileTests(unittest.TestCase):
         self.assertEqual(profiles.Profile(reference=self.ref_reference,
                                           query=self.ref_query).to_list(),
                          list(self.ref_profile))
+        self.assertEqual(profiles.Profile(reference=self.ref_reference,
+                                          query=self.ref_query).to_list(positive_sign=self.alt_pos_sing,
+                                                                        negative_sign=self.alt_neg_sing),
+                         list(self.ref_alt_profile))
+
+    def test_to_tuple(self):
+        """
+        Test if profile properly converted to list.
+        """
+        self.assertEqual(profiles.Profile(reference=self.ref_reference,
+                                          query=self.ref_query).to_tuple(),
+                         tuple(self.ref_profile))
+        self.assertEqual(profiles.Profile(reference=self.ref_reference,
+                                          query=self.ref_query).to_tuple(positive_sign=self.alt_pos_sing,
+                                                                         negative_sign=self.alt_neg_sing),
+                         tuple(self.ref_alt_profile))
 
 
 if __name__ == '__main__':
