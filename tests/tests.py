@@ -240,13 +240,21 @@ class ProfileTests(unittest.TestCase):
                                                                          negative_sign=self.alt_neg_sing),
                          tuple(self.ref_alt_profile))
 
+    def test_to_array(self):
+        """
+        Test if profile is properly converted to numpy.array.
+        """
+        np.testing.assert_array_equal(profiles.Profile(reference=self.ref_reference,
+                                                       query=self.ref_query).to_array(),
+                                      np.array(list(self.ref_profile)))
+
     def test_to_series(self):
         """
         Test if profile is properly converted to pandas.Series.
         """
-        self.assertEqual(profiles.Profile(reference=self.ref_reference,
-                                          query=self.ref_query).to_series(),
-                         pd.Series(list(self.ref_profile)))
+        pd.testing.assert_series_equal(profiles.Profile(reference=self.ref_reference,
+                                                        query=self.ref_query).to_series(),
+                                       pd.Series(list(self.ref_profile)))
 
     def test_calculate_pss(self):
         """
