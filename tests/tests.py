@@ -126,8 +126,17 @@ class DatabasesTests(unittest.TestCase):
                           "hpy",
                           "mth",
                           "bsu"]
-        with open("./test_data/test_orthology_profilized.json") as fin:
-            self.orthology_listed_ref = json.load(fin)
+        self.test_kegg_db_filename = "./test_data/test_kegg_db"
+        self.database_type = "Orthology"
+        self.ref_kegg_db = pd.read_pickle("./test_data/ref_kegg_db.pickle")
+        self.kegg = databases.KEGG(self.database_type)
+
+    def test_parse_database(self):
+        """
+        Test if KEGG database is properly parsed.
+        """
+        self.kegg.parse_database(self.test_kegg_db_filename)
+        pd.testing.assert_frame_equal(self.kegg.database, self.ref_kegg_db)
 
 
 class SGA2Test(unittest.TestCase):
