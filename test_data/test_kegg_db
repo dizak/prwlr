@@ -1,0 +1,620 @@
+ENTRY       K03020                      KO
+NAME        RPC19, POLR1D
+DEFINITION  DNA-directed RNA polymerases I and III subunit RPAC2
+PATHWAY     ko00230  Purine metabolism
+            ko00240  Pyrimidine metabolism
+            ko01100  Metabolic pathways
+            ko03020  RNA polymerase
+            ko04623  Cytosolic DNA-sensing pathway
+            ko05169  Epstein-Barr virus infection
+MODULE      M00181  RNA polymerase III, eukaryotes
+            M00182  RNA polymerase I, eukaryotes
+DISEASE     H00610  Treacher Collins syndrome
+BRITE       KEGG Orthology (KO) [BR:ko00001]
+             Metabolism
+              Nucleotide metabolism
+               00230 Purine metabolism
+                K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
+               00240 Pyrimidine metabolism
+                K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
+             Genetic Information Processing
+              Transcription
+               03020 RNA polymerase
+                K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
+             Organismal Systems
+              Immune system
+               04623 Cytosolic DNA-sensing pathway
+                K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
+             Human Diseases
+              Infectious diseases
+               05169 Epstein-Barr virus infection
+                K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
+            KEGG modules [BR:ko00002]
+             Structural complex
+              Genetic information processing
+               RNA polymerase
+                M00181  RNA polymerase III, eukaryotes
+                 K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
+                M00182  RNA polymerase I, eukaryotes
+                 K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
+            Transcription machinery [BR:ko03021]
+             Eukaryotic type
+              RNA polymerase III system
+               RNA polymerase III
+                Core subunits
+                 K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
+              RNA polymerase I system
+               RNA polymerase I
+                Core subunits
+                 K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
+DBLINKS     RN: R00435 R00441 R00442 R00443
+            COG: COG1761
+GENES       HSA: 51082(POLR1D)
+            PTR: 452506(POLR1D)
+            PPS: 103786072
+            GGO: 109023038
+            PON: 103892199
+            NLE: 101179142(POLR1D)
+            MCC: 718341(POLR1D)
+            MCF: 102146247(POLR1D)
+            CSAB: 103249062
+            RRO: 104671571 104681600
+            RBB: 108512921 108521243
+            CJC: 100403915(POLR1D) 100410246
+            SBQ: 101035700 104650382
+            MMU: 20018(Polr1d)
+            CGE: 100757843
+            NGI: 103727240(Polr1d)
+            HGL: 101715737(Polr1d)
+            CCAN: 109694696(Polr1d)
+            OCU: 100340100(POLR1D)
+            TUP: 102470835(POLR1D)
+            CFA: 100686016(POLR1D)
+            AML: 100471798(POLR1D)
+            UMR: 103664404(POLR1D)
+            ORO: 101381337(POLR1D)
+            FCA: 101087802(POLR1D)
+            PTG: 102964472(POLR1D)
+            AJU: 106985521(POLR1D)
+            BTA: 539061(POLR1D)
+            BOM: 106700493(POLR1D)
+            BIU: 109566827 109570220
+            PHD: 102326808(POLR1D) 102331621
+            CHX: 102189595(POLR1D)
+            OAS: 101114283
+            SSC: 100627477(POLR1D)
+            CFR: 102507134(POLR1D)
+            CDK: 105086579(POLR1D)
+            BACU: 103018134(POLR1D)
+            LVE: 103081571(POLR1D)
+            ECB: 100629435(POLR1D)
+            EPZ: 103560996(POLR1D)
+            EAI: 106832903(POLR1D)
+            MYB: 102260971 106727988(POLR1D)
+            MYD: 102751549(POLR1D) 107181864
+            HAI: 109395229(POLR1D)
+            RSS: 109449835(POLR1D) 109459162
+            PALE: 102883866(POLR1D)
+            LAV: 100671293(POLR1D)
+            TMU: 101347622
+            MDO: 100031257
+            SHR: 100926318
+            OAA: 100084369
+            GGA: 428713(POLR1D)
+            MGP: 100546203
+            CJO: 107312833
+            APLA: 101794354
+            ACYG: 106047492
+            TGU: 100189957
+            GFR: 102045263
+            FAB: 101815986
+            PHI: 102107187
+            PMAJ: 107204072
+            CCW: 104691703
+            FPG: 101920705
+            FCH: 102049131
+            CLV: 102085362
+            EGZ: 104127989
+            AAM: 106489821
+            ASN: 102384222
+            AMJ: 102560521(POLR1D)
+            PSS: 102449323
+            CMY: 102942039
+            CPIC: 101933940
+            ACS: 100567864
+            PVT: 110088396
+            PBI: 103059759
+            GJA: 107118211
+            XLA: 494863(polr1d.2.L)
+            XTR: 100495369(polr1d.2)
+            NPR: 108795348
+            DRE: 445412(polr1d)
+            SRX: 107753208
+            SANH: 107674880
+            SGH: 107572336
+            CCAR: 109103413
+            IPU: 108268918(polr1d)
+            AMEX: 103043816
+            TRU: 101078026
+            TNG: GSTEN00036251G001
+            LCO: 104920592
+            NCC: 104965767
+            MZE: 101480611
+            OLA: 101162457
+            XMA: 102228228
+            PRET: 103470947
+            NFU: 107375796
+            CSEM: 103391314 103399659
+            LCF: 108882741
+            HCQ: 109524366
+            BPEC: 110153953
+            SASA: 100196195(rpac2)
+            ELS: 105007732(rpac2)
+            SFM: 108925233(polr1d)
+            LCM: 102357780
+            CMK: 103177281
+            BFO: BRAFLDRAFT_75869
+            SPU: 590216
+            APLC: 110984102
+            SKO: 102804059
+            DME: Dmel_CG10685(l(2)37Cg)
+            DPO: Dpse_GA10493
+            DAN: Dana_GF15205
+            DER: Dere_GG21646
+            DPE: Dper_GL21124
+            DSE: Dsec_GM17025
+            DSI: Dsimw501_GD21773(Dsim_GD21773)
+            DWI: Dwil_GK26878
+            DYA: Dyak_GE12666
+            DGR: Dgri_GH13479
+            DMO: Dmoj_GI17231
+            DVI: Dvir_GJ17990
+            MDE: 101898600
+            AGA: AgaP_AGAP009644
+            AAG: 5565516
+            CQU: CpipJ_CPIJ000979
+            AME: 725633
+            BTER: 100642670
+            SOC: 105193049
+            AEC: 105153967
+            ACEP: 105618050
+            PBAR: 105433021
+            HST: 105189738
+            CFO: 105254136 105258266
+            LHU: 105677848
+            PGC: 109854696
+            NVI: 100115834
+            TCA: 664572
+            DPA: 109533011
+            NVL: 108561919
+            BMOR: 101744943
+            DPL: KGM_202043
+            PMAC: 106715690
+            PRAP: 110996232
+            PXY: 105392934
+            API: 100163402
+            DNX: 107166855
+            PHU: Phum_PHUM614740
+            ZNE: 110826588
+            FCD: 110850820
+            DPX: DAPPUDRAFT_40279
+            ISC: IscW_ISCW016785
+            TUT: 107371060
+            CEL: CELE_F58A4.9(rpac-19)
+            CBR: CBG10036
+            BMY: Bm1_55240
+            LOA: LOAG_02401
+            TSP: Tsp_00171
+            HRO: HELRODRAFT_193474
+            LGI: LOTGIDRAFT_125219
+            CRG: 105336339
+            MYI: 110442260
+            OBI: 106880344
+            LAK: 106180493 106180501
+            NVE: NEMVE_v1g112100
+            EPA: 110249522
+            HMG: 100200424
+            TAD: TRIADDRAFT_30263
+            AQU: 100636270
+            ATH: AT2G29540(RPC14)
+            ALY: ARALYDRAFT_668653
+            CRB: CARUB_v10024331mg
+            CSAT: 104700543 104716050 104749927 104786726
+            EUS: EUTSA_v10017434mg
+            BRP: 103864994 103868028
+            BNA: 106448750 106451529 106454933
+            BOE: 106339015 106341928
+            THJ: 104800713
+            CPAP: 110810039
+            CIT: 102623776
+            CIC: CICLE_v10029631mg
+            TCC: 18590572
+            GRA: 105761990 105771034 105775526 105788753 105791873 105798517
+            GHI: 107886036 107904798 107904804 107911446 107946924 107950223 107956201 107956761 107963362
+            EGR: 104452942 104452947 104455183
+            GMX: 100500695 100807892
+            PVU: PHAVU_004G063100g PHAVU_008G020000g
+            VRA: 106758637 106759525
+            VAR: 108329726 108344332
+            CCAJ: 109802450 109814005
+            MTR: MTR_7g020830
+            CAM: 101508940
+            ADU: 107475386 107487374
+            AIP: 107609358 107625793
+            LJA: Lj0g3v0213949.1(Lj0g3v0213949.1) Lj0g3v0333049.1(Lj0g3v0333049.1) Lj0g3v0333049.2(Lj0g3v0333049.2) Lj6g3v1752970.1(Lj6g3v1752970.1)
+            LANG: 109354750
+            FVE: 101294774 101300387
+            PPER: 18781503
+            PMUM: 103328509 103330774
+            PAVI: 110767248
+            MDM: 103449837
+            PXB: 103963118 103964601
+            ZJU: 107410946
+            CSV: 101212403 101216823
+            CMO: 103497108
+            MCHA: 111018936
+            RCU: 107261365
+            JCU: 105631134
+            HBR: 110640643 110666407
+            POP: POPTR_0001s25380g(POPTRDRAFT_641125)
+            VVI: 100245061
+            SLY: 101255651 101262015
+            SPEN: 107003495 107023426
+            SOT: 102593288 102597561
+            CANN: 107851534
+            NTA: 107786875 107828232 107828969
+            NSY: 104215783 104230557
+            NTO: 104098040
+            INI: 109163771 109185163
+            SIND: 105175682
+            HAN: 110878961
+            BVG: 104900027
+            SOE: 110800214
+            NNU: 104601162
+            OSA: 4350089 4351715
+            DOSA: Os11t0218100-01(Os11g0218100) Os12t0194700-01(Os12g0194700)
+            OBR: 102701958
+            BDI: 100834353 100839460
+            ATS: 109765602(LOC109765602)
+            SBI: 8071688
+            ZMA: 100276725(pco137632)
+            SITA: 101754829 101786403
+            PDA: 103723351
+            EGU: 105035955 105037893 105051577
+            MUS: 103993762
+            ATR: 18448400
+            SMO: SELMODRAFT_160051 SELMODRAFT_28501 SELMODRAFT_49652 SELMODRAFT_49918
+            PPP: PHYPADRAFT_129266
+            CRE: CHLREDRAFT_123383(RPC19)
+            VCN: VOLCADRAFT_63657
+            OLU: OSTLU_30435
+            OTA: OT_ostta03g01070
+            BPG: Bathy06g02710
+            MIS: MICPUN_80643
+            MPP: MICPUCDRAFT_21450
+            CSL: COCSUDRAFT_56503
+            CVR: CHLNCDRAFT_142343
+            CME: CYME_CMR197C
+            CCP: CHC_T00000759001
+            SCE: YNL113W(RPC19)
+            AGO: AGOS_AFL220C
+            ERC: Ecym_5423
+            KLA: KLLA0F23760g
+            LTH: KLTH0D09350g
+            VPO: Kpol_165p2
+            ZRO: ZYRO0B09878g
+            CGR: CAGL0L03872g
+            NCS: NCAS_0G02550(NCAS0G02550)
+            NDI: NDAI_0F02750(NDAI0F02750)
+            TPF: TPHA_0B02920(TPHA0B02920)
+            TBL: TBLA_0B01290(TBLA0B01290)
+            TDL: TDEL_0F01180(TDEL0F01180)
+            KAF: KAFR_0B04570(KAFR0B04570)
+            PPA: PAS_chr4_0925
+            DHA: DEHA2A12980g
+            PIC: PICST_65363(RPC19)
+            PGU: PGUG_04032
+            SPAA: SPAPADRAFT_59793
+            LEL: LELG_00211
+            CAL: CAALFM_CR02520WA(RPC19)
+            CTP: CTRG_00921
+            COT: CORT_0A02740
+            CDU: CD36_27470
+            CTEN: CANTEDRAFT_93450
+            YLI: YALI0E27676g
+            CLU: CLUG_02231
+            CLUS: A9F13_02g00704
+            CAUR: QG37_04148
+            NCR: NCU00419
+            SMP: SMAC_08854
+            PAN: PODANSg5212
+            MTM: MYCTH_2036258
+            CTHR: CTHT_0023150
+            MGR: MGG_06311
+            TMN: UCRPA7_1684
+            FGR: FGSG_06937
+            FPU: FPSE_04788
+            FVR: FVEG_08260
+            FOX: FOXG_01883
+            NHE: NECHADRAFT_79161
+            TRE: TRIREDRAFT_102676
+            MAW: MAC_03134
+            MAJ: MAA_05803
+            CMT: CCM_02711
+            PLJ: VFPFJ_05459
+            VAL: VDBG_06886
+            VDA: VDAG_05947
+            CFJ: CFIO01_11818
+            ELA: UCREL1_8394
+            PFY: PFICI_07473
+            SSL: SS1G_00588
+            BFU: BC1G_06580
+            MBE: MBM_03627
+            PSCO: LY89DRAFT_594174
+            GLZ: GLAREA_07111
+            ANI: AN6558.2
+            AFM: AFUA_6G04610
+            ANG: ANI_1_134134(An15g00700)
+            AFV: AFLA_055410
+            ACT: ACLA_095950
+            NFI: NFIA_051140
+            PCS: Pc20g11790
+            PDP: PDIP_18050
+            CIM: CIMG_02708
+            CPW: CPC735_036620
+            PBL: PAAG_03547
+            PBN: PADG_12074(PADG_06277)
+            URE: UREG_03060
+            ABE: ARB_04107
+            TVE: TRV_03890
+            AJE: HCAG_08226
+            PNO: SNOG_09370
+            PTE: PTT_16250
+            BZE: COCCADRAFT_29047
+            BSC: COCSADRAFT_188250
+            BOR: COCMIDRAFT_85583
+            ZTR: MYCGRDRAFT_45952
+            PFJ: MYCFIDRAFT_77593
+            NPA: UCRNP2_7612
+            TML: GSTUM_00006168001
+            SPO: SPAC1687.01(rpc19)
+            CNE: CNB01370
+            CNB: CNBB4340
+            CGI: CGB_B6320C
+            TMS: TREMEDRAFT_71650
+            TVS: TRAVEDRAFT_130547
+            DSQ: DICSQDRAFT_140377
+            PCO: PHACADRAFT_116447
+            SHS: STEHIDRAFT_53139
+            HIR: HETIRDRAFT_420932
+            PSQ: PUNSTDRAFT_103513
+            ADL: AURDEDRAFT_159698
+            FME: FOMMEDRAFT_109961
+            GTR: GLOTRDRAFT_80170
+            LBC: LACBIDRAFT_297775
+            MRR: Moror_6993
+            CCI: CC1G_02442
+            SCM: SCHCODRAFT_237070
+            ABP: AGABI1DRAFT131035(AGABI1DRAFT_131035)
+            ABV: AGABI2DRAFT186894(AGABI2DRAFT_186894)
+            CPUT: CONPUDRAFT_162063
+            SLA: SERLADRAFT_378617
+            WSE: WALSEDRAFT_40082
+            WIC: J056_001144
+            UMA: UMAG_01184
+            PFP: PFL1_04106
+            PGR: PGTG_08724
+            MLR: MELLADRAFT_70512
+            ECU: ECU11_0590
+            EIN: Eint_110440
+            EHE: EHEL_110460
+            ERO: EROM_110450
+            SRE: PTSG_09519
+            DDI: DDB_G0291362(rpc19)
+            DPP: DICPUDRAFT_32831
+            DFA: DFA_11628(rpc19)
+            ACAN: ACA1_090040
+            PFA: PF14_0150
+            PFH: PFHG_05127
+            PYO: PY04455
+            PCB: PCHAS_102830(PC000134.02.0)
+            PBE: PB000985.02.0
+            PKN: PKH_133200
+            PVX: PVX_085690
+            PCY: PCYB_134150
+            TAN: TA08625
+            TPV: TP04_0471
+            BEQ: BEWA_008340
+            BBO: BBOV_II001150(18.m06085)
+            TGO: TGME49_261540
+            TET: TTHERM_00011760
+            PTM: GSPATT00020004001 GSPATT00022238001
+            PTI: PHATRDRAFT_12779
+            FCY: FRACYDRAFT_174798 FRACYDRAFT_186078
+            TPS: THAPSDRAFT_263565
+            AAF: AURANDRAFT_17769
+            PIF: PITG_05854
+            PSOJ: PHYSODRAFT_361522
+            SPAR: SPRG_08856
+            EHX: EMIHUDRAFT_194396
+            GTT: GUITHDRAFT_175429
+            TBR: Tb11.01.0625
+            TCR: 508601.30
+            LMA: LMJF_28_2060
+            LIF: LINJ_28_2200
+            LDO: LDBPK_282200
+            LMI: LMXM_28_2060
+            LBZ: LBRM_28_2250
+            NGR: NAEGRDRAFT_80573
+            TVA: TVAG_190340
+            GLA: GL50803_10840
+REFERENCE   PMID:24153182
+  AUTHORS   Engel C, Sainsbury S, Cheung AC, Kostrewa D, Cramer P
+  TITLE     RNA polymerase I structure and transcription regulation.
+  JOURNAL   Nature 502:650-5 (2013)
+            DOI:10.1038/nature12712
+  SEQUENCE  [sce:YNL113W]
+///
+ENTRY       K00994                      KO
+NAME        CHPT1, CPT1
+DEFINITION  diacylglycerol cholinephosphotransferase [EC:2.7.8.2]
+PATHWAY     ko00440  Phosphonate and phosphinate metabolism
+            ko00564  Glycerophospholipid metabolism
+            ko00565  Ether lipid metabolism
+            ko01100  Metabolic pathways
+            ko05231  Choline metabolism in cancer
+MODULE      M00090  Phosphatidylcholine (PC) biosynthesis, choline => PC
+BRITE       KEGG Orthology (KO) [BR:ko00001]
+             Metabolism
+              Lipid metabolism
+               00564 Glycerophospholipid metabolism
+                K00994  CHPT1, CPT1; diacylglycerol cholinephosphotransferase
+               00565 Ether lipid metabolism
+                K00994  CHPT1, CPT1; diacylglycerol cholinephosphotransferase
+              Metabolism of other amino acids
+               00440 Phosphonate and phosphinate metabolism
+                K00994  CHPT1, CPT1; diacylglycerol cholinephosphotransferase
+             Human Diseases
+              Cancers
+               05231 Choline metabolism in cancer
+                K00994  CHPT1, CPT1; diacylglycerol cholinephosphotransferase
+            KEGG modules [BR:ko00002]
+             Pathway module
+              Carbohydrate and lipid metabolism
+               Lipid metabolism
+                M00090  Phosphatidylcholine (PC) biosynthesis, choline => PC
+                 K00994  CHPT1, CPT1; diacylglycerol cholinephosphotransferase
+            Enzymes [BR:ko01000]
+             2. Transferases
+              2.7  Transferring phosphorus-containing groups
+               2.7.8  Transferases for other substituted phosphate groups
+                2.7.8.2  diacylglycerol cholinephosphotransferase
+                 K00994  CHPT1, CPT1; diacylglycerol cholinephosphotransferase
+DBLINKS     RN: R01321 R04321 R04922 R07389
+            GO: 0004142
+GENES       HSA: 56994(CHPT1)
+            PTR: 467109(CHPT1)
+            PPS: 100986998(CHPT1)
+            GGO: 101151506(CHPT1)
+            PON: 100440613(CHPT1)
+            NLE: 100605676(CHPT1)
+            MCC: 696056(CHPT1)
+            MCF: 102122766(CHPT1)
+            CSAB: 103238948(CHPT1)
+            RRO: 104657409(CHPT1)
+            RBB: 108538927(CHPT1)
+            CJC: 100401644 100408188(CHPT1) 103787260(CHPT1)
+            SBQ: 101052362(CHPT1)
+            MMU: 212862(Chpt1)
+            RNO: 362866(Chpt1)
+            CGE: 100750762(Chpt1)
+            NGI: 103733732(Chpt1)
+            HGL: 101711138(Chpt1)
+            CCAN: 109690293(Chpt1)
+            OCU: 100353669(CHPT1)
+            TUP: 102485648(CHPT1)
+            CFA: 610214(CHPT1)
+            AML: 100484386(CHPT1)
+            UMR: 103676503(CHPT1)
+            ORO: 101377488(CHPT1)
+            FCA: 101099986(CHPT1)
+            PTG: 102961960(CHPT1)
+            AJU: 106971875(CHPT1)
+            BTA: 511291(CHPT1)
+            BOM: 102269460(CHPT1)
+            BIU: 109558502(CHPT1)
+            PHD: 102339059(CHPT1)
+            CHX: 102175100(CHPT1)
+            OAS: 101108821(CHPT1)
+            SSC: 100523738(CHPT1)
+            CFR: 102508627(CHPT1)
+            CDK: 105097458(CHPT1)
+            BACU: 103018700(CHPT1)
+            LVE: 103085556(CHPT1)
+            ECB: 106782693(CHPT1)
+            EPZ: 103555701(CHPT1)
+            EAI: 106827266(CHPT1)
+            MYB: 102257668(CHPT1)
+            MYD: 102755578(CHPT1)
+            HAI: 109387759(CHPT1)
+            RSS: 109447598(CHPT1)
+            PALE: 102892767(CHPT1)
+            LAV: 104846858(CHPT1)
+            TMU: 101360133
+            MDO: 100020969(CHPT1)
+            SHR: 105750678(CHPT1)
+            OAA: 100075425(CHPT1)
+            GGA: 418098(CHPT1)
+            MGP: 100546891
+            CJO: 107316205(CHPT1)
+            APLA: 101791878(CHPT1)
+            ACYG: 106031029(CHPT1)
+            TGU: 100219586(CHPT1)
+            GFR: 102039926(CHPT1)
+            FAB: 101806735(CHPT1)
+            PHI: 102108343(CHPT1)
+            PMAJ: 107204414(CHPT1)
+            CCW: 104696223(CHPT1)
+            FPG: 101911330(CHPT1)
+            FCH: 102048528(CHPT1)
+            CLV: 102086581(CHPT1)
+            EGZ: 104135594(CHPT1)
+            AAM: 106488652(CHPT1)
+            ASN: 102382218(CHPT1)
+            AMJ: 102570848(CHPT1)
+            PSS: 102458739(CHPT1)
+            CMY: 102933991(CHPT1)
+            CPIC: 101937224(CHPT1)
+            ACS: 100561765(chpt1)
+            PVT: 110082685(CHPT1)
+            PBI: 103064252(CHPT1)
+            GJA: 107119583(CHPT1)
+            XLA: 108713210(chpt1.S) 734631(chpt1.L)
+            XTR: 100216268(chpt1)
+            NPR: 108787169(CHPT1)
+            DRE: 322605(chpt1)
+            SRX: 107725616 107744925
+            SANH: 107664854 107695881
+            SGH: 107588513 107590206
+            CCAR: 109052699 109080906
+            IPU: 108274771(chpt1)
+            AMEX: 103031285(chpt1)
+            LCO: 104926726(chpt1)
+            NCC: 104950095(chpt1)
+            MZE: 101476120(chpt1)
+            OLA: 101173516(chpt1)
+            XMA: 102235171(chpt1)
+            PRET: 103459173(chpt1)
+            NFU: 107386145(chpt1)
+            CSEM: 103382702(chpt1)
+            LCF: 108890214(chpt1)
+            HCQ: 109523684
+            BPEC: 110161596(chpt1)
+            SASA: 106576273 106609452
+            ELS: 105030153(chpt1)
+            SFM: 108931393(chpt1) 108942231
+            CMK: 103179874(chpt1)
+            APLC: 110979864
+            HRO: HELRODRAFT_116477
+            AQU: 100638347
+            SCE: YNL130C(CPT1)
+            AGO: AGOS_AGR344W
+            ERC: Ecym_8190
+            KLA: KLLA0F24354g
+            LTH: KLTH0B05478g
+            VPO: Kpol_1048p10
+            ZRO: ZYRO0G06226g
+            CGR: CAGL0K09570g
+            NCS: NCAS_0G02370(NCAS0G02370)
+            NDI: NDAI_0B04390(NDAI0B04390) NDAI_0F02920(NDAI0F02920)
+            TPF: TPHA_0I01400(TPHA0I01400)
+            TBL: TBLA_0B01190(TBLA0B01190) TBLA_0D00380(TBLA0D00380)
+            TDL: TDEL_0B05000(TDEL0B05000)
+            KAF: KAFR_0F00670(KAFR0F00670) KAFR_0J02190(KAFR0J02190)
+            PPA: PAS_chr2-2_0357
+REFERENCE   PMID:12221122
+  AUTHORS   Henneberry AL, Wright MM, McMaster CR
+  TITLE     The major sites of cellular phospholipid synthesis and molecular determinants of Fatty Acid and lipid head group specificity.
+  JOURNAL   Mol Biol Cell 13:3148-61 (2002)
+            DOI:10.1091/mbc.01-11-0540
+///
