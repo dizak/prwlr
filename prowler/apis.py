@@ -107,10 +107,10 @@ class KEGG_API(Columns):
             print "No record found for {}".format(organism)
             self.query_ids_not_found.append(organism)
         elif len(organism_ser) > 1:
-            if assume_1st is True:
-                return organism_ser[self.KEGG_ORG_ID].iloc[0]
             print "More than one record for this query\n{}".format(organism_ser[[self.DESCRIPTION,
                                                                                  self.KEGG_ORG_ID]])
+            if assume_1st is True:
+                return organism_ser[self.KEGG_ORG_ID].iloc[0]
         else:
             return str(organism_ser[self.KEGG_ORG_ID].to_string(index=False,
                                                                 header=False))
