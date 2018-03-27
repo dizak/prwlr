@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import subprocess as sp
 import json
+import pickle
 
 
 class ApisTest(unittest.TestCase):
@@ -135,6 +136,10 @@ class DatabasesTests(unittest.TestCase):
         self.X_ref = "./test_data/test_orgs_db_X_ref.csv"
         self.out_file_name = "./test_data/test_orgs_db_X_ref"
         self.ref_kegg_db = pd.read_pickle("./test_data/ref_kegg_db.pickle")
+        with open("./test_data/ref_databases_KEGG_name_ID.pickle", "rb") as fin:
+            self.ref_databases_KEGG_name_ID = pickle.load(fin)
+        with open("./test_data/ref_databases_KEGG_ID_name.pickle", "rb") as fin:
+            self.ref_databases_KEGG_ID_name = pickle.load(fin)
         self.kegg = databases.KEGG(self.database_type)
 
     def test_parse_database(self):
@@ -152,6 +157,8 @@ class DatabasesTests(unittest.TestCase):
                                       reference_species=self.query_species,
                                       IDs=self.IDs,
                                       X_ref=self.X_ref)
+        self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
+        self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
 
 
 class SGA2Test(unittest.TestCase):
