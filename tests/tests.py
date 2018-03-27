@@ -81,8 +81,7 @@ class ApisTest(unittest.TestCase):
         biological name.
         """
         for org_name, org_id in zip(self.orgs_names, self.orgs_ids):
-            self.assertEqual(self.kegg_api.org_name_2_kegg_id(org_name),
-                             org_id)
+            self.assertEqual(self.kegg_api.org_name_2_kegg_id(org_name), org_id)
 
     def test_kegg_id_2_org_name(self):
         """
