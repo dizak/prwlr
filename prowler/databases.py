@@ -171,6 +171,11 @@ class KEGG(Columns):
         self.reference_species = [self._api.org_name_2_kegg_id(i) for i in reference_species
                                   if i not in self._api.query_ids_not_found]
         self.reference_species = [i.upper() for i in self.reference_species if i is not None]
+        self.name_ID = dict(zip([i for i in reference_species
+                                 if i not in self._api.query_ids_not_found],
+                                self.reference_species))
+        self.ID_name = dict(zip(self.reference_species, [i for i in reference_species
+                                                         if i not in self._api.query_ids_not_found]))
         self._api.get_org_db_X_ref(organism=organism,
                                    target_db=self.database_type,
                                    out_file_name=X_ref,
