@@ -36,7 +36,8 @@ class ApisTest(unittest.TestCase):
                           "Escherichia coli",
                           "Helicobacter pylori",
                           "Methanothermobacter thermautotrophicus",
-                          "Bacillus subtilis"]
+                          "Bacillus subtilis",
+                          "Notus existans"]
         cls.orgs_ids = ["hin",
                         "mge",
                         "mja",
@@ -115,7 +116,8 @@ class DatabasesTests(unittest.TestCase):
                               "Escherichia coli",
                               "Helicobacter pylori",
                               "Methanothermobacter thermautotrophicus",
-                              "Bacillus subtilis"]
+                              "Bacillus subtilis",
+                              "Notus existans"]
         self.query_ids = ["hin",
                           "mge",
                           "mja",
@@ -128,6 +130,10 @@ class DatabasesTests(unittest.TestCase):
                           "bsu"]
         self.test_kegg_db_filename = "./test_data/test_kegg_db"
         self.database_type = "Orthology"
+        self.organism_name = "Saccharomyces cerevisiae"
+        self.IDs = "./test_data/test_orgs_ids_in.csv"
+        self.X_ref = "./test_data/test_orgs_db_X_ref.csv"
+        self.out_file_name = "./test_data/test_orgs_db_X_ref"
         self.ref_kegg_db = pd.read_pickle("./test_data/ref_kegg_db.pickle")
         self.kegg = databases.KEGG(self.database_type)
 
@@ -137,6 +143,15 @@ class DatabasesTests(unittest.TestCase):
         """
         self.kegg.parse_database(self.test_kegg_db_filename)
         pd.testing.assert_frame_equal(self.kegg.database, self.ref_kegg_db)
+
+    def test_parse_organism_info(self):
+        """
+        Test if organisms info is properly parsed.
+        """
+        self.kegg.parse_organism_info(organism=self.organism_name,
+                                      reference_species=self.query_species,
+                                      IDs=self.IDs,
+                                      X_ref=self.X_ref)
 
 
 class SGA2Test(unittest.TestCase):
