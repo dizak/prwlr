@@ -224,76 +224,82 @@ class ProfileTests(unittest.TestCase):
         """
         self.ref_query = list("acdfhiklostuz")
         self.ref_reference = list("bcefghijklmnprstuwxy")
+        self.ref_absent = sorted([i for i in self.ref_query if i not in self.ref_reference])
+        self.ref_present = sorted([i for i in self.ref_query if i in self.ref_reference])
         self.alt_pos_sing = "$"
         self.alt_neg_sing = "#"
         self.ref_profile = "-+-+++++-+++-"
         self.ref_alt_profile = "#$#$$$$$#$$$#"
         self.ref_pss = 13
+        self.test_profile = profiles.Profile(reference=self.ref_reference,
+                                             query=self.ref_query)
 
     def test__convert(self):
         """
         Test if profile is properly converted.
         """
-        self.assertEqual(profiles.Profile(reference=self.ref_reference,
-                                          query=self.ref_query)._convert(positive_sign=self.alt_pos_sing,
-                                                                         negative_sign=self.alt_neg_sing),
+        self.assertEqual(self.test_profile._convert(positive_sign=self.alt_pos_sing,
+                                                    negative_sign=self.alt_neg_sing),
                          list(self.ref_alt_profile))
+
+    def test_get_present(self):
+        """
+        Test if Profile.present attribute is properly returned.
+        """
+        self.assertEqual(self.test_profile.present, self.ref_profile.present)
+
+    def test_get_absent(self):
+        """
+        Test if Profile.absent attribute is properly returned.
+        """
+        self.assertEqual(self.test_profile.absent, self.ref_profile.absent)
 
     def test_to_string(self):
         """
         Test if profile is properly converted to string.
         """
-        self.assertEqual(profiles.Profile(reference=self.ref_reference,
-                                          query=self.ref_query).to_string(),
+        self.assertEqual(self.test_profile.to_string(),
                          self.ref_profile)
 
     def test_to_list(self):
         """
         Test if profile is properly converted to list.
         """
-        self.assertEqual(profiles.Profile(reference=self.ref_reference,
-                                          query=self.ref_query).to_list(),
+        self.assertEqual(self.test_profile.to_list(),
                          list(self.ref_profile))
-        self.assertEqual(profiles.Profile(reference=self.ref_reference,
-                                          query=self.ref_query).to_list(positive_sign=self.alt_pos_sing,
-                                                                        negative_sign=self.alt_neg_sing),
+        self.assertEqual(self.test_profile.to_list(positive_sign=self.alt_pos_sing,
+                                                   negative_sign=self.alt_neg_sing),
                          list(self.ref_alt_profile))
 
     def test_to_tuple(self):
         """
         Test if profile is properly converted to list.
         """
-        self.assertEqual(profiles.Profile(reference=self.ref_reference,
-                                          query=self.ref_query).to_tuple(),
+        self.assertEqual(self.test_profile.to_tuple(),
                          tuple(self.ref_profile))
-        self.assertEqual(profiles.Profile(reference=self.ref_reference,
-                                          query=self.ref_query).to_tuple(positive_sign=self.alt_pos_sing,
-                                                                         negative_sign=self.alt_neg_sing),
+        self.assertEqual(self.test_profile.to_tuple(positive_sign=self.alt_pos_sing,
+                                                    negative_sign=self.alt_neg_sing),
                          tuple(self.ref_alt_profile))
 
     def test_to_array(self):
         """
         Test if profile is properly converted to numpy.array.
         """
-        np.testing.assert_array_equal(profiles.Profile(reference=self.ref_reference,
-                                                       query=self.ref_query).to_array(),
+        np.testing.assert_array_equal(self.test_profile.to_array(),
                                       np.array(list(self.ref_profile)))
 
     def test_to_series(self):
         """
         Test if profile is properly converted to pandas.Series.
         """
-        pd.testing.assert_series_equal(profiles.Profile(reference=self.ref_reference,
-                                                        query=self.ref_query).to_series(),
+        pd.testing.assert_series_equal(self.test_profile.to_series(),
                                        pd.Series(list(self.ref_profile)))
 
     def test_calculate_pss(self):
         """
         Test if Profiles Similarity Score (PSS) is properly calculated.
         """
-        self.assertEqual(profiles.Profile(reference=self.ref_reference,
-                                          query=self.ref_query).calculate_pss(profiles.Profile(reference=self.ref_reference,
-                                                                                               query=self.ref_query)),
+        self.assertEqual(self.test_profile.calculate_pss(self.test_profile),
                          self.ref_pss)
 
 
