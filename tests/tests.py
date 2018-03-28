@@ -359,6 +359,46 @@ class StatsTests(unittest.TestCase):
                                        self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] ==
                                                          self.flat_min][self.statistics.PROF_A])
 
+    def test_no_flat_plu_q(self):
+        """
+        Test if no_flat_plu_q selector returns dataframe of same length as
+        selection on str.
+        """
+        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_plu_q]
+                                       [self.statistics.PROF_Q].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_Q] !=
+                                                         self.flat_plu][self.statistics.PROF_Q])
+
+    def test_no_flat_plu_a(self):
+        """
+        Test if no_flat_plu_a selector returns dataframe of same length as
+        selection on str.
+        """
+        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_plu_a]
+                                       [self.statistics.PROF_A].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] !=
+                                                         self.flat_plu][self.statistics.PROF_A])
+
+    def test_no_flat_min_q(self):
+        """
+        Test if no_flat_min_q selector returns dataframe of same length as
+        selection on str.
+        """
+        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_min_q]
+                                       [self.statistics.PROF_Q].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_Q] !=
+                                                         self.flat_min][self.statistics.PROF_Q])
+
+    def test_no_flat_min_a(self):
+        """
+        Test if no_flat_min_a selector returns dataframe of same length as
+        selection on str.
+        """
+        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_min_a]
+                                       [self.statistics.PROF_A].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] !=
+                                                         self.flat_min][self.statistics.PROF_A])
+
 
 if __name__ == '__main__':
     unittest.main()
