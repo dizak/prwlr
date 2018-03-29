@@ -6,5 +6,95 @@ gn:T00005	sce, YEAST, 559292; Saccharomyces cerevisiae S288c
 gn:T00006	mpn, MYCPN, 272634; Mycoplasma pneumoniae M129
 gn:T00007	eco, ECOLI, 511145; Escherichia coli K-12 MG1655
 gn:T00008	hpy, HELPY, 85962; Helicobacter pylori 26695
-gn:T00009	mth, METTH, 187420; Methanothermobacter thermautotrophicus deltaH
+gn:T00009	mth, METTH, 187420; Methanothermobacter thermautotrophicus Delta H
 gn:T00010	bsu, BACSU, 224308; Bacillus subtilis subsp. subtilis 168
+gn:T00011	afu, ARCFU, 224325; Archaeoglobus fulgidus DSM 4304 (VC-16)
+gn:T00012	bbu, BORBU, 224326; Borrelia burgdorferi B31
+gn:T00013	aae, AQUAE, 224324; Aquifex aeolicus VF5
+gn:T00014	pho, PYRHO, 70601; Pyrococcus horikoshii OT3
+gn:T00015	mtu, MYCTU, 83332; Mycobacterium tuberculosis H37Rv, laboratory strain
+gn:T00016	tpa, TREPA, 243276; Treponema pallidum subsp. pallidum Nichols
+gn:T00017	ctr, CHLTR, 272561; Chlamydia trachomatis D/UW-3/CX
+gn:T00018	rpr, RICPR, 272947; Rickettsia prowazekii Madrid E
+gn:T00019	cel, CAEEL, 6239; Caenorhabditis elegans (nematode)
+gn:T00020	hpj, HELPJ, 85963; Helicobacter pylori J99
+gn:T00021	cpn, CHLPN, 115713; Chlamydophila pneumoniae CWL029
+gn:T00022	tma, THEMA, 243274; Thermotoga maritima MSB8
+gn:T00023	ape, AERPE, 272557; Aeropyrum pernix K1
+gn:T00024	pab, PYRAB, 272844; Pyrococcus abyssi GE5
+gn:T00025	dra, DEIRA, 243230; Deinococcus radiodurans R1
+gn:T00026	cje, CAMJE, 192222; Campylobacter jejuni subsp. jejuni NCTC 11168 = ATCC 700819
+gn:T00027	nme, NEIMB, 122586; Neisseria meningitidis MC58 (serogroup B)
+gn:T00028	cmu, CHLMU, 243161; Chlamydia muridarum Nigg (Chlamydia trachomatis MoPn)
+gn:T00029	cpa, CHLPN, 115711; Chlamydophila pneumoniae AR39
+gn:T00030	dme, DROME, 7227; Drosophila melanogaster (fruit fly)
+gn:T00031	nma, NEIMA, 122587; Neisseria meningitidis Z2491 (serogroup A)
+gn:T00032	cpj, CHLPN, 138677; Chlamydophila pneumoniae J138
+gn:T00033	xfa, XYLFA, 160492; Xylella fastidiosa 9a5c
+gn:T00034	vch, VIBCH, 243277; Vibrio cholerae O1 biovar El Tor N16961
+gn:T00035	pae, PSEAE, 208964; Pseudomonas aeruginosa PAO1
+gn:T00036	buc, BUCAI, 107806; Buchnera aphidicola APS, endosymbiont of Acyrthosiphon pisum (pea aphid)
+gn:T00037	tac, THEAC, 273075; Thermoplasma acidophilum DSM 1728
+gn:T00038	hal, HALSA, 64091; Halobacterium salinarum NRC-1 (Halobacterium sp. NRC-1)
+gn:T00039	bha, BACHD, 272558; Bacillus halodurans C-125
+gn:T00040	uur, UREPA, 273119; Ureaplasma parvum serovar 3 ATCC 700970
+gn:T00041	ath, ARATH, 3702; Arabidopsis thaliana (thale cress)
+gn:T00042	tvo, THEVO, 273116; Thermoplasma volcanium GSS1
+gn:T00043	mlo, RHILO, 266835; Mesorhizobium japonicum MAFF 303099 (Mesorhizobium loti MAFF303099)
+gn:T00044	ece, ECOLX, 155864; Escherichia coli O157:H7 EDL933 (EHEC)
+gn:T00045	lla, LACLA, 272623; Lactococcus lactis subsp. lactis Il1403
+gn:T00046	pmu, PASMU, 272843; Pasteurella multocida subsp. multocida Pm70
+gn:T00047	mle, MYCLE, 272631; Mycobacterium leprae TN
+gn:T00048	ecs, ECO57, 386585; Escherichia coli O157:H7 Sakai (EHEC)
+gn:T00049	ccr, CAUCR, 190650; Caulobacter crescentus CB15
+gn:T00050	spy, STRP1, 160490; Streptococcus pyogenes M1 GAS (serotype M1)
+gn:T00051	sau, STAAN, 158879; Staphylococcus aureus subsp. aureus N315, hospital-acquired meticillin-resistant, vancomycin-susceptible
+gn:T00052	sav, STAAM, 158878; Staphylococcus aureus subsp. aureus Mu50, MRSA strain with vancomycin-intermediate resistance
+gn:T00053	mtc, MYCTU, 83331; Mycobacterium tuberculosis CDC1551, clinical strain
+gn:T00054	sso, SULSO, 273057; Sulfolobus solfataricus P2
+gn:T00055	mpu, MYCPU, 272635; Mycoplasma pulmonis UAB CTIP
+gn:T00056	cac, CLOAB, 272562; Clostridium acetobutylicum ATCC 824
+gn:T00057	spn, STRPN, 170187; Streptococcus pneumoniae TIGR4 (virulent serotype 4)
+gn:T00058	sme, RHIME, 266834; Sinorhizobium meliloti 1021
+gn:T00060	spr, STRR6, 171101; Streptococcus pneumoniae R6 (avirulent, laboratory-adapted D39 derivative)
+gn:T00061	rco, RICCN, 272944; Rickettsia conorii Malish 7
+gn:T00062	sto, SULTO, 273063; Sulfolobus tokodaii 7
+gn:T00063	ype, YERPE, 214092; Yersinia pestis CO92 (biovar Orientalis)
+gn:T00064	sty, SALTI, 220341; Salmonella enterica subsp. enterica serovar Typhi CT18 (Salmonella typhi CT18)
+gn:T00065	stm, SALTY, 99287; Salmonella enterica subsp. enterica serovar Typhimurium LT2 (Salmonella typhimurium LT2)
+gn:T00066	lmo, LISMO, 169963; Listeria monocytogenes EGD-e (serotype 1/2a)
+gn:T00067	lin, LISIN, 272626; Listeria innocua Clip11262 (serotype 6a)
+gn:T00068	ecj, ECOLI, 316407; Escherichia coli K-12 W3110
+gn:T00069	ana, ANASP, 103690; Nostoc sp. PCC 7120 (Anabaena sp. PCC 7120)
+gn:T00070	atu, AGRT5, 176299; Agrobacterium fabrum C58 (Agrobacterium tumefaciens C58)
+gn:T00071	rso, RALSO, 267608; Ralstonia solanacearum GMI1000
+gn:T00072	bme, BRUME, 224914; Brucella melitensis bv. 1 16M
+gn:T00073	pai, PYRAE, 178306; Pyrobaculum aerophilum IM2
+gn:T00074	cpe, CLOPE, 195102; Clostridium perfringens 13
+gn:T00075	pfu, PYRFU, 186497; Pyrococcus furiosus DSM 3638
+gn:T00076	spo, SCHPO, 284812; Schizosaccharomyces pombe 972h-
+gn:T00077	fnu, FUSNU, 190304; Fusobacterium nucleatum subsp. nucleatum ATCC 25586
+gn:T00078	mka, METKA, 190192; Methanopyrus kandleri AV19
+gn:T00079	spm, STRP8, 186103; Streptococcus pyogenes MGAS8232 (serotype M18)
+gn:T00080	mac, METAC, 188937; Methanosarcina acetivorans C2A
+gn:T00081	tte, THETN, 273068; Thermoanaerobacter tengcongensis MB4(T)
+gn:T00082	mma, METMA, 192952; Methanosarcina mazei Go1
+gn:T00083	xcc, XANCP, 190485; Xanthomonas campestris pv. campestris ATCC 33913
+gn:T00084	xac, XANAC, 190486; Xanthomonas citri pv. citri 306 (Xanthomonas axonopodis pv. citri 306)
+gn:T00085	sco, STRCO, 100226; Streptomyces coelicolor A3(2)
+gn:T00086	sam, STAAW, 196620; Staphylococcus aureus subsp. aureus MW2, community-acquired MRSA
+gn:T00087	bas, BUCAP, 198804; Buchnera aphidicola Sg, endosymbiont of Schizaphis graminum (greenbug)
+gn:T00088	cte, CHLTE, 194439; Chlorobium tepidum TLS
+gn:T00089	spg, STRP3, 198466; Streptococcus pyogenes MGAS315 (serotype M3)
+gn:T00090	tel, SYNEL, 197221; Thermosynechococcus elongatus BP-1
+gn:T00091	sag, STRA5, 208435; Streptococcus agalactiae 2603 (serotype V)
+gn:T00092	ypk, YERPE, 187410; Yersinia pestis KIM10+ (biovar Mediaevalis)
+gn:T00093	oih, OCEIH, 221109; Oceanobacillus iheyensis HTE831
+gn:T00094	blo, BIFLO, 206672; Bifidobacterium longum NCC2705
+gn:T00095	pfa, PLAF7, 36329; Plasmodium falciparum 3D7
+gn:T00096	bms, BRUSU, 204722; Brucella suis 1330
+gn:T00097	sfl, SHIFL, 198214; Shigella flexneri 301 (serotype 2a)
+gn:T00098	lil, LEPIN, 189518; Leptospira interrogans serovar Lai 56601
+gn:T00099	son, SHEON, 211586; Shewanella oneidensis MR-1
+gn:T00100	smu, STRMU, 210007; Streptococcus mutans UA159 (serotype C)
+gn:T00101	wbr, WIGBR, 36870; Wigglesworthia glossinidia (Wigglesworthia brevipalpis), endosymbiont of Glossina brevipalpis (tsetse fly)
