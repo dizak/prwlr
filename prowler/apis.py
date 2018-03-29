@@ -111,6 +111,8 @@ class KEGG_API(Columns):
                                                                                  self.KEGG_ORG_ID]])
             if assume_1st is True:
                 return organism_ser[self.KEGG_ORG_ID].iloc[0]
+            else:
+                return None
         else:
             return organism_ser[self.KEGG_ORG_ID].iloc[0]
 
