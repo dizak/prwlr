@@ -112,8 +112,7 @@ class KEGG_API(Columns):
             if assume_1st is True:
                 return organism_ser[self.KEGG_ORG_ID].iloc[0]
         else:
-            return str(organism_ser[self.KEGG_ORG_ID].to_string(index=False,
-                                                                header=False))
+            return organism_ser[self.KEGG_ORG_ID].iloc[0]
 
     def get_id_conv_tbl(self,
                         source_id_type,
