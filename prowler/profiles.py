@@ -137,7 +137,4 @@ class Profile:
         """
         if len(self) != len(profile):
             raise ProfileError("Different profiles' lengths")
-        return int((self.to_array(positive_sign=None,
-                                  negative_sign=None) ==
-                    profile.to_array(positive_sign=None,
-                                     negative_sign=None)).sum())
+        return sum(a == b for a, b in zip(self.profile, profile.profile))
