@@ -48,6 +48,28 @@ class Profile:
         """
         return [positive_sign if i is True else negative_sign for i in self.profile]
 
+    def isall(self,
+              query_list):
+        """
+        Returns <True> if all positions from query_list are present in the
+        profile.
+        """
+        if all([dict(zip(self.query, self.profile))[i] for i in query_list]):
+            return True
+        else:
+            return False
+
+    def isany(self,
+              query_list):
+        """
+        Return <True> if any of the positions from query_list is present in the
+        profile.
+        """
+        if any([dict(zip(self.query, self.profile))[i] for i in query_list]):
+            return True
+        else:
+            return False
+
     def to_string(self,
                   positive_sign=_positive_sign,
                   negative_sign=_negative_sign):
