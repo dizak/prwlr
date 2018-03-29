@@ -47,6 +47,7 @@ class KEGG_API(Columns):
                                "kegg_id": "genes"}
         self.id_conversions_df = None
         self.org_db_X_ref_df = None
+        self.query_ids_found = []
         self.query_ids_not_found = []
 
     def get_organisms_ids(self,
@@ -110,10 +111,12 @@ class KEGG_API(Columns):
             print "More than one record for this query\n{}".format(organism_ser[[self.DESCRIPTION,
                                                                                  self.KEGG_ORG_ID]])
             if assume_1st is True:
+                self.query_ids_found.append(organism)
                 return organism_ser[self.KEGG_ORG_ID].iloc[0]
             else:
                 return None
         else:
+            self.query_ids_found.append(organism)
             return organism_ser[self.KEGG_ORG_ID].iloc[0]
 
     def get_id_conv_tbl(self,
