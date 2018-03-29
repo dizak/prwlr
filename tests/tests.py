@@ -242,17 +242,20 @@ class ProfileTests(unittest.TestCase):
                                                     negative_sign=self.alt_neg_sing),
                          list(self.ref_alt_profile))
 
-    def test_get_present(self):
+    def test_isall(self):
         """
-        Test if Profile.present attribute is properly returned.
+        Test if Profile.isall returns True of False properly.
         """
-        self.assertEqual(self.test_profile.present, self.ref_profile.present)
+        self.assertTrue(self.test_profile.isall(self.ref_present))
+        self.assertFalse(self.test_profile.isall(self.ref_absent))
 
-    def test_get_absent(self):
+    def test_isany(self):
         """
-        Test if Profile.absent attribute is properly returned.
+        Test if Profile.isany returns True of False properly.
         """
-        self.assertEqual(self.test_profile.absent, self.ref_profile.absent)
+        self.assertTrue(self.test_profile.isany(self.ref_present[:1] +
+                                                self.ref_absent))
+        self.assertFalse(self.test_profile.isany(self.ref_absent))
 
     def test_to_string(self):
         """
