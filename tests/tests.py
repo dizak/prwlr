@@ -20,9 +20,7 @@ class ApisTest(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         super(ApisTest, cls).setUpClass()
-        cls.orgs_ids_out = pd.read_csv("./test_data/test_orgs_ids_out.csv",
-                                       sep="\t",
-                                       dtype="object")
+        cls.orgs_ids_out = pd.read_pickle("./test_data/test_orgs_ids_out.csv")
         cls.org_db_X_ref_out = pd.read_csv("./test_data/test_orgs_db_X_ref.csv",
                                            sep="\t",
                                            names=["ORF_ID",
