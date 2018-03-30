@@ -221,6 +221,9 @@ class ProfileTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.ref_query = list("acdfhiklostuz")
+        self.ref_queries = [self.ref_query,
+                            "aaaaaaaaaaaaa",
+                            "bbbbbbbbbbbbb"]
         self.ref_reference = list("bcefghijklmnprstuwxy")
         self.ref_absent = sorted([i for i in self.ref_query if i not in self.ref_reference])
         self.ref_present = sorted([i for i in self.ref_query if i in self.ref_reference])
@@ -228,7 +231,7 @@ class ProfileTests(unittest.TestCase):
         self.alt_neg_sing = "#"
         self.ref_profile = "-+-+++++-+++-"
         self.ref_alt_profile = "#$#$$$$$#$$$#"
-        self.ref_pss = 13
+        self.ref_pss = [13, 4, 9]
         self.test_profile = profiles.Profile(reference=self.ref_reference,
                                              query=self.ref_query)
 
@@ -300,8 +303,10 @@ class ProfileTests(unittest.TestCase):
         """
         Test if Profiles Similarity Score (PSS) is properly calculated.
         """
-        self.assertEqual(self.test_profile.calculate_pss(self.test_profile),
-                         self.ref_pss)
+        for query, pss in zip(self.ref_queries, self.ref_pss):
+            self.assertEqual(self.test_profile.calculate_pss(profiles.Profile(reference=self.ref_reference,
+                                                                              query=query)),
+                             pss)
 
 
 class StatsTests(unittest.TestCase):
