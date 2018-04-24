@@ -411,6 +411,27 @@ class StatsTests(unittest.TestCase):
                                        self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] !=
                                                          self.flat_min][self.statistics.PROF_A])
 
+    def test_binomial_pss_test(self):
+        """
+        Test if binomial test returns values within correct range.
+        """
+        self.assertGreater(self.statistics.binomial_pss_test(desired_pss=14,
+                                                selected=self.ref_nwrk,
+                                                total=self.ref_nwrk)["average"],
+                           11)
+        self.assertLess(self.statistics.binomial_pss_test(desired_pss=14,
+                                                selected=self.ref_nwrk,
+                                                total=self.ref_nwrk)["average"],
+                        15)
+        self.assertGreater(self.statistics.binomial_pss_test(desired_pss=14,
+                                                selected=self.ref_nwrk,
+                                                total=self.ref_nwrk)["complete"],
+                           550)
+        self.assertLess(self.statistics.binomial_pss_test(desired_pss=14,
+                                                selected=self.ref_nwrk,
+                                                total=self.ref_nwrk)["complete"],
+                        650)
+
 
 if __name__ == '__main__':
     unittest.main()

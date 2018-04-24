@@ -353,6 +353,40 @@ class Stats(Columns,
                           for i in enumerate(out)],
                          axis=1).fillna(value=0)
 
+    def binomial_pss_test(self,
+                          desired_pss,
+                          selected,
+                          total,
+                          test_size=1000):
+        """
+        Draws samples of desired PSS from binomial distribution. Uses
+        numpy.random.binomial.
+
+        Parameters
+        -------
+        desired_pss: int
+            Profiles Similarity Score of interest. Interactions with this or
+            higher values are considered success.
+        selected: pandas.DataFrame
+            Dataframe containing data of interest. Interactions with this
+            values are subject of the test.
+        total: pandas.DataFrame
+            Dataframe containing all the samples.
+
+        Returns
+        -------
+        dict with int values
+            <complete> - number of interactions with PSS higher than the
+            test single results.
+            <average> - average of single test values.
+        """
+        p = float(len(total[total[self.PSS] >= desired_pss])) / float(len(total))
+        n = float(len(selected))
+        real_val = len(selected[selected[self.PSS] >= desired_pss])
+        test = np.random.binomial(n, p, test_size)
+        return {"complete": sum(test <= real_val),
+                "average": sum(test) / len(test)}
+
 
 class Ortho_Stats:
     """Calculates and holds data about interactions array statistical
