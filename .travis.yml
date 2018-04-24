@@ -1,0 +1,23 @@
+language: python
+python: 2.7
+
+os: linux
+
+install:
+  - wget https://repo.continuum.io/archive/Anaconda2-5.1.0-Linux-x86_64.sh
+  - bash Anaconda2-5.1.0-Linux-x86_64.sh -b -p $HOME/anaconda2
+  - export PATH=$HOME/anaconda2/bin:$PATH
+  - conda config --set always_yes yes --set changeps1 no
+  - conda info -a
+
+before_script:
+  - conda env create --file prowler.yaml
+  - source activate prowler
+
+script:
+  - python -m unittest -v tests.tests
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
