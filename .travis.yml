@@ -13,11 +13,12 @@ install:
 before_script:
   - conda env create --file prowler.yaml
   - source activate prowler
+  - pip install nose
+  - pip install coverage
 
 script:
-  - python -m unittest -v tests.tests
+  - nosetests --with-coverage --cover-package prowler
 
 notifications:
   email:
-    on_success: never
-    on_failure: always
+    - szymon@ibb.waw.pl
