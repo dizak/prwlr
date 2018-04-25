@@ -5,8 +5,6 @@ import unittest
 from prowler import *
 import pandas as pd
 import numpy as np
-import subprocess as sp
-import json
 import pickle
 
 
