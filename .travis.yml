@@ -9,7 +9,6 @@ install:
   - export PATH=$HOME/anaconda2/bin:$PATH
   - conda config --set always_yes yes --set changeps1 no
   - conda info -a
-  - pip install nose
   - pip install coverage
 
 before_script:
