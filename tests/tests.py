@@ -447,20 +447,20 @@ class StatsTests(unittest.TestCase):
         Test if binomial test returns values within correct range.
         """
         self.assertGreater(self.statistics.binomial_pss_test(desired_pss=14,
-                                                selected=self.ref_nwrk,
-                                                total=self.ref_nwrk)["average"],
+                                                             selected=self.ref_nwrk,
+                                                             total=self.ref_nwrk)["average"],
                            11)
         self.assertLess(self.statistics.binomial_pss_test(desired_pss=14,
-                                                selected=self.ref_nwrk,
-                                                total=self.ref_nwrk)["average"],
+                                                          selected=self.ref_nwrk,
+                                                          total=self.ref_nwrk)["average"],
                         15)
         self.assertGreater(self.statistics.binomial_pss_test(desired_pss=14,
-                                                selected=self.ref_nwrk,
-                                                total=self.ref_nwrk)["complete"],
+                                                             selected=self.ref_nwrk,
+                                                             total=self.ref_nwrk)["complete"],
                            550)
         self.assertLess(self.statistics.binomial_pss_test(desired_pss=14,
-                                                selected=self.ref_nwrk,
-                                                total=self.ref_nwrk)["complete"],
+                                                          selected=self.ref_nwrk,
+                                                          total=self.ref_nwrk)["complete"],
                         650)
 
 
