@@ -9,11 +9,12 @@ install:
   - export PATH=$HOME/anaconda2/bin:$PATH
   - conda config --set always_yes yes --set changeps1 no
   - conda info -a
-  - pip install coverage
 
 before_script:
   - conda env create --file prowler.yaml
   - source activate prowler
+  - pip install nose
+  - pip install coverage
 
 script:
   - nosetests --with-coverage --cover-package prowler
