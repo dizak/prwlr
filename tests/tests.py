@@ -225,8 +225,21 @@ class ProfileTests(unittest.TestCase):
                             "aaaaaaaaaaaaa",
                             "bbbbbbbbbbbbb"]
         self.ref_reference = list("bcefghijklmnprstuwxy")
-        self.ref_absent = sorted([i for i in self.ref_query if i not in self.ref_reference])
-        self.ref_present = sorted([i for i in self.ref_query if i in self.ref_reference])
+        self.ref_bound = [("a", False),
+                          ("c", True),
+                          ("d", False),
+                          ("f", True),
+                          ("h", True),
+                          ("i", True),
+                          ("k", True),
+                          ("l", True),
+                          ("o", False),
+                          ("s", True),
+                          ("t", True),
+                          ("u", True),
+                          ("z", False)]
+        self.ref_present = ["c", "f", "h", "i", "k", "l", "s", "t", "u"]
+        self.ref_absent = ["a", "d", "o", "z"]
         self.alt_pos_sing = "$"
         self.alt_neg_sing = "#"
         self.ref_profile = "-+-+++++-+++-"
@@ -242,6 +255,12 @@ class ProfileTests(unittest.TestCase):
         self.assertEqual(self.test_profile._convert(positive_sign=self.alt_pos_sing,
                                                     negative_sign=self.alt_neg_sing),
                          list(self.ref_alt_profile))
+
+    def test__bind(self):
+        """
+        Test if profile values binds properly to profile.query
+        """
+        self.assertEqual(self.test_profile._bind(), self.ref_bound)
 
     def test_isall(self):
         """
@@ -307,6 +326,18 @@ class ProfileTests(unittest.TestCase):
             self.assertEqual(self.test_profile.calculate_pss(profiles.Profile(reference=self.ref_reference,
                                                                               query=query)),
                              pss)
+
+    def test_get_present(self):
+        """
+        Test if get_present returns list of present items in the profile.
+        """
+        self.assertEqual(self.test_profile.get_present(), self.ref_present)
+
+    def test_get_absent(self):
+        """
+        Test if get_absent returns list of present items in the profile.
+        """
+        self.assertEqual(self.test_profile.get_absent(), self.ref_absent)
 
 
 class StatsTests(unittest.TestCase):

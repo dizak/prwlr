@@ -40,6 +40,12 @@ class Profile:
         """
         self.profile = [True if i in self.reference else False for i in self.query]
 
+    def _bind(self):
+        """
+        Return zipped Profile.query and Profile.profile.
+        """
+        return zip(self.query, self.profile)
+
     def _convert(self,
                  positive_sign,
                  negative_sign):
@@ -138,3 +144,15 @@ class Profile:
         if len(self) != len(profile):
             raise ProfileError("Different profiles' lengths")
         return sum(a == b for a, b in zip(self.profile, profile.profile))
+
+    def get_present(self):
+        """
+        Return elements present in the profile.
+        """
+        return [k for k, v in self._bind() if v is True]
+
+    def get_absent(self):
+        """
+        Return element absent in the profile.
+        """
+        return [k for k, v in self._bind() if v is False]
