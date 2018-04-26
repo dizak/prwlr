@@ -2,7 +2,6 @@
 
 
 import math
-import requests as rq
 import numpy as np
 import pandas as pd
 
@@ -47,7 +46,7 @@ def remove_from_list(element,
     element: object
         Element to be removed from the list.
     iterable: list, tuple, set
-        Iterable from with the element should be removed.
+        Iterable from which the element should be removed.
 
     Returns
     -------
