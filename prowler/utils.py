@@ -2,9 +2,37 @@
 
 
 import math
-import requests as rq
 import numpy as np
 import pandas as pd
+
+
+def isiniterable(query_iterable,
+                 reference_iterable,
+                 all_present=False):
+    """
+    Returns <True> or <False> depending on whether elements from one iterable
+    are found in the second.
+
+    Parameters
+    -------
+    query_iterable: list, tuple, set
+        Iterable from which the elements presence is checked in reference_iterable.
+    reference_iterable: list, tuple, set
+        Iterable in which presence of elements from query_iterable is checked.
+    all_present: bool
+        If <True> return <True> only if all the elements from query_iterable are
+        in reference_iterable.
+
+    Returns
+    -------
+    bool
+        <True> of <False> if all or any of the elements from one iterable are
+        found in the another.
+    """
+    if all_present is True:
+        return all([i in reference_iterable for i in query_iterable])
+    else:
+        return any([i in reference_iterable for i in query_iterable])
 
 
 def remove_from_list(element,
@@ -18,7 +46,7 @@ def remove_from_list(element,
     element: object
         Element to be removed from the list.
     iterable: list, tuple, set
-        Iterable from with the element should be removed.
+        Iterable from which the element should be removed.
 
     Returns
     -------
