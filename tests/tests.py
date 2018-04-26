@@ -8,6 +8,32 @@ import numpy as np
 import pickle
 
 
+class UtilsTests(unittest.TestCase):
+    """
+    Tests for prowler.utils.
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        self.test_reference_iterable = list("abcdefghijk")
+        self.test_query_iterable_1 = list("dfij")
+        self.test_query_iterable_2 = list("dfijz")
+
+    def test_isiniterable(self):
+        """
+        Test if utils.isiniterable returns <True> or <False> properly depending
+        on presence of elements in both iterables.
+        """
+        self.assertTrue(utils.isiniterable(self.test_query_iterable_1,
+                                           self.test_reference_iterable))
+        self.assertTrue(utils.isiniterable(self.test_query_iterable_2,
+                                           self.test_reference_iterable))
+        self.assertFalse(utils.isiniterable(self.test_query_iterable_2,
+                                            self.test_reference_iterable,
+                                            all_present=True))
+
+
 class ApisTest(unittest.TestCase):
     """
     Tests for prowler.apis.
