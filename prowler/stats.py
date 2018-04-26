@@ -54,8 +54,10 @@ class Stats(Columns,
                  p_value=0.05,
                  GIS_min=0.04,
                  GIS_max=-0.04,
-                 query_species_selector=None,
-                 array_species_selector=None):
+                 query_species_presence_selector=None,
+                 query_species_absence_selector=None,
+                 array_species_presence_selector=None,
+                 array_species_absence_selector=None):
         if not isinstance(dataframe, pd.DataFrame):
             raise TypeError("Must be pandas.DataFrame")
         if not all([isinstance(i, float) for i in [p_value,
@@ -70,8 +72,10 @@ class Stats(Columns,
         self._p_value = p_value
         self._GIS_min = GIS_min
         self._GIS_max = GIS_max
-        self._query_species_selector = query_species_selector
-        self._array_species_selector = array_species_selector
+        self._query_species_presence_selector = query_species_presence_selector
+        self._query_species_absence_selector = query_species_absence_selector
+        self._array_species_presence_selector = array_species_presence_selector
+        self._array_species_absence_selector = array_species_absence_selector
         self._summary_dict["total"] = len(self.dataframe)
         try:
             self.positive_DMF = ((self.dataframe[self.DMF] >
@@ -132,22 +136,40 @@ class Stats(Columns,
                           SelectionFailWarning)
         self.summary = pd.DataFrame(self._summary_dict,
                                     index=[0])
-        if self._query_species_selector is not None:
-            if not isinstance(self._query_species_selector, (list, tuple)):
+        if self._query_species_presence_selector is not None:
+            if not isinstance(self._query_species_presence_selector, (list, tuple)):
                 raise TypeError("Must be list or tuple.")
             try:
-                self.species_query = self.dataframe[self.PROF_Q].apply(lambda x:
-                                                                       all([True if i in x.reference else False
-                                                                            for i in self._query_species_selector]))
+                self.species_in_query = self.dataframe[self.PROF_Q].apply(lambda x: isiniterable(self._query_species_presence_selector,
+                                                                                                 x.get_present(),
+                                                                                                 all_present=True))
             except KeyError:
                 warnings.warn("Failed to make query-species-based selection.")
-        if self._array_species_selector is not None:
-            if not isinstance(self._array_species_selector, (list, tuple)):
+        if self._query_species_absence_selector is not None:
+            if not isinstance(self._query_species_absence_selector, (list, tuple)):
                 raise TypeError("Must be list or tuple.")
             try:
-                self.species_array = self.dataframe[self.PROF_A].apply(lambda x:
-                                                                       all([True if i in x.reference else False
-                                                                            for i in self._array_species_selector]))
+                self.species_not_in_query = self.dataframe[self.PROF_Q].apply(lambda x: isiniterable(self._query_species_absence_selector,
+                                                                                                     x.get_absent(),
+                                                                                                     all_present=True))
+            except KeyError:
+                warnings.warn("Failed to make query-species-based selection.")
+        if self._array_species_presence_selector is not None:
+            if not isinstance(self._array_species_presence_selector, (list, tuple)):
+                raise TypeError("Must be list or tuple.")
+            try:
+                self.species_in_array = self.dataframe[self.PROF_A].apply(lambda x: isiniterable(self._array_species_presence_selector,
+                                                                                                 x.get_present(),
+                                                                                                 all_present=True))
+            except KeyError:
+                warnings.warn("Failed to make array-species-based selection.")
+        if self._array_species_absence_selector is not None:
+            if not isinstance(self._array_species_absence_selector, (list, tuple)):
+                raise TypeError("Must be list or tuple.")
+            try:
+                self.species_not_in_array = self.dataframe[self.PROF_Q].apply(lambda x: isiniterable(self._array_species_absence_selector,
+                                                                                                     x.get_absent(),
+                                                                                                     all_present=True))
             except KeyError:
                 warnings.warn("Failed to make array-species-based selection.")
 
