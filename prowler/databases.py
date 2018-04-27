@@ -383,7 +383,6 @@ class ProfInt(Columns):
         """Return Ortho_Interactions.sga appended by
         Ortho_Interactions.KO_df. Merge key: ORF
         """
-        temp_score_list = []
         KO_df.rename(columns=self.names,
                      inplace=True)
         self.merged = pd.merge(sga,
