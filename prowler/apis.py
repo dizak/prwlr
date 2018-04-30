@@ -179,7 +179,7 @@ class KEGG_API(Columns):
                 fout.write(res.content)
 
 
-class Costanzo_API:
+class CostanzoAPI:
     """Provides connectivity with the Costanzo's SOM website of the Genetic
     Landscape of the Cell project, allowing data files download.
 

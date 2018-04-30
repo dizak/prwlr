@@ -6,6 +6,7 @@ from prowler import *
 import pandas as pd
 import numpy as np
 import pickle
+import os
 
 
 class UtilsTests(unittest.TestCase):
@@ -91,7 +92,7 @@ class ApisTest(unittest.TestCase):
                         "mth",
                         "bsu"]
         cls.kegg_api = apis.KEGG_API()
-        cls.cost_api = apis.Costanzo_API()
+        cls.cost_api = apis.CostanzoAPI()
         cls.kegg_api.get_organisms_ids("./test_data/test_orgs_ids_in.csv",
                                        skip_dwnld=True)
         cls.kegg_api.get_org_db_X_ref(organism="Saccharomyces cerevisiae",
@@ -134,11 +135,30 @@ class ApisTest(unittest.TestCase):
         pd.testing.assert_frame_equal(self.kegg_api.org_db_X_ref_df,
                                       self.org_db_X_ref_out)
 
-    '''def test_get_db_entries(self):
+
+class CostanzoAPITests(unittest.TestCase):
+    """
+    Test of prowler.apis.CostanzoAPI.
+    """
+    def setUp(self):
         """
-        Test if apis.get_db_entries returns correct KEGG database.
+        Sets up class level attributes for the tests.
         """
-        self.assertEqual(self.test_db, self.test_db_ref, "test_db and test_db_ref are not equal.")'''
+        self.costanzo_api = apis.CostanzoAPI()
+
+    def tearDown(self):
+        """
+        Distroys files downloaded or created during the tests.
+        """
+        for i in self.costanzo_api.data.values():
+            os.remove("./test_data/{}".format(i))
+
+    def test_get_data(self):
+        """
+        Tests if apis.CostanzoAPI,get_data downloads data files successfully.
+        """
+        for i in self.costanzo_api.data.keys():
+            self.costanzo_api.get_data(i, "./test_data")
 
 
 class DatabasesTests(unittest.TestCase):
