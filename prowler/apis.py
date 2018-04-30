@@ -202,18 +202,19 @@ class Costanzo_API:
 
     def __init__(self):
         self.home = "http://drygin.ccbr.utoronto.ca/~costanzo2009"
-        self.raw = "sgadata_costanzo2009_rawdata_101120.txt.gz"
-        self.raw_matrix = "sgadata_costanzo2009_rawdata_matrix_101120.txt.gz"
-        self.lenient_cutoff = "sgadata_costanzo2009_lenientCutoff_101120.txt.gz"
-        self.intermediate_cutoff = "sgadata_costanzo2009_intermediateCutoff_101120.txt.gz"
-        self.stringent_cutoff = "sgadata_costanzo2009_stringentCutoff_101120.txt.gz"
-        self.bioprocesses = "bioprocess_annotations_costanzo2009.xls"
-        self.chemical_genomics = "chemgenomic_data_costanzo2009.xls"
-        self.query_list = "sgadata_costanzo2009_query_list_101120.txt"
-        self.array_list = "sgadata_costanzo2009_array_list.txt"
+        self.data = {"raw": "sgadata_costanzo2009_rawdata_101120.txt.gz",
+                     "raw_matrix": "sgadata_costanzo2009_rawdata_matrix_101120.txt.gz",
+                     "lenient_cutoff": "sgadata_costanzo2009_lenientCutoff_101120.txt.gz",
+                     "intermediate_cutoff": "sgadata_costanzo2009_intermediateCutoff_101120.txt.gz",
+                     "stringent_cutoff": "sgadata_costanzo2009_stringentCutoff_101120.txt.gz",
+                     "bioprocesses": "bioprocess_annotations_costanzo2009.xls",
+                     "chemical_genomics": "chemgenomic_data_costanzo2009.xls",
+                     "query_list": "sgadata_costanzo2009_query_list_101120.txt",
+                     "array_list": "sgadata_costanzo2009_array_list.txt"}
 
     def get_data(self,
-                 data):
+                 data,
+                 output_directory="."):
         """Get files from Costanzo's SOM website.
 
         Args:
@@ -230,44 +231,11 @@ class Costanzo_API:
             out_file_name (str): name for file to be downloaded. Automatically
             same as appropriate Costanzo_API attrib when set to <None>
         """
-        if data == "raw":
-            url = "{0}/{1}".format(self.home,
-                                   self.raw)
-            out_file_name = self.raw
-        elif data == "raw_matrix":
-            url = "{0}/{1}".format(self.home,
-                                   self.raw_matrix)
-            out_file_name = self.raw_matrix
-        elif data == "lenient_cutoff":
-            url = "{0}/{1}".format(self.home,
-                                   self.lenient_cutoff)
-            out_file_name = self.lenient_cutoff
-        elif data == "intermediate_cutoff":
-            url = "{0}/{1}".format(self.home,
-                                   self.intermediate_cutoff)
-            out_file_name = self.intermediate_cutoff
-        elif data == "stringent_cutoff":
-            url = "{0}/{1}".format(self.home,
-                                   self.stringent_cutoff)
-            out_file_name = self.stringent_cutoff
-        elif data == "bioprocesses":
-            url = "{0}/{1}".format(self.home,
-                                   self.bioprocesses)
-            out_file_name = self.bioprocesses
-        elif data == "chemical_genomics":
-            url = "{0}/{1}".format(self.home,
-                                   self.chemical_genomics)
-            out_file_name = self.chemical_genomics
-        elif data == "query_list":
-            url = "{0}/{1}".format(self.home,
-                                   self.query_list)
-            out_file_name = self.query_list
-        elif data == "array_list":
-            url = "{0}/{1}".format(self.home,
-                                   self.array_list)
-            out_file_name = self.array_list
-        else:
+        if data not in self.data.keys():
             raise ValueError("unknown option for data arg")
+        url = "{0}/{1}".format(self.home,
+                               self.data[data])
+        out_file_name = self.data[data]
         res = rq.get(url)
-        with open(out_file_name, "w") as fout:
+        with open("{}/{}".format(output_directory, out_file_name), "w") as fout:
             fout.write(res.content)
