@@ -230,7 +230,10 @@ class SGA1(Columns):
             with <_> when True (default)
             in_sep (str): separator for pandas.read_csv method
         """
-        self.sga = pd.read_csv(filename, sep=in_sep)
+        self.sga = pd.read_csv(filename,
+                               sep=in_sep,
+                               error_bad_lines=False,
+                               warn_bad_lines=True)
         if remove_white_spaces is True:
             self.sga.columns = [i.replace(" ", "_") for i in self.sga.columns]
         self.sga.rename(columns=self.names, inplace=True)
