@@ -4,12 +4,9 @@ __version__ = "0.0.0"
 __all__ = ["apis",
            "databases",
            "errors",
-           "genome",
-           "interactions",
            "network",
            "profiles",
            "stats",
-           "templater",
            "utils"]
 
 
