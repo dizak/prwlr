@@ -16,6 +16,9 @@ class UtilsTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
+        self.ref_combinations_number = 3
+        self.test_subset_size = 2
+        self.test_set_size = 3
         self.test_reference_iterable = list("abcdefghijk")
         self.test_query_iterable_1 = list("dfij")
         self.test_query_iterable_2 = list("dfijz")
@@ -40,6 +43,14 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(self.test_query_iterable_1,
                          utils.remove_from_list("z",
                                                 self.test_query_iterable_2))
+
+    def test_all_possible_combinations_counter(self):
+        """
+        Test of utils.all_possible_combinations_counter returns correct value.
+        """
+        self.assertEqual(self.ref_combinations_number,
+                         utils.all_possible_combinations_counter(self.test_subset_size,
+                                                                 self.test_set_size))
 
 
 class ApisTest(unittest.TestCase):
