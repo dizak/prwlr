@@ -210,7 +210,7 @@ class SGA1(Columns):
     def parse(self,
               filename,
               remove_white_spaces=True,
-              in_sep=","):
+              in_sep="\t"):
         """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
         parsed <csv> file. The minimal filtration is based of a given GIS_P
         and presence of DMF value. Further filtration results in DMF
