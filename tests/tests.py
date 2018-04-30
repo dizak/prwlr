@@ -202,6 +202,27 @@ class DatabasesTests(unittest.TestCase):
         self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
 
 
+class SGA1Tests(unittest.TestCase):
+    """
+    Tests of prowler.SGA1
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        self.sga1 = databases.SGA1()
+        self.ref_sga_filename = "./test_data/ref_sga_v1_1000r.pickle"
+        self.ref_sga = pd.read_pickle(self.ref_sga_filename)
+        self.test_sga_filename = "./test_data/test_sga_v1_1000r.txt"
+
+    def test_parse(self):
+        """
+        Test if SGA_v1 input file is properly parsed.
+        """
+        self.sga1.parse(self.test_sga_filename)
+        pd.testing.assert_frame_equal(self.ref_sga, self.sga1.sga)
+
+
 class SGA2Test(unittest.TestCase):
     """
     Tests for prowler.databases.SGA2
