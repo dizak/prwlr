@@ -33,6 +33,14 @@ class UtilsTests(unittest.TestCase):
                                             self.test_reference_iterable,
                                             all_present=True))
 
+    def test_remove_from_list(self):
+        """
+        Test if utils.remove_from_list returns list without unwanted element.
+        """
+        self.assertEqual(self.test_query_iterable_1,
+                         utils.remove_from_list("z",
+                                                self.test_query_iterable_2))
+
 
 class ApisTest(unittest.TestCase):
     """
