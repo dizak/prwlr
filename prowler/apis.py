@@ -119,49 +119,6 @@ class KEGG_API(Columns):
             self.query_ids_found.append(organism)
             return organism_ser[self.KEGG_ORG_ID].iloc[0]
 
-    def get_id_conv_tbl(self,
-                        source_id_type,
-                        organism,
-                        out_file_name,
-                        skip_dwnld=False,
-                        strip_pref=True):
-        """Get genes or proteins IDs to KEGG IDs convertion table in
-        pandas.DataFrame format. Data are downloaded to a local file and then
-        made into pandas.DataFrame. File can be reused.
-
-        Args:
-            source_id_type (str): determines type of the source IDs
-            organism (str): determines name of the organism bounded to the
-            source IDs
-            out_file_name (str): name for file to be downloaded
-            skip_dwnld (bool) = read existing file when <True>. Default <False>
-        """
-        org_id = self.org_name_2_kegg_id(organism)
-        if skip_dwnld is True:
-            pass
-        else:
-            url = "{0}/{1}/{2}/{3}".format(self.home,
-                                           self.operations["conv_2_outside_ids"],
-                                           self.id_conversions[source_id_type],
-                                           org_id)
-            res = rq.get(url)
-            with open(out_file_name, "w") as fout:
-                fout.write(res.content)
-        self.id_conversions_df = pd.read_csv(out_file_name,
-                                             names=[source_id_type,
-                                                    self.KEGG_ID],
-                                             header=None,
-                                             sep="\t")
-        if strip_pref is True:
-            self.id_conversions_df.replace({"{0}:".format(org_id): ""},
-                                           regex=True,
-                                           inplace=True)
-            self.id_conversions_df.replace({"{0}:".format(self.id_conversions[source_id_type]): ""},
-                                           regex=True,
-                                           inplace=True)
-        else:
-            pass
-
     def get_org_db_X_ref(self,
                          organism,
                          target_db,
