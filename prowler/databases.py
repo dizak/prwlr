@@ -127,8 +127,8 @@ class KEGG(Columns):
                 entry_dict[self.JOURN] = journal[0].replace("JOURNAL", "").strip()
             sequence = re.findall("SEQUENCE.+", i)
             if len(sequence) > 0:
-                entry_dict[self.SEQ] = sequence[0].replace("SEQUENCE", "").replace("[", "").replace("]", "").strip()
             genes_blk_comp = re.compile("GENES.+\n^\s+\w{3}:\s.+^\w", re.DOTALL | re.MULTILINE)
+            entry_dict[self.SEQ] = sequence[0].replace("SEQUENCE", "").replace("[", "").replace("]", "").strip()
             genes_blk_list = genes_blk_comp.findall(i)
             re.purge()
             if len(genes_blk_list) > 0:
@@ -182,13 +182,6 @@ class KEGG(Columns):
                                    skip_dwnld=True,
                                    strip_prefix=True)
         self.X_reference = self._api.org_db_X_ref_df
-
-    def profilize(self):
-        """
-        Append the database with phylogenetic profiles.
-        """
-        self.database[self.PROF] = self.database[self.ORGS].apply(lambda x:
-                                                                  _Profile(x, self.reference_species).to_string())
 
 
 class SGA1(Columns):
