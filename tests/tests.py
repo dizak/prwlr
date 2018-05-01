@@ -296,6 +296,27 @@ class AnyNetworkTests(unittest.TestCase):
                                       check_names=False)
 
 
+class BioprocessesTests(unittest.TestCase):
+    """
+    Tests for prowler.databases.Bioprocesses
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        self.ref_bioprocesses_filename = "./test_data/ref_bioproc_100r.pickle"
+        self.test_bioprocesses_filename = "./test_data/test_bioproc_100r.xls"
+        self.ref_bioprocesses = pd.read_pickle(self.ref_bioprocesses_filename)
+        self.test_bioprocesses = pd.read_excel(self.test_bioprocesses_filename)
+
+    def test_parse(self):
+        """
+        Test if bioprocesses file is properly parsed.
+        """
+        pd.testing.assert_frame_equal(self.ref_bioprocesses,
+                                      self.test_bioprocesses)
+
+
 class ProfileTests(unittest.TestCase):
     """
     Test for prowler.profiles.Profile.
