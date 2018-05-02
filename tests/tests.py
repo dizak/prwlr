@@ -317,6 +317,32 @@ class BioprocessesTests(unittest.TestCase):
                                       self.test_bioprocesses)
 
 
+class ProfIntTests(unittest.TestCase):
+    """
+    Tests for prowler.databases.ProfInt
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        self.ref_merged = pd.read_pickle("./test_data/profint/ref_merged.pickle")
+        self.test_kegg_db = pd.read_pickle("./test_data/profint/test_kegg_database.pickle")
+        self.test_X_reference = pd.read_pickle("./test_data/profint/test_X_reference.pickle")
+        self.test_sga = pd.read_pickle("./test_data/profint/test_sga.pickle")
+        self.profint = databases.ProfInt()
+
+    def test_merger(self):
+        """
+        Test if prowler.databases.SGA1.sga or prowler.databases.SGA2.sga is
+        properly merged with prowler.apis.org_db_X_ref_df and
+        prowler.databases.KEGG.database
+        """
+        self.profint.merger(self.test_kegg_db,
+                            self.test_X_reference,
+                            self.test_sga)
+        pd.testing.assert_frame_equal(self.ref_merged, self.profint.merged)
+
+
 class ProfileTests(unittest.TestCase):
     """
     Test for prowler.profiles.Profile.
