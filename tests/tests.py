@@ -6,6 +6,7 @@ from prowler import *
 import pandas as pd
 import numpy as np
 import pickle
+import os
 
 
 class UtilsTests(unittest.TestCase):
@@ -16,6 +17,9 @@ class UtilsTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
+        self.ref_combinations_number = 3
+        self.test_subset_size = 2
+        self.test_set_size = 3
         self.test_reference_iterable = list("abcdefghijk")
         self.test_query_iterable_1 = list("dfij")
         self.test_query_iterable_2 = list("dfijz")
@@ -33,8 +37,24 @@ class UtilsTests(unittest.TestCase):
                                             self.test_reference_iterable,
                                             all_present=True))
 
+    def test_remove_from_list(self):
+        """
+        Test if utils.remove_from_list returns list without unwanted element.
+        """
+        self.assertEqual(self.test_query_iterable_1,
+                         utils.remove_from_list("z",
+                                                self.test_query_iterable_2))
 
-class ApisTest(unittest.TestCase):
+    def test_all_possible_combinations_counter(self):
+        """
+        Test of utils.all_possible_combinations_counter returns correct value.
+        """
+        self.assertEqual(self.ref_combinations_number,
+                         utils.all_possible_combinations_counter(self.test_subset_size,
+                                                                 self.test_set_size))
+
+
+class ApisTests(unittest.TestCase):
     """
     Tests for prowler.apis.
     """
@@ -43,9 +63,9 @@ class ApisTest(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        super(ApisTest, cls).setUpClass()
-        cls.orgs_ids_out = pd.read_pickle("./test_data/test_orgs_ids_out.pickle")
-        cls.org_db_X_ref_out = pd.read_csv("./test_data/test_orgs_db_X_ref.csv",
+        super(ApisTests, cls).setUpClass()
+        cls.orgs_ids_out = pd.read_pickle("test_data/ApisTests/test_orgs_ids_out.pickle")
+        cls.org_db_X_ref_out = pd.read_csv("test_data/ApisTests/test_orgs_db_X_ref.csv",
                                            sep="\t",
                                            names=["ORF_ID",
                                                   "KEGG_ID"],
@@ -72,25 +92,14 @@ class ApisTest(unittest.TestCase):
                         "mth",
                         "bsu"]
         cls.kegg_api = apis.KEGG_API()
-        cls.cost_api = apis.Costanzo_API()
-        cls.kegg_api.get_organisms_ids("./test_data/test_orgs_ids_in.csv",
+        cls.cost_api = apis.CostanzoAPI()
+        cls.kegg_api.get_organisms_ids("test_data/ApisTests/test_orgs_ids_in.csv",
                                        skip_dwnld=True)
         cls.kegg_api.get_org_db_X_ref(organism="Saccharomyces cerevisiae",
                                       target_db="orthology",
-                                      out_file_name="./test_data/test_orgs_db_X_ref.csv",
+                                      out_file_name="test_data/ApisTests/test_orgs_db_X_ref.csv",
                                       skip_dwnld=True)
-        '''cls.kegg_api.get_db_entries("./test_data/test_db")
-        with open("./test_data/test_db") as fin:
-            cls.test_db = fin.read()
-        with open("./test_data/test_db_ref") as fin:
-            cls.test_db_ref = fin.read()'''
 
-    @classmethod
-    # def tearDownClass(cls):
-    #     """
-    #     Destroys database downloaded during tests.
-    #     """
-    #     sp.call("rm ./test_data/test_db", shell=True)
     def test_get_organisms_ids(self):
         """
         Test if apis.get_organisms_ids returns correct pandas.DataFrame from
@@ -115,11 +124,30 @@ class ApisTest(unittest.TestCase):
         pd.testing.assert_frame_equal(self.kegg_api.org_db_X_ref_df,
                                       self.org_db_X_ref_out)
 
-    '''def test_get_db_entries(self):
+
+class CostanzoAPITests(unittest.TestCase):
+    """
+    Test of prowler.apis.CostanzoAPI.
+    """
+    def setUp(self):
         """
-        Test if apis.get_db_entries returns correct KEGG database.
+        Sets up class level attributes for the tests.
         """
-        self.assertEqual(self.test_db, self.test_db_ref, "test_db and test_db_ref are not equal.")'''
+        self.costanzo_api = apis.CostanzoAPI()
+
+    def tearDown(self):
+        """
+        Distroys files downloaded or created during the tests.
+        """
+        for i in self.costanzo_api.data.values():
+            os.remove("test_data/{}".format(i))
+
+    def test_get_data(self):
+        """
+        Tests if apis.CostanzoAPI,get_data downloads data files successfully.
+        """
+        for i in self.costanzo_api.data.keys():
+            self.costanzo_api.get_data(i, "test_data")
 
 
 class DatabasesTests(unittest.TestCase):
@@ -151,16 +179,16 @@ class DatabasesTests(unittest.TestCase):
                           "hpy",
                           "mth",
                           "bsu"]
-        self.test_kegg_db_filename = "./test_data/test_kegg_db"
+        self.test_kegg_db_filename = "test_data/DatabasesTests/test_kegg_db"
         self.database_type = "Orthology"
         self.organism_name = "Saccharomyces cerevisiae"
-        self.IDs = "./test_data/test_orgs_ids_in.csv"
-        self.X_ref = "./test_data/test_orgs_db_X_ref.csv"
-        self.out_file_name = "./test_data/test_orgs_db_X_ref"
-        self.ref_kegg_db = pd.read_pickle("./test_data/ref_kegg_db.pickle")
-        with open("./test_data/ref_databases_KEGG_name_ID.pickle", "rb") as fin:
+        self.IDs = "test_data/ApisTests/test_orgs_ids_in.csv"
+        self.X_ref = "test_data/ApisTests/test_orgs_db_X_ref.csv"
+        self.out_file_name = "test_data/ApisTests/test_orgs_db_X_ref.csv"
+        self.ref_kegg_db = pd.read_pickle("test_data/DatabasesTests/ref_kegg_db.pickle")
+        with open("test_data/DatabasesTests/ref_databases_KEGG_name_ID.pickle", "rb") as fin:
             self.ref_databases_KEGG_name_ID = pickle.load(fin)
-        with open("./test_data/ref_databases_KEGG_ID_name.pickle", "rb") as fin:
+        with open("test_data/DatabasesTests/ref_databases_KEGG_ID_name.pickle", "rb") as fin:
             self.ref_databases_KEGG_ID_name = pickle.load(fin)
         self.kegg = databases.KEGG(self.database_type)
 
@@ -183,6 +211,27 @@ class DatabasesTests(unittest.TestCase):
         self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
 
 
+class SGA1Tests(unittest.TestCase):
+    """
+    Tests of prowler.SGA1
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        self.sga1 = databases.SGA1()
+        self.ref_sga_filename = "test_data/SGA1Tests/ref_sga_v1_1000r.pickle"
+        self.ref_sga = pd.read_pickle(self.ref_sga_filename)
+        self.test_sga_filename = "test_data/SGA1Tests/test_sga_v1_1000r.txt"
+
+    def test_parse(self):
+        """
+        Test if SGA_v1 input file is properly parsed.
+        """
+        self.sga1.parse(self.test_sga_filename)
+        pd.testing.assert_frame_equal(self.ref_sga, self.sga1.sga)
+
+
 class SGA2Test(unittest.TestCase):
     """
     Tests for prowler.databases.SGA2
@@ -192,8 +241,8 @@ class SGA2Test(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.sga2 = databases.SGA2()
-        self.test_sga_filename = "./test_data/test_sga_v2_1000r.txt"
-        self.ref_sga = pd.read_csv("./test_data/ref_sga_v2_1000r.txt")
+        self.ref_sga = pd.read_csv("test_data/SGA2Tests/ref_sga_v2_1000r.txt")
+        self.test_sga_filename = "test_data/SGA2Tests/test_sga_v2_1000r.txt"
         self.ref_sga = self.ref_sga.astype({k: v for k, v in self.sga2.dtypes.iteritems()
                                             if k in self.ref_sga.columns})
 
@@ -214,12 +263,12 @@ class AnyNetworkTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        self.test_anynwrk_filename = "./test_data/test_anynetwork.xls"
+        self.ref_anynwrk = pd.read_pickle("test_data/AnyNetworkTests/ref_anynetwork.pickle")
+        self.test_anynwrk_filename = "test_data/AnyNetworkTests/test_anynetwork.xls"
         self.ORF_query_col = "genotype"
         self.ORF_array_col = "target"
         self.sheet_name = "de novo SNPs"
         self.anynwrk = databases.AnyNetwork()
-        self.ref_anynwrk = pd.read_pickle("./test_data/ref_anynetwork.pickle")
 
     def test_parse(self):
         """
@@ -234,6 +283,71 @@ class AnyNetworkTests(unittest.TestCase):
                                       self.anynwrk.sga,
                                       check_dtype=False,
                                       check_names=False)
+
+
+class BioprocessesTests(unittest.TestCase):
+    """
+    Tests for prowler.databases.Bioprocesses
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        self.ref_bioprocesses_filename = "test_data/BioprocessesTests/ref_bioproc_100r.pickle"
+        self.test_bioprocesses_filename = "test_data/BioprocessesTests/test_bioproc_100r.xls"
+        self.ref_bioprocesses = pd.read_pickle(self.ref_bioprocesses_filename)
+        self.test_bioprocesses = pd.read_excel(self.test_bioprocesses_filename)
+
+    def test_parse(self):
+        """
+        Test if bioprocesses file is properly parsed.
+        """
+        pd.testing.assert_frame_equal(self.ref_bioprocesses,
+                                      self.test_bioprocesses)
+
+
+class ProfIntTests(unittest.TestCase):
+    """
+    Tests for prowler.databases.ProfInt
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        self.profint = databases.ProfInt()
+        self.ref_merged = pd.read_pickle("test_data/ProfIntTests/ref_merged.pickle")
+        self.ref_profilized_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
+        self.reference_species = self.ref_profilized_nwrk[self.profint.PROF_Q].iloc[0].query
+        self.test_non_profilized_nwrk = self.ref_profilized_nwrk.drop([self.profint.PROF_Q,
+                                                                       self.profint.PROF_A,
+                                                                       self.profint.PSS],
+                                                                      axis=1)
+        self.test_kegg_db = pd.read_pickle("test_data/ProfIntTests/test_kegg_database.pickle")
+        self.test_X_reference = pd.read_pickle("test_data/ProfIntTests/test_X_reference.pickle")
+        self.test_sga = pd.read_pickle("test_data/ProfIntTests/test_sga.pickle")
+
+    def test_merger(self):
+        """
+        Test if prowler.databases.SGA1.sga or prowler.databases.SGA2.sga is
+        properly merged with prowler.apis.org_db_X_ref_df and
+        prowler.databases.KEGG.database
+        """
+        self.profint.merger(self.test_kegg_db,
+                            self.test_X_reference,
+                            self.test_sga)
+        pd.testing.assert_frame_equal(self.ref_merged, self.profint.merged)
+
+    def test_profilize(self):
+        """
+        Tests if databases.ProfInt.merged is properly appended with
+        profiles.Profile.
+        """
+        self.profint.merged = self.test_non_profilized_nwrk
+        self.profint.profilize(self.reference_species)
+        pd.testing.assert_series_equal(self.ref_profilized_nwrk[self.profint.PROF_Q].apply(lambda x: sorted(x.get_present())),
+                                       self.profint.merged[self.profint.PROF_Q].apply(lambda x: sorted(x.get_present())))
+        pd.testing.assert_series_equal(self.ref_profilized_nwrk[self.profint.PROF_Q].apply(lambda x: sorted(x.get_absent())),
+                                       self.profint.merged[self.profint.PROF_Q].apply(lambda x: sorted(x.get_absent())))
 
 
 class ProfileTests(unittest.TestCase):
@@ -378,13 +492,11 @@ class StatsTests(unittest.TestCase):
         self.GIS_max = -0.04
         self.query_species_selector = None
         self.array_species_selector = None
-        self.ref_nwrk = pd.read_pickle("./test_data/ref_nwrk.pickle").reset_index(drop=True)
+        self.ref_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
         self.statistics = stats.Stats(self.ref_nwrk, 14)
-        self.ref_nwrk_str = pd.read_csv("./test_data/ref_nwrk.csv")
+        self.ref_nwrk_str = pd.read_csv("test_data/StatsTests/ref_nwrk.csv")
         self.flat_plu = "+" * 16
         self.flat_min = "-" * 16
-#        self.ref_nwrk_app = self.ref_nwrk[self.statistics.PROF_Q] = self.ref_nwrk.apply(lambda x: x.to_string())
-#        self.ref_nwrk_app = self.ref_nwrk[self.statistics.PROF_A] = self.ref_nwrk.apply(lambda x: x.to_string())
 
     def test_flat_plu_q(self):
         """

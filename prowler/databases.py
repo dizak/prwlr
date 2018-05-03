@@ -183,13 +183,6 @@ class KEGG(Columns):
                                    strip_prefix=True)
         self.X_reference = self._api.org_db_X_ref_df
 
-    def profilize(self):
-        """
-        Append the database with phylogenetic profiles.
-        """
-        self.database[self.PROF] = self.database[self.ORGS].apply(lambda x:
-                                                                  _Profile(x, self.reference_species).to_string())
-
 
 class SGA1(Columns):
     """
@@ -200,24 +193,25 @@ class SGA1(Columns):
 
     """
     def __init__(self):
-        self.names = {'Array_ORF': self.ORF_A,
-                      'Array_gene_name': self.GENE_A,
-                      'Array_SMF': self.SMF_A,
-                      'Array_SMF_standard_deviation': self.SMF_SD_A,
-                      'Query_ORF': self.ORF_Q,
-                      'Query_gene_name': self.GENE_Q,
-                      'Query_SMF': self.SMF_Q,
-                      'Query_SMF_standard_deviation': self.SMF_SD_Q,
-                      'DMF': self.DMF,
-                      'DMF_standard_deviation': self.DMF_SD,
-                      'Genetic_interaction_score': self.GIS,
-                      'Standard_deviation': self.GIS_SD,
-                      'p-value': self.GIS_P}
+        self.names = (('Query_ORF', self.ORF_Q),
+                      ('Query_gene_name', self.GENE_Q),
+                      ('Array_ORF', self.ORF_A),
+                      ('Array_gene_name', self.GENE_A),
+                      ('Genetic_interaction_score', self.GIS),
+                      ('Standard_deviation', self.GIS_SD),
+                      ('p-value', self.GIS_P),
+                      ('Query_SMF', self.SMF_Q),
+                      ('Query_SMF_standard_deviation', self.SMF_SD_Q),
+                      ('Array_SMF', self.SMF_A),
+                      ('Array_SMF_standard_deviation', self.SMF_SD_A),
+                      ('DMF', self.DMF),
+                      ('DMF_standard_deviation', self.DMF_SD))
 
     def parse(self,
               filename,
               remove_white_spaces=True,
-              in_sep=","):
+              in_sep="\t",
+              cleanup=True):
         """Return Ortho_Interactions.interact_df (pandas.DataFrame) from
         parsed <csv> file. The minimal filtration is based of a given GIS_P
         and presence of DMF value. Further filtration results in DMF
@@ -237,12 +231,18 @@ class SGA1(Columns):
             with <_> when True (default)
             in_sep (str): separator for pandas.read_csv method
         """
-        self.sga = pd.read_csv(filename, sep=in_sep)
+        self.sga = pd.read_csv(filename,
+                               sep=in_sep,
+                               names=[k for k, v in self.names],
+                               error_bad_lines=False,
+                               warn_bad_lines=True)
         if remove_white_spaces is True:
             self.sga.columns = [i.replace(" ", "_") for i in self.sga.columns]
-        self.sga.rename(columns=self.names, inplace=True)
+        self.sga.rename(columns=dict(self.names), inplace=True)
         self.sga = self.sga.astype({k: v for k, v in self.dtypes.iteritems()
                                     if k in self.sga.columns})
+        if cleanup:
+            self.sga = self.sga.dropna().drop_duplicates().reset_index(drop=True)
 
 
 class SGA2(Columns):

@@ -119,49 +119,6 @@ class KEGG_API(Columns):
             self.query_ids_found.append(organism)
             return organism_ser[self.KEGG_ORG_ID].iloc[0]
 
-    def get_id_conv_tbl(self,
-                        source_id_type,
-                        organism,
-                        out_file_name,
-                        skip_dwnld=False,
-                        strip_pref=True):
-        """Get genes or proteins IDs to KEGG IDs convertion table in
-        pandas.DataFrame format. Data are downloaded to a local file and then
-        made into pandas.DataFrame. File can be reused.
-
-        Args:
-            source_id_type (str): determines type of the source IDs
-            organism (str): determines name of the organism bounded to the
-            source IDs
-            out_file_name (str): name for file to be downloaded
-            skip_dwnld (bool) = read existing file when <True>. Default <False>
-        """
-        org_id = self.org_name_2_kegg_id(organism)
-        if skip_dwnld is True:
-            pass
-        else:
-            url = "{0}/{1}/{2}/{3}".format(self.home,
-                                           self.operations["conv_2_outside_ids"],
-                                           self.id_conversions[source_id_type],
-                                           org_id)
-            res = rq.get(url)
-            with open(out_file_name, "w") as fout:
-                fout.write(res.content)
-        self.id_conversions_df = pd.read_csv(out_file_name,
-                                             names=[source_id_type,
-                                                    self.KEGG_ID],
-                                             header=None,
-                                             sep="\t")
-        if strip_pref is True:
-            self.id_conversions_df.replace({"{0}:".format(org_id): ""},
-                                           regex=True,
-                                           inplace=True)
-            self.id_conversions_df.replace({"{0}:".format(self.id_conversions[source_id_type]): ""},
-                                           regex=True,
-                                           inplace=True)
-        else:
-            pass
-
     def get_org_db_X_ref(self,
                          organism,
                          target_db,
@@ -222,7 +179,7 @@ class KEGG_API(Columns):
                 fout.write(res.content)
 
 
-class Costanzo_API:
+class CostanzoAPI:
     """Provides connectivity with the Costanzo's SOM website of the Genetic
     Landscape of the Cell project, allowing data files download.
 
@@ -245,18 +202,19 @@ class Costanzo_API:
 
     def __init__(self):
         self.home = "http://drygin.ccbr.utoronto.ca/~costanzo2009"
-        self.raw = "sgadata_costanzo2009_rawdata_101120.txt.gz"
-        self.raw_matrix = "sgadata_costanzo2009_rawdata_matrix_101120.txt.gz"
-        self.lenient_cutoff = "sgadata_costanzo2009_lenientCutoff_101120.txt.gz"
-        self.intermediate_cutoff = "sgadata_costanzo2009_intermediateCutoff_101120.txt.gz"
-        self.stringent_cutoff = "sgadata_costanzo2009_stringentCutoff_101120.txt.gz"
-        self.bioprocesses = "bioprocess_annotations_costanzo2009.xls"
-        self.chemical_genomics = "chemgenomic_data_costanzo2009.xls"
-        self.query_list = "sgadata_costanzo2009_query_list_101120.txt"
-        self.array_list = "sgadata_costanzo2009_array_list.txt"
+        self.data = {"raw": "sgadata_costanzo2009_rawdata_101120.txt.gz",
+                     "raw_matrix": "sgadata_costanzo2009_rawdata_matrix_101120.txt.gz",
+                     "lenient_cutoff": "sgadata_costanzo2009_lenientCutoff_101120.txt.gz",
+                     "intermediate_cutoff": "sgadata_costanzo2009_intermediateCutoff_101120.txt.gz",
+                     "stringent_cutoff": "sgadata_costanzo2009_stringentCutoff_101120.txt.gz",
+                     "bioprocesses": "bioprocess_annotations_costanzo2009.xls",
+                     "chemical_genomics": "chemgenomic_data_costanzo2009.xls",
+                     "query_list": "sgadata_costanzo2009_query_list_101120.txt",
+                     "array_list": "sgadata_costanzo2009_array_list.txt"}
 
     def get_data(self,
-                 data):
+                 data,
+                 output_directory="."):
         """Get files from Costanzo's SOM website.
 
         Args:
@@ -273,44 +231,11 @@ class Costanzo_API:
             out_file_name (str): name for file to be downloaded. Automatically
             same as appropriate Costanzo_API attrib when set to <None>
         """
-        if data == "raw":
-            url = "{0}/{1}".format(self.home,
-                                   self.raw)
-            out_file_name = self.raw
-        elif data == "raw_matrix":
-            url = "{0}/{1}".format(self.home,
-                                   self.raw_matrix)
-            out_file_name = self.raw_matrix
-        elif data == "lenient_cutoff":
-            url = "{0}/{1}".format(self.home,
-                                   self.lenient_cutoff)
-            out_file_name = self.lenient_cutoff
-        elif data == "intermediate_cutoff":
-            url = "{0}/{1}".format(self.home,
-                                   self.intermediate_cutoff)
-            out_file_name = self.intermediate_cutoff
-        elif data == "stringent_cutoff":
-            url = "{0}/{1}".format(self.home,
-                                   self.stringent_cutoff)
-            out_file_name = self.stringent_cutoff
-        elif data == "bioprocesses":
-            url = "{0}/{1}".format(self.home,
-                                   self.bioprocesses)
-            out_file_name = self.bioprocesses
-        elif data == "chemical_genomics":
-            url = "{0}/{1}".format(self.home,
-                                   self.chemical_genomics)
-            out_file_name = self.chemical_genomics
-        elif data == "query_list":
-            url = "{0}/{1}".format(self.home,
-                                   self.query_list)
-            out_file_name = self.query_list
-        elif data == "array_list":
-            url = "{0}/{1}".format(self.home,
-                                   self.array_list)
-            out_file_name = self.array_list
-        else:
+        if data not in self.data.keys():
             raise ValueError("unknown option for data arg")
+        url = "{0}/{1}".format(self.home,
+                               self.data[data])
+        out_file_name = self.data[data]
         res = rq.get(url)
-        with open(out_file_name, "w") as fout:
+        with open("{}/{}".format(output_directory, out_file_name), "w") as fout:
             fout.write(res.content)
