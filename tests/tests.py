@@ -64,8 +64,8 @@ class ApisTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         super(ApisTests, cls).setUpClass()
-        cls.orgs_ids_out = pd.read_pickle("./test_data/ApisTests/test_orgs_ids_out.pickle")
-        cls.org_db_X_ref_out = pd.read_csv("./test_data/ApisTests/test_orgs_db_X_ref.csv",
+        cls.orgs_ids_out = pd.read_pickle("test_data/ApisTests/test_orgs_ids_out.pickle")
+        cls.org_db_X_ref_out = pd.read_csv("test_data/ApisTests/test_orgs_db_X_ref.csv",
                                            sep="\t",
                                            names=["ORF_ID",
                                                   "KEGG_ID"],
@@ -93,11 +93,11 @@ class ApisTests(unittest.TestCase):
                         "bsu"]
         cls.kegg_api = apis.KEGG_API()
         cls.cost_api = apis.CostanzoAPI()
-        cls.kegg_api.get_organisms_ids("./test_data/ApisTests/test_orgs_ids_in.csv",
+        cls.kegg_api.get_organisms_ids("test_data/ApisTests/test_orgs_ids_in.csv",
                                        skip_dwnld=True)
         cls.kegg_api.get_org_db_X_ref(organism="Saccharomyces cerevisiae",
                                       target_db="orthology",
-                                      out_file_name="./test_data/ApisTests/test_orgs_db_X_ref.csv",
+                                      out_file_name="test_data/ApisTests/test_orgs_db_X_ref.csv",
                                       skip_dwnld=True)
 
     def test_get_organisms_ids(self):
@@ -140,14 +140,14 @@ class CostanzoAPITests(unittest.TestCase):
         Distroys files downloaded or created during the tests.
         """
         for i in self.costanzo_api.data.values():
-            os.remove("./test_data/{}".format(i))
+            os.remove("test_data/{}".format(i))
 
     def test_get_data(self):
         """
         Tests if apis.CostanzoAPI,get_data downloads data files successfully.
         """
         for i in self.costanzo_api.data.keys():
-            self.costanzo_api.get_data(i, "./test_data")
+            self.costanzo_api.get_data(i, "test_data")
 
 
 class DatabasesTests(unittest.TestCase):
@@ -179,16 +179,16 @@ class DatabasesTests(unittest.TestCase):
                           "hpy",
                           "mth",
                           "bsu"]
-        self.test_kegg_db_filename = "./test_data/test_kegg_db"
+        self.test_kegg_db_filename = "test_data/DatabasesTests/test_kegg_db"
         self.database_type = "Orthology"
         self.organism_name = "Saccharomyces cerevisiae"
-        self.IDs = "./test_data/test_orgs_ids_in.csv"
-        self.X_ref = "./test_data/test_orgs_db_X_ref.csv"
-        self.out_file_name = "./test_data/test_orgs_db_X_ref"
-        self.ref_kegg_db = pd.read_pickle("./test_data/ref_kegg_db.pickle")
-        with open("./test_data/ref_databases_KEGG_name_ID.pickle", "rb") as fin:
+        self.IDs = "test_data/ApisTests/test_orgs_ids_in.csv"
+        self.X_ref = "test_data/ApisTests/test_orgs_db_X_ref.csv"
+        self.out_file_name = "test_data/ApisTests/test_orgs_db_X_ref.csv"
+        self.ref_kegg_db = pd.read_pickle("test_data/DatabasesTests/ref_kegg_db.pickle")
+        with open("test_data/DatabasesTests/ref_databases_KEGG_name_ID.pickle", "rb") as fin:
             self.ref_databases_KEGG_name_ID = pickle.load(fin)
-        with open("./test_data/ref_databases_KEGG_ID_name.pickle", "rb") as fin:
+        with open("test_data/DatabasesTests/ref_databases_KEGG_ID_name.pickle", "rb") as fin:
             self.ref_databases_KEGG_ID_name = pickle.load(fin)
         self.kegg = databases.KEGG(self.database_type)
 
@@ -220,9 +220,9 @@ class SGA1Tests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.sga1 = databases.SGA1()
-        self.ref_sga_filename = "./test_data/ref_sga_v1_1000r.pickle"
+        self.ref_sga_filename = "test_data/SGA1Tests/ref_sga_v1_1000r.pickle"
         self.ref_sga = pd.read_pickle(self.ref_sga_filename)
-        self.test_sga_filename = "./test_data/test_sga_v1_1000r.txt"
+        self.test_sga_filename = "test_data/SGA1Tests/test_sga_v1_1000r.txt"
 
     def test_parse(self):
         """
@@ -241,8 +241,8 @@ class SGA2Test(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.sga2 = databases.SGA2()
-        self.test_sga_filename = "./test_data/test_sga_v2_1000r.txt"
-        self.ref_sga = pd.read_csv("./test_data/ref_sga_v2_1000r.txt")
+        self.ref_sga = pd.read_csv("test_data/SGA2Tests/ref_sga_v2_1000r.txt")
+        self.test_sga_filename = "test_data/SGA2Tests/test_sga_v2_1000r.txt"
         self.ref_sga = self.ref_sga.astype({k: v for k, v in self.sga2.dtypes.iteritems()
                                             if k in self.ref_sga.columns})
 
@@ -263,12 +263,12 @@ class AnyNetworkTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        self.test_anynwrk_filename = "./test_data/test_anynetwork.xls"
+        self.ref_anynwrk = pd.read_pickle("test_data/AnyNetworkTests/ref_anynetwork.pickle")
+        self.test_anynwrk_filename = "test_data/AnyNetworkTests/test_anynetwork.xls"
         self.ORF_query_col = "genotype"
         self.ORF_array_col = "target"
         self.sheet_name = "de novo SNPs"
         self.anynwrk = databases.AnyNetwork()
-        self.ref_anynwrk = pd.read_pickle("./test_data/ref_anynetwork.pickle")
 
     def test_parse(self):
         """
@@ -293,8 +293,8 @@ class BioprocessesTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        self.ref_bioprocesses_filename = "./test_data/ref_bioproc_100r.pickle"
-        self.test_bioprocesses_filename = "./test_data/test_bioproc_100r.xls"
+        self.ref_bioprocesses_filename = "test_data/BioprocessesTests/ref_bioproc_100r.pickle"
+        self.test_bioprocesses_filename = "test_data/BioprocessesTests/test_bioproc_100r.xls"
         self.ref_bioprocesses = pd.read_pickle(self.ref_bioprocesses_filename)
         self.test_bioprocesses = pd.read_excel(self.test_bioprocesses_filename)
 
@@ -314,10 +314,10 @@ class ProfIntTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        self.ref_merged = pd.read_pickle("./test_data/profint/ref_merged.pickle")
-        self.test_kegg_db = pd.read_pickle("./test_data/profint/test_kegg_database.pickle")
-        self.test_X_reference = pd.read_pickle("./test_data/profint/test_X_reference.pickle")
-        self.test_sga = pd.read_pickle("./test_data/profint/test_sga.pickle")
+        self.ref_merged = pd.read_pickle("test_data/ProfIntTests/ref_merged.pickle")
+        self.test_kegg_db = pd.read_pickle("test_data/ProfIntTests/test_kegg_database.pickle")
+        self.test_X_reference = pd.read_pickle("test_data/ProfIntTests/test_X_reference.pickle")
+        self.test_sga = pd.read_pickle("test_data/ProfIntTests/test_sga.pickle")
         self.profint = databases.ProfInt()
 
     def test_merger(self):
@@ -474,13 +474,11 @@ class StatsTests(unittest.TestCase):
         self.GIS_max = -0.04
         self.query_species_selector = None
         self.array_species_selector = None
-        self.ref_nwrk = pd.read_pickle("./test_data/ref_nwrk.pickle").reset_index(drop=True)
+        self.ref_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
         self.statistics = stats.Stats(self.ref_nwrk, 14)
-        self.ref_nwrk_str = pd.read_csv("./test_data/ref_nwrk.csv")
+        self.ref_nwrk_str = pd.read_csv("test_data/StatsTests/ref_nwrk.csv")
         self.flat_plu = "+" * 16
         self.flat_min = "-" * 16
-#        self.ref_nwrk_app = self.ref_nwrk[self.statistics.PROF_Q] = self.ref_nwrk.apply(lambda x: x.to_string())
-#        self.ref_nwrk_app = self.ref_nwrk[self.statistics.PROF_A] = self.ref_nwrk.apply(lambda x: x.to_string())
 
     def test_flat_plu_q(self):
         """
