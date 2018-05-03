@@ -54,7 +54,7 @@ class UtilsTests(unittest.TestCase):
                                                                  self.test_set_size))
 
 
-class ApisTest(unittest.TestCase):
+class ApisTests(unittest.TestCase):
     """
     Tests for prowler.apis.
     """
@@ -63,9 +63,9 @@ class ApisTest(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        super(ApisTest, cls).setUpClass()
-        cls.orgs_ids_out = pd.read_pickle("./test_data/test_orgs_ids_out.pickle")
-        cls.org_db_X_ref_out = pd.read_csv("./test_data/test_orgs_db_X_ref.csv",
+        super(ApisTests, cls).setUpClass()
+        cls.orgs_ids_out = pd.read_pickle("./test_data/ApisTests/test_orgs_ids_out.pickle")
+        cls.org_db_X_ref_out = pd.read_csv("./test_data/ApisTests/test_orgs_db_X_ref.csv",
                                            sep="\t",
                                            names=["ORF_ID",
                                                   "KEGG_ID"],
@@ -93,24 +93,13 @@ class ApisTest(unittest.TestCase):
                         "bsu"]
         cls.kegg_api = apis.KEGG_API()
         cls.cost_api = apis.CostanzoAPI()
-        cls.kegg_api.get_organisms_ids("./test_data/test_orgs_ids_in.csv",
+        cls.kegg_api.get_organisms_ids("./test_data/ApisTests/test_orgs_ids_in.csv",
                                        skip_dwnld=True)
         cls.kegg_api.get_org_db_X_ref(organism="Saccharomyces cerevisiae",
                                       target_db="orthology",
-                                      out_file_name="./test_data/test_orgs_db_X_ref.csv",
+                                      out_file_name="./test_data/ApisTests/test_orgs_db_X_ref.csv",
                                       skip_dwnld=True)
-        '''cls.kegg_api.get_db_entries("./test_data/test_db")
-        with open("./test_data/test_db") as fin:
-            cls.test_db = fin.read()
-        with open("./test_data/test_db_ref") as fin:
-            cls.test_db_ref = fin.read()'''
 
-    @classmethod
-    # def tearDownClass(cls):
-    #     """
-    #     Destroys database downloaded during tests.
-    #     """
-    #     sp.call("rm ./test_data/test_db", shell=True)
     def test_get_organisms_ids(self):
         """
         Test if apis.get_organisms_ids returns correct pandas.DataFrame from
