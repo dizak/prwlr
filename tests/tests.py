@@ -314,11 +314,17 @@ class ProfIntTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
+        self.profint = databases.ProfInt()
         self.ref_merged = pd.read_pickle("test_data/ProfIntTests/ref_merged.pickle")
+        self.ref_profilized_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
+        self.reference_species = self.ref_profilized_nwrk[self.profint.PROF_Q].iloc[0].query
+        self.test_non_profilized_nwrk = self.ref_profilized_nwrk.drop([self.profint.PROF_Q,
+                                                                       self.profint.PROF_A,
+                                                                       self.profint.PSS],
+                                                                      axis=1)
         self.test_kegg_db = pd.read_pickle("test_data/ProfIntTests/test_kegg_database.pickle")
         self.test_X_reference = pd.read_pickle("test_data/ProfIntTests/test_X_reference.pickle")
         self.test_sga = pd.read_pickle("test_data/ProfIntTests/test_sga.pickle")
-        self.profint = databases.ProfInt()
 
     def test_merger(self):
         """
@@ -330,6 +336,18 @@ class ProfIntTests(unittest.TestCase):
                             self.test_X_reference,
                             self.test_sga)
         pd.testing.assert_frame_equal(self.ref_merged, self.profint.merged)
+
+    def test_profilize(self):
+        """
+        Tests if databases.ProfInt.merged is properly appended with
+        profiles.Profile.
+        """
+        self.profint.merged = self.test_non_profilized_nwrk
+        self.profint.profilize(self.reference_species)
+        pd.testing.assert_series_equal(self.ref_profilized_nwrk[self.profint.PROF_Q].apply(lambda x: sorted(x.get_present())),
+                                       self.profint.merged[self.profint.PROF_Q].apply(lambda x: sorted(x.get_present())))
+        pd.testing.assert_series_equal(self.ref_profilized_nwrk[self.profint.PROF_Q].apply(lambda x: sorted(x.get_absent())),
+                                       self.profint.merged[self.profint.PROF_Q].apply(lambda x: sorted(x.get_absent())))
 
 
 class ProfileTests(unittest.TestCase):
