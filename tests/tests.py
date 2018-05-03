@@ -383,6 +383,8 @@ class ProfileTests(unittest.TestCase):
         self.ref_profile = "-+-+++++-+++-"
         self.ref_alt_profile = "#$#$$$$$#$$$#"
         self.ref_pss = [13, 4, 9]
+        self.ref_ignore_elements = ["a", "c", "f"]
+        self.ref_pss_ignore = 10
         self.test_profile = profiles.Profile(reference=self.ref_reference,
                                              query=self.ref_query)
 
@@ -464,6 +466,16 @@ class ProfileTests(unittest.TestCase):
             self.assertEqual(self.test_profile.calculate_pss(profiles.Profile(reference=self.ref_reference,
                                                                               query=query)),
                              pss)
+
+    def test_calculate_pss_ignore(self):
+        """
+        Test if Profiles Similarity Score (PSS) is properly calculated with
+        ignore arg used.
+        """
+        self.assertEqual(self.test_profile.calculate_pss(profiles.Profile(reference=self.ref_reference,
+                                                                          query=self.ref_query),
+                                                         ignore=self.ref_ignore_elements),
+                         self.ref_pss_ignore)
 
     def test_get_present(self):
         """

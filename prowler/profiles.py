@@ -137,13 +137,26 @@ class Profile:
             return pd.Series(self.profile)
 
     def calculate_pss(self,
-                      profile):
+                      profile,
+                      ignore=None):
         """
         Calculate Profiles Similarity Score.
         """
         if len(self) != len(profile):
             raise ProfileError("Different profiles' lengths")
-        return sum(a == b for a, b in zip(self.profile, profile.profile))
+        prof_1 = self
+        prof_2 = profile
+        if ignore:
+            for i in ignore:
+                try:
+                    del prof_1.profile[prof_1.query.index(i)]
+                except IndexError:
+                    raise ProfileError("Element to ignore not in profile")
+                try:
+                    del prof_2.profile[prof_2.query.index(i)]
+                except IndexError:
+                    raise ProfileError("Element to ignore not in profile")
+        return sum(a == b for a, b in zip(prof_1.profile, prof_2.profile))
 
     def get_present(self):
         """
