@@ -509,6 +509,8 @@ class StatsTests(unittest.TestCase):
         self.ref_nwrk_str = pd.read_csv("test_data/StatsTests/ref_nwrk.csv")
         self.flat_plu = "+" * 16
         self.flat_min = "-" * 16
+        self.ref_PSS_sum = int(pd.DataFrame(self.ref_nwrk.groupby(by=[self.statistics.PSS]).size()).sum())
+        self.permutations_number = 10
 
     def test_flat_plu_q(self):
         """
@@ -589,6 +591,29 @@ class StatsTests(unittest.TestCase):
                                        [self.statistics.PROF_A].apply(lambda x: x.to_string()),
                                        self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] !=
                                                          self.flat_min][self.statistics.PROF_A])
+
+    def test_permute_profiles(self):
+        """
+        Test if permute_profiles returns proper dataframes using
+        multiprocessing.
+        """
+        self.permuted = self.statistics.permute_profiles(self.ref_nwrk,
+                                                         self.permutations_number,
+                                                         return_series=True)
+        for i in range(self.permutations_number):
+            self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
+
+    def test_permute_profiles_multiprocessing(self):
+        """
+        Test if permute_profiles returns proper dataframes using
+        multiprocessing.
+        """
+        self.permuted = self.statistics.permute_profiles(self.ref_nwrk,
+                                                         self.permutations_number,
+                                                         return_series=True,
+                                                         multiprocessing=True)
+        for i in range(self.permutations_number):
+            self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
 
     def test_binomial_pss_test(self):
         """
