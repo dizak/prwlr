@@ -5,8 +5,9 @@ import gc
 import warnings
 import pandas as pd
 import math
+from functools import partial
 import numpy as np
-from joblib import Parallel, delayed
+import pathos.multiprocessing as ptmp
 from tqdm import tqdm
 from errors import *
 from utils import *
@@ -202,72 +203,6 @@ class Stats(Columns,
                  (prot_num - hit_num) * math.log(1.0 - background_p))
         return log_p
 
-    def _permute_profiles(self,
-                          dataframe,
-                          drop_dups=False):
-        """
-        Returns a interactions network with permuted profiles and re-calculated
-        PSS.
-
-        Parameters
-        ------
-        dataframe: pandas.DataFrame
-            Dataframe to be permuted.
-        drop_dups: bool, default <False>
-            Leave the duplicates in the profiles column when <True>. Remove the
-            profiles duplicate when <False>. Leaving the duplicates does not
-            change the native network bias. The ORFs column is always
-            de-duplicated.
-
-        Return
-        -------
-            pandas.DataFrame
-        Dataframe with the profiles permuted among ORFs names and PSS
-        re-calculated.
-        """
-        if drop_dups is True:
-            profs = pd.concat([dataframe[[self.PROF_Q]].drop_duplicates().rename(columns={self.PROF_Q: self.PROF}),
-                               dataframe[[self.PROF_A]].drop_duplicates().rename(columns={self.PROF_A: self.PROF})],
-                              axis=0).reset_index(drop=True)
-            orfs = pd.concat([dataframe[[self.ORF_Q]].drop_duplicates().rename(columns={self.ORF_Q: self.ORF}),
-                              dataframe[[self.ORF_A]].drop_duplicates().rename(columns={self.ORF_A: self.ORF})],
-                             axis=0).reset_index(drop=True).drop_duplicates()
-            right_df = pd.concat([orfs, profs.sample(n=orfs.size, replace=True).reset_index(drop=True)], axis=1)
-            del profs, orfs
-        else:
-            sub_Q = dataframe[[self.ORF_Q,
-                               self.PROF_Q]].rename(columns={self.ORF_Q:
-                                                             self.ORF,
-                                                             self.PROF_Q:
-                                                             self.PROF}).drop_duplicates(subset=[self.ORF]).reset_index(drop=True)
-            sub_A = dataframe[[self.ORF_A,
-                               self.PROF_A]].rename(columns={self.ORF_A:
-                                                             self.ORF,
-                                                             self.PROF_A:
-                                                             self.PROF}).drop_duplicates(subset=[self.ORF]).reset_index(drop=True)
-            sub_QA = pd.concat([sub_Q,
-                                sub_A]).drop_duplicates(subset=[self.ORF])
-            right_df = pd.concat([sub_QA[self.ORF].reset_index(drop=True),
-                                  sub_QA[self.PROF].sample(n=len(sub_QA),
-                                                           replace=True).reset_index(drop=True)],
-                                 axis=1)
-            del sub_Q, sub_A, sub_QA
-        permuted = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
-                            right=right_df,
-                            left_on=[self.ORF_Q],
-                            right_on=[self.ORF],
-                            how="left").merge(right_df,
-                                              left_on=[self.ORF_A],
-                                              right_on=[self.ORF],
-                                              how="left",
-                                              suffixes=[self.QUERY_SUF, self.ARRAY_SUF])
-        permuted[self.PSS] = permuted.apply(lambda x:
-                                            x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
-                                            axis=1)
-        del right_df
-        gc.collect()
-        return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
-
     def filter_value(self,
                      dataframe,
                      value):
@@ -338,6 +273,7 @@ class Stats(Columns,
     def permute_profiles(self,
                          dataframe,
                          iterations,
+                         return_series=False,
                          multiprocessing=False):
         """
         Returns list of PSS bins after each permutation.
@@ -358,22 +294,69 @@ class Stats(Columns,
         multiprocessing: bool, default <False>
             pathos multiprocessing is used if <True>. Divides iterations
             between cores.
-
-        Notes
-        ------
-        multiprocessing DOES NOT work properly yet!
         """
+        def _permute_profiles(dataframe,
+                              iteration):
+            """
+            Returns a interactions network with permuted profiles and re-calculated
+            PSS.
+
+            Parameters
+            ------
+            dataframe: pandas.DataFrame
+                Dataframe to be permuted.
+
+            Return
+            -------
+                pandas.DataFrame
+            Dataframe with the profiles permuted among ORFs names and PSS
+            re-calculated.
+            """
+            sub_Q = dataframe[[self.ORF_Q,
+                               self.PROF_Q]].rename(columns={self.ORF_Q:
+                                                             self.ORF,
+                                                             self.PROF_Q:
+                                                             self.PROF}).drop_duplicates(subset=[self.ORF]).reset_index(drop=True)
+            sub_A = dataframe[[self.ORF_A,
+                               self.PROF_A]].rename(columns={self.ORF_A:
+                                                             self.ORF,
+                                                             self.PROF_A:
+                                                             self.PROF}).drop_duplicates(subset=[self.ORF]).reset_index(drop=True)
+            sub_QA = pd.concat([sub_Q,
+                                sub_A]).drop_duplicates(subset=[self.ORF])
+            right_df = pd.concat([sub_QA[self.ORF].reset_index(drop=True),
+                                  sub_QA[self.PROF].sample(n=len(sub_QA),
+                                                           replace=True).reset_index(drop=True)],
+                                 axis=1)
+            del sub_Q, sub_A, sub_QA
+            permuted = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
+                                right=right_df,
+                                left_on=[self.ORF_Q],
+                                right_on=[self.ORF],
+                                how="left").merge(right_df,
+                                                  left_on=[self.ORF_A],
+                                                  right_on=[self.ORF],
+                                                  how="left",
+                                                  suffixes=[self.QUERY_SUF, self.ARRAY_SUF])
+            permuted[self.PSS] = permuted.apply(lambda x:
+                                                x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
+                                                axis=1)
+            del right_df
+            gc.collect()
+            return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
         if multiprocessing is True:
-            warnings.warn("Not tested. Probably will not work at all since joblib does not support pickling inside a function.",
-                          ExperimentalFeature)
-            out = Parallel(n_jobs=-1, verbose=3)(delayed(self._permute_profiles)(dataframe) for i in range(iterations))
+            f = partial(_permute_profiles, dataframe)
+            out = ptmp.ProcessingPool().map(f, range(iterations))
         else:
             out = []
             for i in tqdm(range(iterations)):
-                out.append(self._permute_profiles(dataframe))
-        return pd.concat([i[1].rename(columns={0: i[0]})
-                          for i in enumerate(out)],
-                         axis=1).fillna(value=0)
+                out.append(_permute_profiles(dataframe, i))
+        if return_series:
+            return pd.concat([i[1].rename(columns={0: i[0]})
+                              for i in enumerate(out)],
+                             axis=1).fillna(value=0)
+        else:
+            return out
 
     def binomial_pss_test(self,
                           desired_pss,
