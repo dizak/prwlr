@@ -18,6 +18,8 @@ class UtilsTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.ref_combinations_number = 3
+        self.ref_nodes = [2, 4, 6, 4, 4, 6, 8, 30, 32]
+        self.test_cpus = [3, 4, 6, 8, 16, 24, 32, 127, 128]
         self.test_subset_size = 2
         self.test_set_size = 3
         self.test_reference_iterable = list("abcdefghijk")
@@ -47,11 +49,18 @@ class UtilsTests(unittest.TestCase):
 
     def test_all_possible_combinations_counter(self):
         """
-        Test of utils.all_possible_combinations_counter returns correct value.
+        Test if utils.all_possible_combinations_counter returns correct value.
         """
         self.assertEqual(self.ref_combinations_number,
                          utils.all_possible_combinations_counter(self.test_subset_size,
                                                                  self.test_set_size))
+
+    def test_determine_nodes_count(self):
+        """
+        Test if utils.determine_nodes_count returns correct value.
+        """
+        for ref_nodes, test_cpus in zip(self.ref_nodes, self.test_cpus):
+            self.assertEqual(ref_nodes, utils.determine_nodes_count(test_cpus))
 
 
 class ApisTests(unittest.TestCase):
