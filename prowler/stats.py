@@ -346,7 +346,8 @@ class Stats(Columns,
             return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
         if multiprocessing is True:
             f = partial(_permute_profiles, dataframe)
-            out = ptmp.ProcessingPool().map(f, range(iterations))
+            nodes = determine_nodes_count(ptmp.cpu_count())
+            out = ptmp.ProcessingPool(nodes=nodes).map(f, range(iterations))
         else:
             out = []
             for i in tqdm(range(iterations)):
