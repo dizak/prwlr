@@ -2,8 +2,6 @@
 
 
 import math
-import numpy as np
-import pandas as pd
 
 
 def isiniterable(query_iterable,
@@ -79,3 +77,28 @@ def all_possible_combinations_counter(subset_size,
     """
     f = math.factorial
     return f(set_size) / f(subset_size) / f(set_size - subset_size)
+
+
+def determine_nodes_count(cpus):
+    """
+    Returns number which should be passed to
+    pathos.multiprocessing.ProcessingPool nodes argument for load distribution
+    on large machines.
+
+    Parameters
+    -------
+    cpus: int
+        Number of cpus available.
+    """
+    if cpus < 2:
+        raise ValueError("cpus number cannot be 2 or below for multiprocessing.")
+    if cpus >= 2 and cpus < 8:
+        nodes = cpus
+    if cpus >= 8 and cpus < 12:
+        nodes = cpus / 2
+    elif cpus >= 12:
+        nodes = cpus / 4
+    if nodes % 2 != 0:
+        return nodes - 1
+    else:
+        return nodes
