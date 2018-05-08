@@ -612,7 +612,7 @@ class StatsTests(unittest.TestCase):
         for i in range(self.permutations_number):
             self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
 
-    def test_permute_profiles_multiprocessing(self):
+    def test_permute_profiles_multiprocessing_pathos(self):
         """
         Test if permute_profiles returns proper dataframes using
         multiprocessing.
@@ -620,7 +620,21 @@ class StatsTests(unittest.TestCase):
         self.permuted = self.statistics.permute_profiles(self.ref_nwrk,
                                                          self.permutations_number,
                                                          return_series=True,
-                                                         multiprocessing=True)
+                                                         multiprocessing=True,
+                                                         mp_backend="pathos")
+        for i in range(self.permutations_number):
+            self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
+
+    def test_permute_profiles_multiprocessing_joblib(self):
+        """
+        Test if permute_profiles returns proper dataframes using
+        multiprocessing.
+        """
+        self.permuted = self.statistics.permute_profiles(self.ref_nwrk,
+                                                         self.permutations_number,
+                                                         return_series=True,
+                                                         multiprocessing=True,
+                                                         mp_backend="joblib")
         for i in range(self.permutations_number):
             self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
 
