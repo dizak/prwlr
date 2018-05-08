@@ -8,6 +8,7 @@ import math
 from functools import partial
 import numpy as np
 import pathos.multiprocessing as ptmp
+from joblib import Parallel, delayed
 from tqdm import tqdm
 from errors import *
 from utils import *
@@ -274,7 +275,8 @@ class Stats(Columns,
                          dataframe,
                          iterations,
                          return_series=False,
-                         multiprocessing=False):
+                         multiprocessing=False,
+                         mp_backend="joblib"):
         """
         Returns list of PSS bins after each permutation.
 
@@ -345,9 +347,12 @@ class Stats(Columns,
             gc.collect()
             return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
         if multiprocessing is True:
-            f = partial(_permute_profiles, dataframe)
-            chunksize = iterations / ptmp.cpu_count()
-            out = ptmp.ProcessingPool().map(f, range(iterations), chunksize=chunksize)
+            if mp_backend == "pathos":
+                f = partial(_permute_profiles, dataframe)
+                chunksize = iterations / ptmp.cpu_count()
+                out = ptmp.ProcessingPool().map(f, range(iterations), chunksize=chunksize)
+            elif mp_backend == "joblib":
+                out = Parallel(ptmp.cpu_count())(delayed(_permute_profiles)(dataframe, i) for i in range(iterations))
         else:
             out = []
             for i in tqdm(range(iterations)):
