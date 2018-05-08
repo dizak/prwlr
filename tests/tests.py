@@ -47,7 +47,7 @@ class UtilsTests(unittest.TestCase):
 
     def test_all_possible_combinations_counter(self):
         """
-        Test of utils.all_possible_combinations_counter returns correct value.
+        Test if utils.all_possible_combinations_counter returns correct value.
         """
         self.assertEqual(self.ref_combinations_number,
                          utils.all_possible_combinations_counter(self.test_subset_size,
@@ -611,7 +611,8 @@ class StatsTests(unittest.TestCase):
         self.permuted = self.statistics.permute_profiles(self.ref_nwrk,
                                                          self.permutations_number,
                                                          return_series=True,
-                                                         multiprocessing=True)
+                                                         multiprocessing=True,
+                                                         mp_backend="pathos")
         for i in range(self.permutations_number):
             self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
 

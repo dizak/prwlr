@@ -2,8 +2,6 @@
 
 
 import math
-import numpy as np
-import pandas as pd
 
 
 def isiniterable(query_iterable,

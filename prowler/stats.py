@@ -274,7 +274,8 @@ class Stats(Columns,
                          dataframe,
                          iterations,
                          return_series=False,
-                         multiprocessing=False):
+                         multiprocessing=False,
+                         mp_backend="joblib"):
         """
         Returns list of PSS bins after each permutation.
 
@@ -346,7 +347,8 @@ class Stats(Columns,
             return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
         if multiprocessing is True:
             f = partial(_permute_profiles, dataframe)
-            out = ptmp.ProcessingPool().map(f, range(iterations))
+            chunksize = iterations / ptmp.cpu_count()
+            out = ptmp.ProcessingPool().map(f, range(iterations), chunksize=chunksize)
         else:
             out = []
             for i in tqdm(range(iterations)):
