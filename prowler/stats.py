@@ -352,7 +352,7 @@ class Stats(Columns,
                 chunksize = iterations / ptmp.cpu_count()
                 out = ptmp.ProcessingPool().map(f, range(iterations), chunksize=chunksize)
             elif mp_backend == "joblib":
-                out = Parallel(ptmp.cpu_count())(delayed(_permute_profiles)(dataframe, i) for i in range(iterations))
+                out = Parallel(n_jobs=ptmp.cpu_count())(delayed(_permute_profiles)(dataframe, i) for i in range(iterations))
         else:
             out = []
             for i in tqdm(range(iterations)):
