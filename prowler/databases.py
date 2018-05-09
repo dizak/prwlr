@@ -5,6 +5,7 @@ import re
 import pathos.multiprocessing as ptmp
 import numpy as np
 import pandas as pd
+import tempfile
 from apis import KEGG_API as _KEGG_API
 from apis import Columns as _ApisColumns
 from errors import *
@@ -170,7 +171,9 @@ class KEGG(Columns):
         if IDs:
             self._api.get_organisms_ids(IDs, skip_dwnld=True)
         else:
-            self._api.get_organisms_ids("KEGG_organisms_IDs.csv", skip_dwnld=False)
+            IDs_tmp = tempfile.NamedTemporaryFile(delete=True)
+            self._api.get_organisms_ids(IDs_tmp.name, skip_dwnld=False)
+            IDs_tmp.close()
         self.reference_species = [self._api.org_name_2_kegg_id(i) for i in reference_species
                                   if i not in self._api.query_ids_not_found]
         self.reference_species = [i.upper() for i in self.reference_species if i is not None]
@@ -186,11 +189,13 @@ class KEGG(Columns):
                                        skip_dwnld=True,
                                        strip_prefix=True)
         else:
+            X_ref_tmp = tempfile.NamedTemporaryFile(delete=True)
             self._api.get_org_db_X_ref(organism=organism,
                                        target_db=self.database_type,
-                                       out_file_name="ORF_KEGG_entry_X_ref.csv",
+                                       out_file_name=X_ref_tmp.name,
                                        skip_dwnld=False,
                                        strip_prefix=True)
+            X_ref_tmp.close()
         self.X_reference = self._api.org_db_X_ref_df
 
 

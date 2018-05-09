@@ -183,9 +183,7 @@ class DatabasesTests(unittest.TestCase):
         self.database_type = "Orthology"
         self.organism_name = "Saccharomyces cerevisiae"
         self.IDs = "test_data/ApisTests/test_orgs_ids_in.csv"
-        self.IDs_temp = "KEGG_organisms_IDs.csv"
         self.X_ref = "test_data/ApisTests/test_orgs_db_X_ref.csv"
-        self.X_ref_temp = "ORF_KEGG_entry_X_ref.csv"
         self.out_file_name = "test_data/ApisTests/test_orgs_db_X_ref.csv"
         self.ref_kegg_db = pd.read_pickle("test_data/DatabasesTests/ref_kegg_db.pickle")
         with open("test_data/DatabasesTests/ref_databases_KEGG_name_ID.pickle", "rb") as fin:
@@ -193,15 +191,6 @@ class DatabasesTests(unittest.TestCase):
         with open("test_data/DatabasesTests/ref_databases_KEGG_ID_name.pickle", "rb") as fin:
             self.ref_databases_KEGG_ID_name = pickle.load(fin)
         self.kegg = databases.KEGG(self.database_type)
-
-    def tearDown(self):
-        """
-        Distroys files downloaded or created during the tests.
-        """
-        if os.path.isfile(self.IDs_temp):
-            os.remove(self.IDs_temp)
-        if os.path.isfile(self.X_ref_temp):
-            os.remove(self.X_ref_temp)
 
     def test_parse_database(self):
         """
