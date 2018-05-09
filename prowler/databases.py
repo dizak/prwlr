@@ -164,10 +164,13 @@ class KEGG(Columns):
     def parse_organism_info(self,
                             organism,
                             reference_species,
-                            IDs,
-                            X_ref,
+                            IDs=None,
+                            X_ref=None,
                             strip_prefix=True):
-        self._api.get_organisms_ids(IDs, skip_dwnld=True)
+        if IDs:
+            self._api.get_organisms_ids(IDs, skip_dwnld=True)
+        else:
+            self._api.get_organisms_ids("KEGG_organisms_IDs.csv", skip_dwnld=False)
         self.reference_species = [self._api.org_name_2_kegg_id(i) for i in reference_species
                                   if i not in self._api.query_ids_not_found]
         self.reference_species = [i.upper() for i in self.reference_species if i is not None]
@@ -176,11 +179,18 @@ class KEGG(Columns):
                                 self.reference_species))
         self.ID_name = dict(zip(self.reference_species, [i for i in reference_species
                                                          if i not in self._api.query_ids_not_found]))
-        self._api.get_org_db_X_ref(organism=organism,
-                                   target_db=self.database_type,
-                                   out_file_name=X_ref,
-                                   skip_dwnld=True,
-                                   strip_prefix=True)
+        if X_ref:
+            self._api.get_org_db_X_ref(organism=organism,
+                                       target_db=self.database_type,
+                                       out_file_name=X_ref,
+                                       skip_dwnld=True,
+                                       strip_prefix=True)
+        else:
+            self._api.get_org_db_X_ref(organism=organism,
+                                       target_db=self.database_type,
+                                       out_file_name="ORF_KEGG_entry_X_ref.csv",
+                                       skip_dwnld=False,
+                                       strip_prefix=True)
         self.X_reference = self._api.org_db_X_ref_df
 
 

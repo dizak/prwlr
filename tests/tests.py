@@ -183,7 +183,9 @@ class DatabasesTests(unittest.TestCase):
         self.database_type = "Orthology"
         self.organism_name = "Saccharomyces cerevisiae"
         self.IDs = "test_data/ApisTests/test_orgs_ids_in.csv"
+        self.IDs_temp = "KEGG_organisms_IDs.csv"
         self.X_ref = "test_data/ApisTests/test_orgs_db_X_ref.csv"
+        self.X_ref_temp = "ORF_KEGG_entry_X_ref.csv"
         self.out_file_name = "test_data/ApisTests/test_orgs_db_X_ref.csv"
         self.ref_kegg_db = pd.read_pickle("test_data/DatabasesTests/ref_kegg_db.pickle")
         with open("test_data/DatabasesTests/ref_databases_KEGG_name_ID.pickle", "rb") as fin:
@@ -192,6 +194,15 @@ class DatabasesTests(unittest.TestCase):
             self.ref_databases_KEGG_ID_name = pickle.load(fin)
         self.kegg = databases.KEGG(self.database_type)
 
+    def tearDown(self):
+        """
+        Distroys files downloaded or created during the tests.
+        """
+        if os.path.isfile(self.IDs_temp):
+            os.remove(self.IDs_temp)
+        if os.path.isfile(self.X_ref_temp):
+            os.remove(self.X_ref_temp)
+
     def test_parse_database(self):
         """
         Test if KEGG database is properly parsed.
@@ -199,14 +210,23 @@ class DatabasesTests(unittest.TestCase):
         self.kegg.parse_database(self.test_kegg_db_filename)
         pd.testing.assert_frame_equal(self.kegg.database, self.ref_kegg_db)
 
-    def test_parse_organism_info(self):
+    def test_parse_organism_info_no_dwnld(self):
         """
-        Test if organisms info is properly parsed.
+        Test if organisms info is properly parsed if input files are supplied.
         """
         self.kegg.parse_organism_info(organism=self.organism_name,
                                       reference_species=self.query_species,
                                       IDs=self.IDs,
                                       X_ref=self.X_ref)
+        self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
+        self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
+
+    def test_parse_organism_info_dwnld(self):
+        """
+        Test if organisms info is properly parsed if no files are supplied.
+        """
+        self.kegg.parse_organism_info(organism=self.organism_name,
+                                      reference_species=self.query_species)
         self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
         self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
 
