@@ -199,14 +199,23 @@ class DatabasesTests(unittest.TestCase):
         self.kegg.parse_database(self.test_kegg_db_filename)
         pd.testing.assert_frame_equal(self.kegg.database, self.ref_kegg_db)
 
-    def test_parse_organism_info(self):
+    def test_parse_organism_info_no_dwnld(self):
         """
-        Test if organisms info is properly parsed.
+        Test if organisms info is properly parsed if input files are supplied.
         """
         self.kegg.parse_organism_info(organism=self.organism_name,
                                       reference_species=self.query_species,
                                       IDs=self.IDs,
                                       X_ref=self.X_ref)
+        self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
+        self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
+
+    def test_parse_organism_info_dwnld(self):
+        """
+        Test if organisms info is properly parsed if no files are supplied.
+        """
+        self.kegg.parse_organism_info(organism=self.organism_name,
+                                      reference_species=self.query_species)
         self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
         self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
 

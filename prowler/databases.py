@@ -5,6 +5,7 @@ import re
 import pathos.multiprocessing as ptmp
 import numpy as np
 import pandas as pd
+import tempfile
 from apis import KEGG_API as _KEGG_API
 from apis import Columns as _ApisColumns
 from errors import *
@@ -164,10 +165,15 @@ class KEGG(Columns):
     def parse_organism_info(self,
                             organism,
                             reference_species,
-                            IDs,
-                            X_ref,
+                            IDs=None,
+                            X_ref=None,
                             strip_prefix=True):
-        self._api.get_organisms_ids(IDs, skip_dwnld=True)
+        if IDs:
+            self._api.get_organisms_ids(IDs, skip_dwnld=True)
+        else:
+            IDs_tmp = tempfile.NamedTemporaryFile(delete=True)
+            self._api.get_organisms_ids(IDs_tmp.name, skip_dwnld=False)
+            IDs_tmp.close()
         self.reference_species = [self._api.org_name_2_kegg_id(i) for i in reference_species
                                   if i not in self._api.query_ids_not_found]
         self.reference_species = [i.upper() for i in self.reference_species if i is not None]
@@ -176,11 +182,20 @@ class KEGG(Columns):
                                 self.reference_species))
         self.ID_name = dict(zip(self.reference_species, [i for i in reference_species
                                                          if i not in self._api.query_ids_not_found]))
-        self._api.get_org_db_X_ref(organism=organism,
-                                   target_db=self.database_type,
-                                   out_file_name=X_ref,
-                                   skip_dwnld=True,
-                                   strip_prefix=True)
+        if X_ref:
+            self._api.get_org_db_X_ref(organism=organism,
+                                       target_db=self.database_type,
+                                       out_file_name=X_ref,
+                                       skip_dwnld=True,
+                                       strip_prefix=True)
+        else:
+            X_ref_tmp = tempfile.NamedTemporaryFile(delete=True)
+            self._api.get_org_db_X_ref(organism=organism,
+                                       target_db=self.database_type,
+                                       out_file_name=X_ref_tmp.name,
+                                       skip_dwnld=False,
+                                       strip_prefix=True)
+            X_ref_tmp.close()
         self.X_reference = self._api.org_db_X_ref_df
 
 
