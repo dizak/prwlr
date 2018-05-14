@@ -514,7 +514,7 @@ class SelectorTests(unittest.TestCase):
         self.query_species_selector = None
         self.array_species_selector = None
         self.ref_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
-        self.statistics = stats.Stats(self.ref_nwrk, 14)
+        self.selector = stats.Selector(self.ref_nwrk, 14)
         self.ref_nwrk_str = pd.read_csv("test_data/StatsTests/ref_nwrk.csv")
         self.flat_plu = "+" * 16
         self.flat_min = "-" * 16
@@ -524,80 +524,80 @@ class SelectorTests(unittest.TestCase):
         Test if flat_plu_q selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.flat_plu_q]
-                                       [self.statistics.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_Q] ==
-                                                         self.flat_plu][self.statistics.PROF_Q])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_plu_q]
+                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] ==
+                                                         self.flat_plu][self.selector.PROF_Q])
 
     def test_flat_plu_a(self):
         """
         Test if flat_plu_a selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.flat_plu_a]
-                                       [self.statistics.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] ==
-                                                         self.flat_plu][self.statistics.PROF_A])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_plu_a]
+                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] ==
+                                                         self.flat_plu][self.selector.PROF_A])
 
     def test_flat_min_q(self):
         """
         Test if flat_min_q selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.flat_min_q]
-                                       [self.statistics.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_Q] ==
-                                                         self.flat_min][self.statistics.PROF_Q])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_min_q]
+                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] ==
+                                                         self.flat_min][self.selector.PROF_Q])
 
     def test_flat_min_a(self):
         """
         Test if flat_min_a selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.flat_min_a]
-                                       [self.statistics.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] ==
-                                                         self.flat_min][self.statistics.PROF_A])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_min_a]
+                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] ==
+                                                         self.flat_min][self.selector.PROF_A])
 
     def test_no_flat_plu_q(self):
         """
         Test if no_flat_plu_q selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_plu_q]
-                                       [self.statistics.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_Q] !=
-                                                         self.flat_plu][self.statistics.PROF_Q])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_plu_q]
+                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] !=
+                                                         self.flat_plu][self.selector.PROF_Q])
 
     def test_no_flat_plu_a(self):
         """
         Test if no_flat_plu_a selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_plu_a]
-                                       [self.statistics.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] !=
-                                                         self.flat_plu][self.statistics.PROF_A])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_plu_a]
+                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] !=
+                                                         self.flat_plu][self.selector.PROF_A])
 
     def test_no_flat_min_q(self):
         """
         Test if no_flat_min_q selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_min_q]
-                                       [self.statistics.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_Q] !=
-                                                         self.flat_min][self.statistics.PROF_Q])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_min_q]
+                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] !=
+                                                         self.flat_min][self.selector.PROF_Q])
 
     def test_no_flat_min_a(self):
         """
         Test if no_flat_min_a selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_min_a]
-                                       [self.statistics.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] !=
-                                                         self.flat_min][self.statistics.PROF_A])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_min_a]
+                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] !=
+                                                         self.flat_min][self.selector.PROF_A])
 
 
 class StatsTests(unittest.TestCase):
