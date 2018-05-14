@@ -499,9 +499,9 @@ class ProfileTests(unittest.TestCase):
         self.assertEqual(self.test_profile.get_absent(), self.ref_absent)
 
 
-class StatsTests(unittest.TestCase):
+class SelectorTests(unittest.TestCase):
     """
-    Test for prowler.stats.
+    Test for prowler.stats.Selector.
     """
     def setUp(self):
         """
@@ -514,101 +514,113 @@ class StatsTests(unittest.TestCase):
         self.query_species_selector = None
         self.array_species_selector = None
         self.ref_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
-        self.statistics = stats.Stats(self.ref_nwrk, 14)
+        self.selector = stats.Selector(self.ref_nwrk, 14)
         self.ref_nwrk_str = pd.read_csv("test_data/StatsTests/ref_nwrk.csv")
         self.flat_plu = "+" * 16
         self.flat_min = "-" * 16
-        self.ref_PSS_sum = int(pd.DataFrame(self.ref_nwrk.groupby(by=[self.statistics.PSS]).size()).sum())
-        self.permutations_number = 10
 
     def test_flat_plu_q(self):
         """
         Test if flat_plu_q selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.flat_plu_q]
-                                       [self.statistics.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_Q] ==
-                                                         self.flat_plu][self.statistics.PROF_Q])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_plu_q]
+                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] ==
+                                                         self.flat_plu][self.selector.PROF_Q])
 
     def test_flat_plu_a(self):
         """
         Test if flat_plu_a selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.flat_plu_a]
-                                       [self.statistics.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] ==
-                                                         self.flat_plu][self.statistics.PROF_A])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_plu_a]
+                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] ==
+                                                         self.flat_plu][self.selector.PROF_A])
 
     def test_flat_min_q(self):
         """
         Test if flat_min_q selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.flat_min_q]
-                                       [self.statistics.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_Q] ==
-                                                         self.flat_min][self.statistics.PROF_Q])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_min_q]
+                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] ==
+                                                         self.flat_min][self.selector.PROF_Q])
 
     def test_flat_min_a(self):
         """
         Test if flat_min_a selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.flat_min_a]
-                                       [self.statistics.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] ==
-                                                         self.flat_min][self.statistics.PROF_A])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_min_a]
+                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] ==
+                                                         self.flat_min][self.selector.PROF_A])
 
     def test_no_flat_plu_q(self):
         """
         Test if no_flat_plu_q selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_plu_q]
-                                       [self.statistics.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_Q] !=
-                                                         self.flat_plu][self.statistics.PROF_Q])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_plu_q]
+                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] !=
+                                                         self.flat_plu][self.selector.PROF_Q])
 
     def test_no_flat_plu_a(self):
         """
         Test if no_flat_plu_a selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_plu_a]
-                                       [self.statistics.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] !=
-                                                         self.flat_plu][self.statistics.PROF_A])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_plu_a]
+                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] !=
+                                                         self.flat_plu][self.selector.PROF_A])
 
     def test_no_flat_min_q(self):
         """
         Test if no_flat_min_q selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_min_q]
-                                       [self.statistics.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_Q] !=
-                                                         self.flat_min][self.statistics.PROF_Q])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_min_q]
+                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] !=
+                                                         self.flat_min][self.selector.PROF_Q])
 
     def test_no_flat_min_a(self):
         """
         Test if no_flat_min_a selector returns dataframe of same length as
         selection on str.
         """
-        pd.testing.assert_series_equal(self.statistics.dataframe[self.statistics.no_flat_min_a]
-                                       [self.statistics.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.statistics.PROF_A] !=
-                                                         self.flat_min][self.statistics.PROF_A])
+        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_min_a]
+                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
+                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] !=
+                                                         self.flat_min][self.selector.PROF_A])
+
+
+class StatsTests(unittest.TestCase):
+    """
+    Tests of prowler.stats top-level functions.
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        self.ref_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
+        self.permutations_number = 10
+        self.desired_pss = 14
+        self.ref_PSS_sum = int(pd.DataFrame(self.ref_nwrk.groupby(by=[stats.Columns.PSS]).size()).sum())
 
     def test_permute_profiles(self):
         """
         Test if permute_profiles returns proper dataframes using
         multiprocessing.
         """
-        self.permuted = self.statistics.permute_profiles(self.ref_nwrk,
-                                                         self.permutations_number,
-                                                         return_series=True)
+        self.permuted = stats.permute_profiles(self.ref_nwrk,
+                                               self.permutations_number,
+                                               return_series=True)
         for i in range(self.permutations_number):
             self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
 
@@ -617,11 +629,11 @@ class StatsTests(unittest.TestCase):
         Test if permute_profiles returns proper dataframes using
         multiprocessing.
         """
-        self.permuted = self.statistics.permute_profiles(self.ref_nwrk,
-                                                         self.permutations_number,
-                                                         return_series=True,
-                                                         multiprocessing=True,
-                                                         mp_backend="pathos")
+        self.permuted = stats.permute_profiles(self.ref_nwrk,
+                                               self.permutations_number,
+                                               return_series=True,
+                                               multiprocessing=True,
+                                               mp_backend="pathos")
         for i in range(self.permutations_number):
             self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
 
@@ -629,21 +641,21 @@ class StatsTests(unittest.TestCase):
         """
         Test if binomial test returns values within correct range.
         """
-        self.assertGreater(self.statistics.binomial_pss_test(desired_pss=14,
-                                                             selected=self.ref_nwrk,
-                                                             total=self.ref_nwrk)["average"],
+        self.assertGreater(stats.binomial_pss_test(desired_pss=self.desired_pss,
+                                                   selected=self.ref_nwrk,
+                                                   total=self.ref_nwrk)["average"],
                            11)
-        self.assertLess(self.statistics.binomial_pss_test(desired_pss=14,
-                                                          selected=self.ref_nwrk,
-                                                          total=self.ref_nwrk)["average"],
+        self.assertLess(stats.binomial_pss_test(desired_pss=self.desired_pss,
+                                                selected=self.ref_nwrk,
+                                                total=self.ref_nwrk)["average"],
                         15)
-        self.assertGreater(self.statistics.binomial_pss_test(desired_pss=14,
-                                                             selected=self.ref_nwrk,
-                                                             total=self.ref_nwrk)["complete"],
+        self.assertGreater(stats.binomial_pss_test(desired_pss=self.desired_pss,
+                                                   selected=self.ref_nwrk,
+                                                   total=self.ref_nwrk)["complete"],
                            550)
-        self.assertLess(self.statistics.binomial_pss_test(desired_pss=14,
-                                                          selected=self.ref_nwrk,
-                                                          total=self.ref_nwrk)["complete"],
+        self.assertLess(stats.binomial_pss_test(desired_pss=self.desired_pss,
+                                                selected=self.ref_nwrk,
+                                                total=self.ref_nwrk)["complete"],
                         650)
 
 

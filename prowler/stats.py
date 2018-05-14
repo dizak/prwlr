@@ -43,11 +43,204 @@ class Columns(_DatabasesColumns):
               _DatabasesColumns.PSS: _DatabasesColumns.dtypes[_DatabasesColumns.PSS]}
 
 
-class Stats(Columns,
-            _Profile):
+def _log_binomial_coeff(n,
+                        k):
+    # use multiplicative formula and calculate logarithms on the fly
+    n = float(n)
+    w = 0.0
+    if k > n / 2:    # shorter loop
+        k = int(n - k)
+    for i in range(1, k + 1):
+        w += math.log((n - i + 1.0) / float(i))
+    return w
+
+def _score(hit_num,
+           prot_num,
+           background_p):
     """
-    Calculates and holds data about interactions array statistical
-    properties.
+    Calculate logarithm of probability that given term was found hit_num times by chance.
+    Use binomial distribution:
+    log(P) = log((N  k)  * p**k * (1-p)**(N-k)) = log(N k) + k*log(p) + (N-k)*log(1-p)
+    """
+    prot_num = int(prot_num)
+    hit_num = int(hit_num)
+    log_p = (_log_binomial_coeff(prot_num, hit_num) +
+             hit_num * math.log(background_p) +
+             (prot_num - hit_num) * math.log(1.0 - background_p))
+    return log_p
+
+def calculate_enrichment(selected,
+                         total,
+                         col=Columns.PSS):
+    """
+    Returns enrichment table.
+
+    Parameters
+    -------
+    selected: pandas.DataFrame
+        Dataframe containing data of interest.
+    total: pandas.DataFrame
+        Dataframe containing all the samples.
+    col: str
+        Column name holding attribute to calculate enrichment on.
+
+    Returns
+    -------
+        pandas.DataFrame
+    Dataframe with enrichment scores and fold change.
+    """
+    if len(selected) == 0 or len(total) == 0:
+        raise ValueError("selected and total dataframes must not be empty.")
+    if len(selected) > len(total):
+        raise ValueError("selected must not be longer bigger than total.")
+    selected_bins = pd.DataFrame(selected.groupby(by=[col]).size(),
+                                 columns=[Columns.COUNT]).reset_index()
+    expected_bins = pd.DataFrame(total.groupby(by=[col]).size(),
+                                 columns=[Columns.COUNT]).reset_index()
+    selected_bins[Columns.P] = expected_bins[Columns.COUNT].apply(lambda x: float(x) / float(len(total)))
+    selected_bins[Columns.COUNT_EXP] = selected_bins.apply(lambda x: len(selected) * x[Columns.P],
+                                                        axis=1)
+    selected_bins[Columns.SCORE] = selected_bins.apply(lambda x: Columns._score(x[Columns.COUNT],
+                                                                          len(selected),
+                                                                          x[Columns.P]),
+                                                    axis=1)
+    selected_bins[Columns.SCORE_EXP] = selected_bins.apply(lambda x: Columns._score(x[Columns.COUNT_EXP],
+                                                                              len(selected),
+                                                                              x[Columns.P]),
+                                                        axis=1)
+    selected_bins[Columns.FOLD_CHNG] = np.log2(selected_bins[Columns.COUNT] /
+                                            selected_bins[Columns.COUNT_EXP])
+    selected_bins = selected_bins.astype({k: v for k, v in Columns.dtypes.iteritems()
+                                         if k in selected_bins.columns})
+    return selected_bins
+
+def permute_profiles(dataframe,
+                     iterations,
+                     return_series=False,
+                     multiprocessing=False,
+                     mp_backend="joblib"):
+    """
+    Returns list of PSS bins after each permutation.
+
+    The algorithm:
+        1. Extract ORFs and PROFs columns.
+        2. Make the non-redundant list of ORF-PROF.
+        4. Shuffle PROF column using pandas.Series.sample method.
+        5. Merge with the stripped DataFrame on ORF (how="left").
+        6. Calculate the results.
+
+    Parameters
+    -------
+    dataframe: pandas.DataFrame
+        Dataframe on which test is performed.
+    iterations: int
+        Number of permutations to perform.
+    multiprocessing: bool, default <False>
+        pathos multiprocessing is used if <True>. Divides iterations
+        between cores.
+    """
+    def _permute_profiles(dataframe,
+                          iteration):
+        """
+        Returns a interactions network with permuted profiles and re-calculated
+        PSS.
+
+        Parameters
+        ------
+        dataframe: pandas.DataFrame
+            Dataframe to be permuted.
+
+        Return
+        -------
+            pandas.DataFrame
+        Dataframe with the profiles permuted among ORFs names and PSS
+        re-calculated.
+        """
+        sub_Q = dataframe[[Columns.ORF_Q,
+                           Columns.PROF_Q]].rename(columns={Columns.ORF_Q:
+                                                            Columns.ORF,
+                                                            Columns.PROF_Q:
+                                                            Columns.PROF}).drop_duplicates(subset=[Columns.ORF]).reset_index(drop=True)
+        sub_A = dataframe[[Columns.ORF_A,
+                           Columns.PROF_A]].rename(columns={Columns.ORF_A:
+                                                            Columns.ORF,
+                                                            Columns.PROF_A:
+                                                            Columns.PROF}).drop_duplicates(subset=[Columns.ORF]).reset_index(drop=True)
+        sub_QA = pd.concat([sub_Q,
+                            sub_A]).drop_duplicates(subset=[Columns.ORF])
+        right_df = pd.concat([sub_QA[Columns.ORF].reset_index(drop=True),
+                              sub_QA[Columns.PROF].sample(n=len(sub_QA),
+                                                       replace=True).reset_index(drop=True)],
+                             axis=1)
+        del sub_Q, sub_A, sub_QA
+        permuted = pd.merge(left=dataframe.drop([Columns.PROF_Q, Columns.PROF_A, Columns.PSS], axis=1),
+                            right=right_df,
+                            left_on=[Columns.ORF_Q],
+                            right_on=[Columns.ORF],
+                            how="left").merge(right_df,
+                                              left_on=[Columns.ORF_A],
+                                              right_on=[Columns.ORF],
+                                              how="left",
+                                              suffixes=[Columns.QUERY_SUF, Columns.ARRAY_SUF])
+        permuted[Columns.PSS] = permuted.apply(lambda x:
+                                            x[Columns.PROF_Q].calculate_pss(x[Columns.PROF_A]),
+                                            axis=1)
+        del right_df
+        gc.collect()
+        return pd.DataFrame(permuted.groupby(by=[Columns.PSS]).size())
+    if multiprocessing is True:
+        f = partial(_permute_profiles, dataframe)
+        chunksize = iterations / ptmp.cpu_count()
+        out = ptmp.ProcessingPool().map(f, range(iterations), chunksize=chunksize)
+    else:
+        out = []
+        for i in tqdm(range(iterations)):
+            out.append(_permute_profiles(dataframe, i))
+    if return_series:
+        return pd.concat([i[1].rename(columns={0: i[0]})
+                          for i in enumerate(out)],
+                         axis=1).fillna(value=0)
+    else:
+        return out
+
+def binomial_pss_test(desired_pss,
+                      selected,
+                      total,
+                      test_size=1000):
+    """
+    Draws samples of desired PSS from binomial distribution. Uses
+    numpy.random.binomial.
+
+    Parameters
+    -------
+    desired_pss: int
+        Profiles Similarity Score of interest. Interactions with this or
+        higher values are considered success.
+    selected: pandas.DataFrame
+        Dataframe containing data of interest. Interactions with this
+        values are subject of the test.
+    total: pandas.DataFrame
+        Dataframe containing all the samples.
+
+    Returns
+    -------
+    dict with int values
+        <complete> - number of interactions with PSS higher than the
+        test single results.
+        <average> - average of single test values.
+    """
+    p = float(len(total[total[Columns.PSS] >= desired_pss])) / float(len(total))
+    n = float(len(selected))
+    real_val = len(selected[selected[Columns.PSS] >= desired_pss])
+    test = np.random.binomial(n, p, test_size)
+    return {"complete": sum(test <= real_val),
+            "average": sum(test) / len(test)}
+
+
+class Selector(Columns,
+               _Profile):
+    """
+    Allows convenient selections of the Interactions Network.
     """
     def __init__(self,
                  dataframe,
@@ -173,223 +366,3 @@ class Stats(Columns,
                                                                                                      all_present=True))
             except KeyError:
                 warnings.warn("Failed to make array-species-based selection.")
-
-    def _log_binomial_coeff(self,
-                            n,
-                            k):
-        # use multiplicative formula and calculate logarithms on the fly
-        n = float(n)
-        w = 0.0
-        if k > n / 2:    # shorter loop
-            k = int(n - k)
-
-        for i in range(1, k + 1):
-            w += math.log((n - i + 1.0) / float(i))
-        return w
-
-    def _score(self,
-               hit_num,
-               prot_num,
-               background_p):
-        """
-        Calculate logarithm of probability that given term was found hit_num times by chance.
-        Use binomial distribution:
-        log(P) = log((N  k)  * p**k * (1-p)**(N-k)) = log(N k) + k*log(p) + (N-k)*log(1-p)
-        """
-        prot_num = int(prot_num)
-        hit_num = int(hit_num)
-        log_p = (self._log_binomial_coeff(prot_num, hit_num) +
-                 hit_num * math.log(background_p) +
-                 (prot_num - hit_num) * math.log(1.0 - background_p))
-        return log_p
-
-    def filter_value(self,
-                     dataframe,
-                     value):
-        """
-        Returns interactions network without given values.
-
-        Parameters
-        -------
-        dataframe: pandas.DataFrame
-            Dataframe to be filtered.
-        value: any
-            Value to be filtered
-        """
-        for i in dataframe.columns:
-            try:
-                filtered = dataframe[dataframe[i] == value]
-            except TypeError:
-                pass
-            if filtered.size > 0:
-                return filtered
-
-    def calculate_enrichment(self,
-                             selected,
-                             total,
-                             col="PSS"):
-        """
-        Returns enrichment table.
-
-        Parameters
-        -------
-        selected: pandas.DataFrame
-            Dataframe containing data of interest.
-        total: pandas.DataFrame
-            Dataframe containing all the samples.
-        col: str
-            Column name holding attribute to calculate enrichment on.
-
-        Returns
-        -------
-            pandas.DataFrame
-        Dataframe with enrichment scores and fold change.
-        """
-        if len(selected) == 0 or len(total) == 0:
-            raise ValueError("selected and total dataframes must not be empty.")
-        if len(selected) > len(total):
-            raise ValueError("selected must not be longer bigger than total.")
-        selected_bins = pd.DataFrame(selected.groupby(by=[col]).size(),
-                                     columns=[self.COUNT]).reset_index()
-        expected_bins = pd.DataFrame(total.groupby(by=[col]).size(),
-                                     columns=[self.COUNT]).reset_index()
-        selected_bins[self.P] = expected_bins[self.COUNT].apply(lambda x: float(x) / float(len(total)))
-        selected_bins[self.COUNT_EXP] = selected_bins.apply(lambda x: len(selected) * x[self.P],
-                                                            axis=1)
-        selected_bins[self.SCORE] = selected_bins.apply(lambda x: self._score(x[self.COUNT],
-                                                                              len(selected),
-                                                                              x[self.P]),
-                                                        axis=1)
-        selected_bins[self.SCORE_EXP] = selected_bins.apply(lambda x: self._score(x[self.COUNT_EXP],
-                                                                                  len(selected),
-                                                                                  x[self.P]),
-                                                            axis=1)
-        selected_bins[self.FOLD_CHNG] = np.log2(selected_bins[self.COUNT] /
-                                                selected_bins[self.COUNT_EXP])
-        selected_bins = selected_bins.astype({k: v for k, v in self.dtypes.iteritems()
-                                             if k in selected_bins.columns})
-        return selected_bins
-
-    def permute_profiles(self,
-                         dataframe,
-                         iterations,
-                         return_series=False,
-                         multiprocessing=False,
-                         mp_backend="joblib"):
-        """
-        Returns list of PSS bins after each permutation.
-
-        The algorithm:
-            1. Extract ORFs and PROFs columns.
-            2. Make the non-redundant list of ORF-PROF.
-            4. Shuffle PROF column using pandas.Series.sample method.
-            5. Merge with the stripped DataFrame on ORF (how="left").
-            6. Calculate the results.
-
-        Parameters
-        -------
-        dataframe: pandas.DataFrame
-            Dataframe on which test is performed.
-        iterations: int
-            Number of permutations to perform.
-        multiprocessing: bool, default <False>
-            pathos multiprocessing is used if <True>. Divides iterations
-            between cores.
-        """
-        def _permute_profiles(dataframe,
-                              iteration):
-            """
-            Returns a interactions network with permuted profiles and re-calculated
-            PSS.
-
-            Parameters
-            ------
-            dataframe: pandas.DataFrame
-                Dataframe to be permuted.
-
-            Return
-            -------
-                pandas.DataFrame
-            Dataframe with the profiles permuted among ORFs names and PSS
-            re-calculated.
-            """
-            sub_Q = dataframe[[self.ORF_Q,
-                               self.PROF_Q]].rename(columns={self.ORF_Q:
-                                                             self.ORF,
-                                                             self.PROF_Q:
-                                                             self.PROF}).drop_duplicates(subset=[self.ORF]).reset_index(drop=True)
-            sub_A = dataframe[[self.ORF_A,
-                               self.PROF_A]].rename(columns={self.ORF_A:
-                                                             self.ORF,
-                                                             self.PROF_A:
-                                                             self.PROF}).drop_duplicates(subset=[self.ORF]).reset_index(drop=True)
-            sub_QA = pd.concat([sub_Q,
-                                sub_A]).drop_duplicates(subset=[self.ORF])
-            right_df = pd.concat([sub_QA[self.ORF].reset_index(drop=True),
-                                  sub_QA[self.PROF].sample(n=len(sub_QA),
-                                                           replace=True).reset_index(drop=True)],
-                                 axis=1)
-            del sub_Q, sub_A, sub_QA
-            permuted = pd.merge(left=dataframe.drop([self.PROF_Q, self.PROF_A, self.PSS], axis=1),
-                                right=right_df,
-                                left_on=[self.ORF_Q],
-                                right_on=[self.ORF],
-                                how="left").merge(right_df,
-                                                  left_on=[self.ORF_A],
-                                                  right_on=[self.ORF],
-                                                  how="left",
-                                                  suffixes=[self.QUERY_SUF, self.ARRAY_SUF])
-            permuted[self.PSS] = permuted.apply(lambda x:
-                                                x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
-                                                axis=1)
-            del right_df
-            gc.collect()
-            return pd.DataFrame(permuted.groupby(by=[self.PSS]).size())
-        if multiprocessing is True:
-            f = partial(_permute_profiles, dataframe)
-            chunksize = iterations / ptmp.cpu_count()
-            out = ptmp.ProcessingPool().map(f, range(iterations), chunksize=chunksize)
-        else:
-            out = []
-            for i in tqdm(range(iterations)):
-                out.append(_permute_profiles(dataframe, i))
-        if return_series:
-            return pd.concat([i[1].rename(columns={0: i[0]})
-                              for i in enumerate(out)],
-                             axis=1).fillna(value=0)
-        else:
-            return out
-
-    def binomial_pss_test(self,
-                          desired_pss,
-                          selected,
-                          total,
-                          test_size=1000):
-        """
-        Draws samples of desired PSS from binomial distribution. Uses
-        numpy.random.binomial.
-
-        Parameters
-        -------
-        desired_pss: int
-            Profiles Similarity Score of interest. Interactions with this or
-            higher values are considered success.
-        selected: pandas.DataFrame
-            Dataframe containing data of interest. Interactions with this
-            values are subject of the test.
-        total: pandas.DataFrame
-            Dataframe containing all the samples.
-
-        Returns
-        -------
-        dict with int values
-            <complete> - number of interactions with PSS higher than the
-            test single results.
-            <average> - average of single test values.
-        """
-        p = float(len(total[total[self.PSS] >= desired_pss])) / float(len(total))
-        n = float(len(selected))
-        real_val = len(selected[selected[self.PSS] >= desired_pss])
-        test = np.random.binomial(n, p, test_size)
-        return {"complete": sum(test <= real_val),
-                "average": sum(test) / len(test)}
