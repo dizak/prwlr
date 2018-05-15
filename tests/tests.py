@@ -511,15 +511,24 @@ class SelectorTests(unittest.TestCase):
         self.p_value = 0.05
         self.GIS_min = 0.04
         self.GIS_max = -0.04
-        self.query_species_selector = ["CEL", "DME"]
-        self.array_species_selector = ["APE", "CEL", "DDI", "DME", "HSA"]
+        self.query_species = ["CEL", "DME"]
+        self.none_query_species = ["ATH", "DDI"]
+        self.array_species = ["APE", "CEL", "DDI", "DME", "HSA"]
         self.ref_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
-        self.ref_query_species_presence_selector_all_nwrk = pd.read_pickle("test_data/SelectorTests/ref_query_species_presence_selector_all.pickle")
-        self.ref_array_species_presence_selector_all_nwrk = pd.read_pickle("test_data/SelectorTests/ref_array_species_presence_selector_all.pickle")
+        self.ref_all_species_in_query_nwrk = pd.read_pickle("test_data/SelectorTests/ref_all_species_in_query_nwrk.pickle")
+        self.ref_any_species_in_query_nwrk = pd.read_pickle("test_data/SelectorTests/ref_any_species_in_query_nwrk.pickle")
+        self.ref_none_species_in_query_nwrk = pd.read_pickle("test_data/SelectorTests/ref_none_species_in_query_nwrk.pickle")
+        self.ref_all_species_in_array_nwrk = pd.read_pickle("test_data/SelectorTests/ref_all_species_in_array_nwrk.pickle")
+        self.ref_any_species_in_array_nwrk = pd.read_pickle("test_data/SelectorTests/ref_any_species_in_array_nwrk.pickle")
+        self.ref_none_species_in_array_nwrk = pd.read_pickle("test_data/SelectorTests/ref_none_species_in_array_nwrk.pickle")
         self.selector = stats.Selector(self.ref_nwrk,
                                        profiles_similarity_threshold=14,
-                                       query_species_presence_selector=self.query_species_selector,
-                                       array_species_presence_selector=self.array_species_selector)
+                                       all_species_in_query=self.query_species,
+                                       any_species_in_query=self.query_species,
+                                       none_species_in_query=self.none_query_species,
+                                       all_species_in_array=self.array_species,
+                                       any_species_in_array=self.array_species,
+                                       none_species_in_array=self.array_species)
         self.ref_nwrk_str = pd.read_csv("test_data/StatsTests/ref_nwrk.csv")
         self.flat_plu = "+" * 16
         self.flat_min = "-" * 16
@@ -604,23 +613,59 @@ class SelectorTests(unittest.TestCase):
                                        self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] !=
                                                          self.flat_min][self.selector.PROF_A])
 
-    def test_query_species_presence_selector_all(self):
+    def test_all_species_in_query(self):
         """
-        Test if query_species_presence_selector returns an expected dataframe.
+        Test if all_species_in_query returns an expected dataframe.
         """
-        pd.testing.assert_series_equal(self.ref_query_species_presence_selector_all_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())),
-                                       self.selector.dataframe[self.selector.species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())))
-        pd.testing.assert_series_equal(self.ref_query_species_presence_selector_all_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())),
-                                       self.selector.dataframe[self.selector.species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())))
+        pd.testing.assert_series_equal(self.ref_all_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())),
+                                       self.selector.dataframe[self.selector.all_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())))
+        pd.testing.assert_series_equal(self.ref_all_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())),
+                                       self.selector.dataframe[self.selector.all_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())))
 
-    def test_array_species_presence_selector_all(self):
+    def test_any_species_in_query(self):
         """
-        Test if array_species_presence_selector returns an expected dataframe.
+        Test if any_species_in_query returns an expected dataframe.
         """
-        pd.testing.assert_series_equal(self.ref_array_species_presence_selector_all_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_present())),
-                                       self.selector.dataframe[self.selector.species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_present())))
-        pd.testing.assert_series_equal(self.ref_array_species_presence_selector_all_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())),
-                                       self.selector.dataframe[self.selector.species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())))
+        pd.testing.assert_series_equal(self.ref_any_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())),
+                                       self.selector.dataframe[self.selector.any_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())))
+        pd.testing.assert_series_equal(self.ref_any_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())),
+                                       self.selector.dataframe[self.selector.any_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())))
+
+    def test_none_species_in_query(self):
+        """
+        Test if none_species_in_query returns an expected dataframe.
+        """
+        pd.testing.assert_series_equal(self.ref_none_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())),
+                                       self.selector.dataframe[self.selector.none_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())))
+        pd.testing.assert_series_equal(self.ref_none_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())),
+                                       self.selector.dataframe[self.selector.none_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())))
+
+    def test_all_species_in_array(self):
+        """
+        Test if all_species_in_array returns an expected dataframe.
+        """
+        pd.testing.assert_series_equal(self.ref_all_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_present())),
+                                       self.selector.dataframe[self.selector.all_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_present())))
+        pd.testing.assert_series_equal(self.ref_all_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())),
+                                       self.selector.dataframe[self.selector.all_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())))
+
+    def test_any_species_in_array(self):
+        """
+        Test if any_species_in_array returns an expected dataframe.
+        """
+        pd.testing.assert_series_equal(self.ref_any_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_present())),
+                                       self.selector.dataframe[self.selector.any_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_present())))
+        pd.testing.assert_series_equal(self.ref_any_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())),
+                                       self.selector.dataframe[self.selector.any_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())))
+
+    def test_none_species_in_array(self):
+        """
+        Test if none_species_in_array returns an expected dataframe.
+        """
+        pd.testing.assert_series_equal(self.ref_none_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_present())),
+                                       self.selector.dataframe[self.selector.none_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_present())))
+        pd.testing.assert_series_equal(self.ref_none_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())),
+                                       self.selector.dataframe[self.selector.none_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())))
 
 
 class StatsTests(unittest.TestCase):
