@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from .errors import *
+from prowler.errors import *
 import numpy as np
 import pandas as pd
 

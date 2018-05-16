@@ -6,11 +6,11 @@ import pathos.multiprocessing as ptmp
 import numpy as np
 import pandas as pd
 import tempfile
-from .apis import KEGG_API as _KEGG_API
-from .apis import Columns as _ApisColumns
-from .errors import *
-from .profiles import Profile as _Profile
-from .utils import *
+from prowler.apis import KEGG_API as _KEGG_API
+from prowler.apis import Columns as _ApisColumns
+from prowler.errors import *
+from prowler.profiles import Profile as _Profile
+from prowler.utils import *
 
 
 class Columns(_ApisColumns):
