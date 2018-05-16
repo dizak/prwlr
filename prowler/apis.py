@@ -105,11 +105,11 @@ class KEGG_API(Columns):
         org_bool = self.organisms_ids_df[self.DESCRIPTION].str.contains(organism)
         organism_ser = self.organisms_ids_df[org_bool]
         if len(organism_ser) == 0:
-            print "No record found for {}".format(organism)
+            print("No record found for {}".format(organism))
             self.query_ids_not_found.append(organism)
         elif len(organism_ser) > 1:
-            print "More than one record for this query\n{}".format(organism_ser[[self.DESCRIPTION,
-                                                                                 self.KEGG_ORG_ID]])
+            print("More than one record for this query\n{}".format(organism_ser[[self.DESCRIPTION,
+                                                                                 self.KEGG_ORG_ID]]))
             if assume_1st is True:
                 self.query_ids_found.append(organism)
                 return organism_ser[self.KEGG_ORG_ID].iloc[0]
@@ -231,7 +231,7 @@ class CostanzoAPI:
             out_file_name (str): name for file to be downloaded. Automatically
             same as appropriate Costanzo_API attrib when set to <None>
         """
-        if data not in self.data.keys():
+        if data not in list(self.data.keys()):
             raise ValueError("unknown option for data arg")
         url = "{0}/{1}".format(self.home,
                                self.data[data])
