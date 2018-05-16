@@ -68,7 +68,7 @@ class KEGG_API(Columns):
                                        self.operations["list_entry_ids"],
                                        self.databases["genome"])
             res = rq.get(url)
-            with open(out_file_name, "w") as fout:
+            with open(out_file_name, "wb") as fout:
                 fout.write(res.content)
         self.organisms_ids_df = pd.read_csv(out_file_name,
                                             names=[self.GENOME_ID,
@@ -147,7 +147,7 @@ class KEGG_API(Columns):
                                            self.databases[target_db],
                                            org_id)
             res = rq.get(url)
-            with open(out_file_name, "w") as fout:
+            with open(out_file_name, "wb") as fout:
                 fout.write(res.content)
         self.org_db_X_ref_df = pd.read_csv(out_file_name,
                                            names=[self.ORF_ID, self.KEGG_ID],
@@ -175,7 +175,7 @@ class KEGG_API(Columns):
                                        self.operations["get_by_entry_no"],
                                        i)
             res = rq.get(url)
-            with open(out_file_name, "a") as fout:
+            with open(out_file_name, "ab") as fout:
                 fout.write(res.content)
 
 
@@ -237,5 +237,5 @@ class CostanzoAPI:
                                self.data[data])
         out_file_name = self.data[data]
         res = rq.get(url)
-        with open("{}/{}".format(output_directory, out_file_name), "w") as fout:
+        with open("{}/{}".format(output_directory, out_file_name), "wb") as fout:
             fout.write(res.content)
