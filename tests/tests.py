@@ -139,14 +139,14 @@ class CostanzoAPITests(unittest.TestCase):
         """
         Distroys files downloaded or created during the tests.
         """
-        for i in self.costanzo_api.data.values():
+        for i in list(self.costanzo_api.data.values()):
             os.remove("test_data/{}".format(i))
 
     def test_get_data(self):
         """
         Tests if apis.CostanzoAPI,get_data downloads data files successfully.
         """
-        for i in self.costanzo_api.data.keys():
+        for i in list(self.costanzo_api.data.keys()):
             self.costanzo_api.get_data(i, "test_data")
 
 
@@ -252,7 +252,7 @@ class SGA2Test(unittest.TestCase):
         self.sga2 = databases.SGA2()
         self.ref_sga = pd.read_csv("test_data/SGA2Tests/ref_sga_v2_1000r.txt")
         self.test_sga_filename = "test_data/SGA2Tests/test_sga_v2_1000r.txt"
-        self.ref_sga = self.ref_sga.astype({k: v for k, v in self.sga2.dtypes.iteritems()
+        self.ref_sga = self.ref_sga.astype({k: v for k, v in self.sga2.dtypes.items()
                                             if k in self.ref_sga.columns})
 
     def test_parse(self):

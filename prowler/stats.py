@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+from __future__ import print_function
 import gc
 import warnings
 import pandas as pd
@@ -9,10 +10,10 @@ from functools import partial
 import numpy as np
 import pathos.multiprocessing as ptmp
 from tqdm import tqdm
-from errors import *
-from utils import *
-from databases import Columns as _DatabasesColumns
-from profiles import Profile as _Profile
+from prowler.errors import *
+from prowler.utils import *
+from prowler.databases import Columns as _DatabasesColumns
+from prowler.profiles import Profile as _Profile
 
 
 class Columns(_DatabasesColumns):
@@ -110,7 +111,7 @@ def calculate_enrichment(selected,
                                                         axis=1)
     selected_bins[Columns.FOLD_CHNG] = np.log2(selected_bins[Columns.COUNT] /
                                             selected_bins[Columns.COUNT_EXP])
-    selected_bins = selected_bins.astype({k: v for k, v in Columns.dtypes.iteritems()
+    selected_bins = selected_bins.astype({k: v for k, v in Columns.dtypes.items()
                                          if k in selected_bins.columns})
     return selected_bins
 
@@ -191,10 +192,10 @@ def permute_profiles(dataframe,
     if multiprocessing is True:
         f = partial(_permute_profiles, dataframe)
         chunksize = iterations / ptmp.cpu_count()
-        out = ptmp.ProcessingPool().map(f, range(iterations), chunksize=chunksize)
+        out = ptmp.ProcessingPool().map(f, list(range(iterations)), chunksize=chunksize)
     else:
         out = []
-        for i in tqdm(range(iterations)):
+        for i in tqdm(list(range(iterations))):
             out.append(_permute_profiles(dataframe, i))
     if return_series:
         return pd.concat([i[1].rename(columns={0: i[0]})

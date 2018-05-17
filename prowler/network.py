@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+from __future__ import print_function
 import networkx as nx
 from networkx.readwrite import json_graph
 import matplotlib

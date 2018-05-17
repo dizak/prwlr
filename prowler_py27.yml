@@ -1,4 +1,4 @@
-name: prowler
+name: prowler_py27
 channels:
   - conda-forge
   - defaults

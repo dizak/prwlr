@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from errors import *
+from __future__ import print_function
+from prowler.errors import *
 import numpy as np
 import pandas as pd
 
@@ -44,7 +45,7 @@ class Profile:
         """
         Return zipped Profile.query and Profile.profile.
         """
-        return zip(self.query, self.profile)
+        return list(zip(self.query, self.profile))
 
     def _convert(self,
                  positive_sign,
@@ -60,7 +61,7 @@ class Profile:
         Returns <True> if all positions from query_list are present in the
         profile.
         """
-        if all([dict(zip(self.query, self.profile))[i] for i in query_list]):
+        if all([dict(list(zip(self.query, self.profile)))[i] for i in query_list]):
             return True
         else:
             return False
@@ -71,7 +72,7 @@ class Profile:
         Return <True> if any of the positions from query_list is present in the
         profile.
         """
-        if any([dict(zip(self.query, self.profile))[i] for i in query_list]):
+        if any([dict(list(zip(self.query, self.profile)))[i] for i in query_list]):
             return True
         else:
             return False

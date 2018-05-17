@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 
+from __future__ import print_function
 import re
 import pathos.multiprocessing as ptmp
 import numpy as np
 import pandas as pd
 import tempfile
-from apis import KEGG_API as _KEGG_API
-from apis import Columns as _ApisColumns
-from errors import *
-from profiles import Profile as _Profile
-from utils import *
+from prowler.apis import KEGG_API as _KEGG_API
+from prowler.apis import Columns as _ApisColumns
+from prowler.errors import *
+from prowler.profiles import Profile as _Profile
+from prowler.utils import *
 
 
 class Columns(_ApisColumns):
@@ -151,7 +152,7 @@ class KEGG(Columns):
         if cleanup is True:
             df = df.drop_duplicates(subset=[self.ENTRY],
                                     keep="first")
-            df.index = range(len(df))
+            df.index = list(range(len(df)))
             df.dropna(how="all",
                       inplace=True)
             df.dropna(subset=[self.ENTRY,
@@ -177,11 +178,11 @@ class KEGG(Columns):
         self.reference_species = [self._api.org_name_2_kegg_id(i) for i in reference_species
                                   if i not in self._api.query_ids_not_found]
         self.reference_species = [i.upper() for i in self.reference_species if i is not None]
-        self.name_ID = dict(zip([i for i in reference_species
+        self.name_ID = dict(list(zip([i for i in reference_species
                                  if i not in self._api.query_ids_not_found],
-                                self.reference_species))
-        self.ID_name = dict(zip(self.reference_species, [i for i in reference_species
-                                                         if i not in self._api.query_ids_not_found]))
+                                self.reference_species)))
+        self.ID_name = dict(list(zip(self.reference_species, [i for i in reference_species
+                                                         if i not in self._api.query_ids_not_found])))
         if X_ref:
             self._api.get_org_db_X_ref(organism=organism,
                                        target_db=self.database_type,
@@ -254,7 +255,7 @@ class SGA1(Columns):
         if remove_white_spaces is True:
             self.sga.columns = [i.replace(" ", "_") for i in self.sga.columns]
         self.sga.rename(columns=dict(self.names), inplace=True)
-        self.sga = self.sga.astype({k: v for k, v in self.dtypes.iteritems()
+        self.sga = self.sga.astype({k: v for k, v in self.dtypes.items()
                                     if k in self.sga.columns})
         if cleanup:
             self.sga = self.sga.dropna().drop_duplicates().reset_index(drop=True)
@@ -310,7 +311,7 @@ class SGA2(Columns):
         ORF_Q_col.name = self.ORF_Q
         ORF_A_col.name = self.ORF_A
         self.sga = pd.concat([ORF_Q_col, ORF_A_col, self.sga], axis=1)
-        self.sga = self.sga.astype({k: v for k, v in self.dtypes.iteritems()
+        self.sga = self.sga.astype({k: v for k, v in self.dtypes.items()
                                     if k in self.sga.columns})
 
 
@@ -370,7 +371,7 @@ class Bioprocesses(Columns):
         """
         self.bioprocesses = pd.read_excel(filename,
                                           names=self.names)
-        self.bioprocesses = self.bioprocesses.astype({k: v for k, v in self.dtypes.iteritems()
+        self.bioprocesses = self.bioprocesses.astype({k: v for k, v in self.dtypes.items()
                                                      if k in self.bioprocesses.columns})
 
 
@@ -452,5 +453,5 @@ class ProfInt(Columns):
         self.merged[self.PSS] = self.merged.apply(lambda x:
                                                   x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
                                                   axis=1).astype(self.dtypes[self.PSS])
-        self.merged = self.merged.astype({k: v for k, v in self.dtypes.iteritems()
+        self.merged = self.merged.astype({k: v for k, v in self.dtypes.items()
                                           if k in self.merged.columns})
