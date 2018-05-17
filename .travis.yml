@@ -8,8 +8,6 @@ install:
   - export PATH=$HOME/miniconda3/bin:$PATH
   - conda config --set always_yes yes --set changeps1 no
   - conda info -a
-  - pip install nose
-  - pip install coverage
 
 before_script:
   - conda env create --file prowler_py27.yml
@@ -17,8 +15,12 @@ before_script:
 
 script:
   - source activate prowler_py27
+  - pip install nose
+  - pip install coverage
   - nosetests --with-coverage --cover-package prowler
   - source activate prowler_py36
+  - pip install nose
+  - pip install coverage
   - nosetests --with-coverage --cover-package prowler
 
 notifications:
