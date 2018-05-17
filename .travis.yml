@@ -16,9 +16,9 @@ before_script:
   - conda env create --file prowler_py36.yml
 
 script:
-  - source activate prowler prowler_py27
+  - source activate prowler_py27
   - nosetests --with-coverage --cover-package prowler
-  - source activate prowler prowler_py36
+  - source activate prowler_py36
   - nosetests --with-coverage --cover-package prowler
 
 notifications:
