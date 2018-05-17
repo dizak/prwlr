@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+from __future__ import print_function
 import requests as rq
 import pandas as pd
 from tqdm import tqdm

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
+from __future__ import print_function
+
 class ParserError(Exception):
     """
     Inappropriate structure passed to parser.
