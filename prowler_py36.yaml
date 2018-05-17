@@ -1,8 +1,7 @@
-name: prowler
+name: prowler_py36
 channels:
   - conda-forge
   - defaults
-  - mpi4py
   - bioconda
   - biocore
 dependencies:
