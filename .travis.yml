@@ -1,5 +1,4 @@
 language: python
-python: 3.6
 
 os: linux
 
@@ -11,12 +10,17 @@ install:
   - conda info -a
 
 before_script:
-  - conda env create --file prowler.yaml
-  - source activate prowler
-  - pip install nose
-  - pip install coverage
+  - conda env create --file prowler_py27.yml
+  - conda env create --file prowler_py36.yml
 
 script:
+  - source activate prowler prowler_py27
+  - pip install nose
+  - pip install coverage
+  - nosetests --with-coverage --cover-package prowler
+  - source activate prowler prowler_py36
+  - pip install nose
+  - pip install coverage
   - nosetests --with-coverage --cover-package prowler
 
 notifications:
