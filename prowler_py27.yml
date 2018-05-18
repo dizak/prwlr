@@ -82,7 +82,7 @@ dependencies:
   - readline=7.0=0
   - requests=2.18.4=py27_1
   - scandir=1.6=py27_0
-  - scipy=1.0.0=py27_blas_openblas_201
+  - scipy=1.1.0=py27_blas_openblas_200
   - seaborn=0.8.1=py27_0
   - setuptools=38.4.0=py27_0
   - simplegeneric=0.8.1=py27_0
