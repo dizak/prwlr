@@ -391,7 +391,22 @@ class ProfileTests(unittest.TestCase):
         self.alt_neg_sing = "#"
         self.ref_profile = "-+-+++++-+++-"
         self.ref_alt_profile = "#$#$$$$$#$$$#"
-        self.ref_pss = [13, 4, 9]
+        self.methods = ["pairwise",
+                        "jaccard",
+                        "dice",
+                        "hamming",
+                        "kulsinski",
+                        "rogerstanimoto",
+                        "russellrao",
+                        "sokalmichener"]
+        self.ref_pss = [[13, 4, 9],
+                        [0.0, 1.0, 0.3076923076923077],
+                        [0.0, 1.0, 0.18181818181818182],
+                        [0.0, 0.6923076923076923, 0.3076923076923077],
+                        [0.3076923076923077, 1.0, 0.47058823529411764],
+                        [0.0, 0.8181818181818182, 0.47058823529411764],
+                        [0.3076923076923077, 1.0, 0.3076923076923077],
+                        [0.0, 0.8181818181818182, 0.47058823529411764]]
         self.ref_ignore_elements = ["a", "c", "f"]
         self.ref_pss_ignore = 10
         self.test_profile = profiles.Profile(reference=self.ref_reference,
@@ -469,12 +484,15 @@ class ProfileTests(unittest.TestCase):
 
     def test_calculate_pss(self):
         """
-        Test if Profiles Similarity Score (PSS) is properly calculated.
+        Test if Profiles Similarity Score (PSS) is properly calculated with
+        jaccard distance measure.
         """
-        for query, pss in zip(self.ref_queries, self.ref_pss):
-            self.assertEqual(self.test_profile.calculate_pss(profiles.Profile(reference=self.ref_reference,
-                                                                              query=query)),
-                             pss)
+        for method, pss_grp in zip(self.methods, self.ref_pss):
+            for query, pss in zip(self.ref_queries, pss_grp):
+                self.assertEqual(self.test_profile.calculate_pss(profiles.Profile(reference=self.ref_reference,
+                                                                                  query=query),
+                                                                 method=method),
+                                 pss)
 
     def test_calculate_pss_ignore(self):
         """

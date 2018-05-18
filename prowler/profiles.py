@@ -5,6 +5,7 @@ from __future__ import print_function
 from prowler.errors import *
 import numpy as np
 import pandas as pd
+from scipy.spatial import distance as dist
 
 
 class Profile:
@@ -139,7 +140,8 @@ class Profile:
 
     def calculate_pss(self,
                       profile,
-                      ignore=None):
+                      ignore=None,
+                      method="pairwise"):
         """
         Calculate Profiles Similarity Score.
         """
@@ -157,7 +159,24 @@ class Profile:
                     del prof_2.profile[prof_2.query.index(i)]
                 except IndexError:
                     raise ProfileError("Element to ignore not in profile")
-        return sum(a == b for a, b in zip(prof_1.profile, prof_2.profile))
+        if method == "pairwise":
+            return sum(a == b for a, b in zip(prof_1.profile, prof_2.profile))
+        elif method == "jaccard":
+            return dist.jaccard(prof_1.profile, prof_2.profile)
+        elif method == "yule":
+            return dist.yule(prof_1.profile, prof_2.profile)
+        elif method == "dice":
+            return dist.dice(prof_1.profile, prof_2.profile)
+        elif method == "hamming":
+            return dist.hamming(prof_1.profile, prof_2.profile)
+        elif method == "kulsinski":
+            return dist.kulsinski(prof_1.profile, prof_2.profile)
+        elif method == "rogerstanimoto":
+            return dist.rogerstanimoto(prof_1.profile, prof_2.profile)
+        elif method == "russellrao":
+            return dist.russellrao(prof_1.profile, prof_2.profile)
+        elif method == "sokalmichener":
+            return dist.sokalmichener(prof_1.profile, prof_2.profile)
 
     def get_present(self):
         """
