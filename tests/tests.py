@@ -324,6 +324,14 @@ class ProfIntTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.profint = databases.ProfInt()
+        self.methods = ["pairwise",
+                        "jaccard",
+                        "dice",
+                        "hamming",
+                        "kulsinski",
+                        "rogerstanimoto",
+                        "russellrao",
+                        "sokalmichener"]
         self.ref_merged = pd.read_pickle("test_data/ProfIntTests/ref_merged.pickle")
         self.ref_profilized_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
         self.reference_species = self.ref_profilized_nwrk[self.profint.PROF_Q].iloc[0].query
@@ -357,6 +365,19 @@ class ProfIntTests(unittest.TestCase):
                                        self.profint.merged[self.profint.PROF_Q].apply(lambda x: sorted(x.get_present())))
         pd.testing.assert_series_equal(self.ref_profilized_nwrk[self.profint.PROF_Q].apply(lambda x: sorted(x.get_absent())),
                                        self.profint.merged[self.profint.PROF_Q].apply(lambda x: sorted(x.get_absent())))
+
+    def test_pss(self):
+        for method in self.methods:
+            self.ref_df = pd.read_pickle("test_data/ProfIntTests/ref_nwrk_{}.pickle".format(method))
+            self.profint.merged = self.test_non_profilized_nwrk
+            self.profint.profilize(self.reference_species, method=method)
+            pd.testing.assert_series_equal(self.ref_df[self.profint.PSS],
+                                           self.profint.merged[self.profint.PSS])
+            # print(method)
+            # self.profint.merged = self.test_non_profilized_nwrk
+            # self.profint.profilize(self.reference_species, method=method)
+            # print(self.profint.merged)
+            # self.profint.merged.to_pickle("test_data/ProfIntTests/ref_nwrk_{}.pickle".format(method))
 
 
 class ProfileTests(unittest.TestCase):
