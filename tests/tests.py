@@ -324,6 +324,14 @@ class ProfIntTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.profint = databases.ProfInt()
+        self.methods = ["pairwise",
+                        "jaccard",
+                        "dice",
+                        "hamming",
+                        "kulsinski",
+                        "rogerstanimoto",
+                        "russellrao",
+                        "sokalmichener"]
         self.ref_merged = pd.read_pickle("test_data/ProfIntTests/ref_merged.pickle")
         self.ref_profilized_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
         self.reference_species = self.ref_profilized_nwrk[self.profint.PROF_Q].iloc[0].query
@@ -358,6 +366,19 @@ class ProfIntTests(unittest.TestCase):
         pd.testing.assert_series_equal(self.ref_profilized_nwrk[self.profint.PROF_Q].apply(lambda x: sorted(x.get_absent())),
                                        self.profint.merged[self.profint.PROF_Q].apply(lambda x: sorted(x.get_absent())))
 
+    def test_pss(self):
+        for method in self.methods:
+            self.ref_df = pd.read_pickle("test_data/ProfIntTests/ref_nwrk_{}.pickle".format(method))
+            self.profint.merged = self.test_non_profilized_nwrk
+            self.profint.profilize(self.reference_species, method=method)
+            pd.testing.assert_series_equal(self.ref_df[self.profint.PSS],
+                                           self.profint.merged[self.profint.PSS])
+            # print(method)
+            # self.profint.merged = self.test_non_profilized_nwrk
+            # self.profint.profilize(self.reference_species, method=method)
+            # print(self.profint.merged)
+            # self.profint.merged.to_pickle("test_data/ProfIntTests/ref_nwrk_{}.pickle".format(method))
+
 
 class ProfileTests(unittest.TestCase):
     """
@@ -368,9 +389,10 @@ class ProfileTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.ref_query = list("acdfhiklostuz")
-        self.ref_queries = [self.ref_query,
-                            "aaaaaaaaaaaaa",
-                            "bbbbbbbbbbbbb"]
+        self.ref_queries = [self.ref_query[:10],
+                            list('!@hjlnrtwy'),
+                            list('acdfhi@#$%'),
+                            list("qoadzv!@#$")]
         self.ref_reference = list("bcefghijklmnprstuwxy")
         self.ref_bound = [("a", False),
                           ("c", True),
@@ -391,11 +413,28 @@ class ProfileTests(unittest.TestCase):
         self.alt_neg_sing = "#"
         self.ref_profile = "-+-+++++-+++-"
         self.ref_alt_profile = "#$#$$$$$#$$$#"
-        self.ref_pss = [13, 4, 9]
+        self.methods = ["pairwise",
+                        "jaccard",
+                        "dice",
+                        "hamming",
+                        "kulsinski",
+                        "rogerstanimoto",
+                        "russellrao",
+                        "sokalmichener"]
+        self.ref_pss = [[10, 7, 5, 3],
+                        [0.0, 0.3333333333333333, 0.625, 1.0],
+                        [0.0, 0.2, 0.45454545454545453, 1.0],
+                        [0.0, 0.3, 0.5, 0.7],
+                        [0.3, 0.5384615384615384, 0.8, 1.0],
+                        [0.0, 0.46153846153846156, 0.6666666666666666, 0.8235294117647058],
+                        [0.3, 0.4, 0.7, 1.0],
+                        [0.0, 0.46153846153846156, 0.6666666666666666, 0.8235294117647058]]
         self.ref_ignore_elements = ["a", "c", "f"]
         self.ref_pss_ignore = 10
         self.test_profile = profiles.Profile(reference=self.ref_reference,
                                              query=self.ref_query)
+        self.test_pss_methods_profile = profiles.Profile(reference=self.ref_reference,
+                                                         query=self.ref_query[:10])
 
     def test__convert(self):
         """
@@ -469,12 +508,15 @@ class ProfileTests(unittest.TestCase):
 
     def test_calculate_pss(self):
         """
-        Test if Profiles Similarity Score (PSS) is properly calculated.
+        Test if Profiles Similarity Score (PSS) is properly calculated with
+        jaccard distance measure.
         """
-        for query, pss in zip(self.ref_queries, self.ref_pss):
-            self.assertEqual(self.test_profile.calculate_pss(profiles.Profile(reference=self.ref_reference,
-                                                                              query=query)),
-                             pss)
+        for method, pss_grp in zip(self.methods, self.ref_pss):
+            for query, pss in zip(self.ref_queries, pss_grp):
+                self.assertEqual(self.test_pss_methods_profile.calculate_pss(profiles.Profile(reference=self.ref_reference,
+                                                                                              query=query),
+                                                                             method=method),
+                                 pss)
 
     def test_calculate_pss_ignore(self):
         """

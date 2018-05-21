@@ -435,7 +435,8 @@ class ProfInt(Columns):
         self.merged.dropna(inplace=True)
 
     def profilize(self,
-                  reference_species):
+                  reference_species,
+                  method="pairwise"):
         """
         Append databases.merged with Profiles Similarity Score and/or string
         representation of the phylogenetic profiles.
@@ -445,13 +446,18 @@ class ProfInt(Columns):
         reference_species: list of str
             Species list compared to contained in the orthogroup. Basis for the
             profiles construction.
+        method: str, default <pairwise>
+            Distance measure to use in Profiles Similarity Score calculation.
         """
+        if method != "pairwise":
+            self.dtypes[self.PSS] = "float32"
         self.merged[self.PROF_A] = self.merged[self.ORGS_A].apply(lambda x:
                                                                   _Profile(x, reference_species))
         self.merged[self.PROF_Q] = self.merged[self.ORGS_Q].apply(lambda x:
                                                                   _Profile(x, reference_species))
         self.merged[self.PSS] = self.merged.apply(lambda x:
-                                                  x[self.PROF_Q].calculate_pss(x[self.PROF_A]),
+                                                  x[self.PROF_Q].calculate_pss(x[self.PROF_A],
+                                                                               method=method),
                                                   axis=1).astype(self.dtypes[self.PSS])
         self.merged = self.merged.astype({k: v for k, v in self.dtypes.items()
                                           if k in self.merged.columns})
