@@ -368,9 +368,10 @@ class ProfileTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.ref_query = list("acdfhiklostuz")
-        self.ref_queries = [self.ref_query,
-                            "aaaaaaaaaaaaa",
-                            "bbbbbbbbbbbbb"]
+        self.ref_queries = [self.ref_query[:10],
+                            list('!@hjlnrtwy'),
+                            list('acdfhi@#$%'),
+                            list("qoadzv!@#$")]
         self.ref_reference = list("bcefghijklmnprstuwxy")
         self.ref_bound = [("a", False),
                           ("c", True),
@@ -399,18 +400,20 @@ class ProfileTests(unittest.TestCase):
                         "rogerstanimoto",
                         "russellrao",
                         "sokalmichener"]
-        self.ref_pss = [[13, 4, 9],
-                        [0.0, 1.0, 0.3076923076923077],
-                        [0.0, 1.0, 0.18181818181818182],
-                        [0.0, 0.6923076923076923, 0.3076923076923077],
-                        [0.3076923076923077, 1.0, 0.47058823529411764],
-                        [0.0, 0.8181818181818182, 0.47058823529411764],
-                        [0.3076923076923077, 1.0, 0.3076923076923077],
-                        [0.0, 0.8181818181818182, 0.47058823529411764]]
+        self.ref_pss = [[10, 7, 5, 3],
+                        [0.0, 0.3333333333333333, 0.625, 1.0],
+                        [0.0, 0.2, 0.45454545454545453, 1.0],
+                        [0.0, 0.3, 0.5, 0.7],
+                        [0.3, 0.5384615384615384, 0.8, 1.0],
+                        [0.0, 0.46153846153846156, 0.6666666666666666, 0.8235294117647058],
+                        [0.3, 0.4, 0.7, 1.0],
+                        [0.0, 0.46153846153846156, 0.6666666666666666, 0.8235294117647058]]
         self.ref_ignore_elements = ["a", "c", "f"]
         self.ref_pss_ignore = 10
         self.test_profile = profiles.Profile(reference=self.ref_reference,
                                              query=self.ref_query)
+        self.test_pss_methods_profile = profiles.Profile(reference=self.ref_reference,
+                                                         query=self.ref_query[:10])
 
     def test__convert(self):
         """
@@ -489,9 +492,9 @@ class ProfileTests(unittest.TestCase):
         """
         for method, pss_grp in zip(self.methods, self.ref_pss):
             for query, pss in zip(self.ref_queries, pss_grp):
-                self.assertEqual(self.test_profile.calculate_pss(profiles.Profile(reference=self.ref_reference,
-                                                                                  query=query),
-                                                                 method=method),
+                self.assertEqual(self.test_pss_methods_profile.calculate_pss(profiles.Profile(reference=self.ref_reference,
+                                                                                              query=query),
+                                                                             method=method),
                                  pss)
 
     def test_calculate_pss_ignore(self):
