@@ -8,12 +8,13 @@ Prowler integrates **Genetic Interactions** and **Phylogenetic Profiles**.
 
 > Nothing is more fun that BLASTing each protein sequence from the organisms of interest!
 
-Prowler uses [KEGG Orthology](http://www.genome.jp/kegg/ko.html) to determine who is the ortholog of whom.
+
+Prowler uses **[KEGG Orthology](http://www.genome.jp/kegg/ko.html)** to determine who is the ortholog of whom.
 You don't have to download it manually - Prowler uses its API!
 
-> We all love to 20-or-so different bioinformatics software pieces just to annotate one network! And store the profiles in some unintelligible form!
+> We all love to use 20-or-so different software pieces just to annotate one network! And to store the profiles in some unintelligible form!
 
-**Phylogenetic Profiles** are simple python objects. They are represented as binary lists with characters of choice (but + and - are my favourite) and hold a couple of small-but-useful methods.
+**Phylogenetic Profiles** are simple python objects. They are represented as binary lists with characters of choice (but ```+``` and ```-``` are my favourite) and hold a couple of small-but-useful methods.
 
 > Bioinformatics software is difficult to create so it should be hard for someone else!
 
@@ -26,22 +27,30 @@ Let's use Prowler!
   ```
   import prowler
 
+
   kegg_db = prowler.databases.KEGG("Orthology")
 
   kegg_db.parse_organism_info(organism="Saccharomyces cerevisiae",
-                              reference_species=["Homo sapiens",
-                                                 "Caenorhabditis elegans",
-                                                 "Aeropyrum pernix",
-                                                 "Volvox carteri",
-                                                 "Arabidopsis thaliana",
-                                                 "Drosophila melanogaster",
-                                                 "Chlamydophila felis",
-                                                 "Dictyostelium discoideum",
-                                                 "Trypanosoma cruzi"])
+                              reference_species=['Aeropyrum pernix',
+                                                 'Agrobacterium fabrum',
+                                                 'Arabidopsis thaliana',
+                                                 'Bacillus subtilis',
+                                                 'Caenorhabditis elegans',
+                                                 'Chlamydophila felis',
+                                                 'Dictyostelium discoideum',
+                                                 'Drosophila melanogaster',
+                                                 'Escherichia coli',
+                                                 'Homo sapiens',
+                                                 'Plasmodium falciparum',
+                                                 'Staphylococcus aureus',
+                                                 'Sulfolobus islandicus',
+                                                 'Tetrahymena thermophila',
+                                                 'Trypanosoma cruzi',
+                                                 'Volvox carteri'])
 
   kegg_db.parse_database("./KO_database.txt")
   ```
-  1. Parse your **Genetic Interactions** network. It can come from the widely-known [Costanzo Network](http://science.sciencemag.org/content/353/6306/aaf1420) or from any other source.
+  2. Parse your **Genetic Interactions** network. It can come from the widely-known [Costanzo Network](http://science.sciencemag.org/content/353/6306/aaf1420) or from any other source.
 
   ```
   sga2 = prowler.databases.SGA2()
@@ -49,14 +58,17 @@ Let's use Prowler!
   sga2.parse("./SGA_ExN_NxE.txt")
   ```
 
-  1. OK, now let's integrate it!
+  3. OK, now let's integrate it!
 
   ```
   profint = prowler.databases.ProfInt()
 
-  profint.merger(kegg_db.database, kegg_db.X_reference, sga2.sga)
+  profint.merger(kegg_db.database,
+                 kegg_db.X_reference,
+                 sga2.sga)
 
-  profint.profilize(kegg_db.reference_species)
+  profint.profilize(kegg_db.reference_species,
+                    method="jaccard")
   ```
 
   How does it look now?
