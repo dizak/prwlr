@@ -22,7 +22,7 @@ Prowler is numpy- and pandas-based wherever possible. It integrates well with [p
 
 Let's use Prowler!
 
-  1. Parse [KEGG Orthology](http://www.genome.jp/kegg/ko.html).
+  i. Parse [KEGG Orthology](http://www.genome.jp/kegg/ko.html).
 
   ```
   import prowler
@@ -50,7 +50,7 @@ Let's use Prowler!
 
   kegg_db.parse_database("./KO_database.txt")
   ```
-  2. Parse your **Genetic Interactions** network. It can come from the widely-known [Costanzo Network](http://science.sciencemag.org/content/353/6306/aaf1420) or from any other source.
+  ii. Parse your **Genetic Interactions** network. It can come from the widely-known [Costanzo Network](http://science.sciencemag.org/content/353/6306/aaf1420) or from any other source.
 
   ```
   sga2 = prowler.databases.SGA2()
@@ -58,7 +58,7 @@ Let's use Prowler!
   sga2.parse("./SGA_ExN_NxE.txt")
   ```
 
-  3. OK, now let's integrate it!
+  iii. OK, now let's integrate it!
 
   ```
   profint = prowler.databases.ProfInt()
