@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/dizak/prowler.svg?branch=master)](https://travis-ci.org/dizak/prowler)
 
-release - no release yet
-
 # Prowler - profiles crawler
 
 Prowler integrates **Genetic Interactions** and **Phylogenetic Profiles**.
