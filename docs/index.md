@@ -8,6 +8,7 @@ Prowler integrates **Genetic Interactions** and **Phylogenetic Profiles**.
 
 > Nothing is more fun that BLASTing each protein sequence from the organisms of interest!
 
+
 Prowler uses **[KEGG Orthology](http://www.genome.jp/kegg/ko.html)** to determine who is the ortholog of whom.
 You don't have to download it manually - Prowler uses its API!
 
