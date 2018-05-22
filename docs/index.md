@@ -62,9 +62,12 @@ Let's use Prowler!
   ```
   profint = prowler.databases.ProfInt()
 
-  profint.merger(kegg_db.database, kegg_db.X_reference, sga2.sga)
+  profint.merger(kegg_db.database,
+                 kegg_db.X_reference,
+                 sga2.sga)
 
-  profint.profilize(kegg_db.reference_species)
+  profint.profilize(kegg_db.reference_species,
+                    method="jaccard")
   ```
 
   How does it look now?
