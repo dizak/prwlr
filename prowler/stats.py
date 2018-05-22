@@ -277,18 +277,18 @@ class Selector(Columns,
         self._none_species_in_array = none_species_in_array
         self._summary_dict["total"] = len(self.dataframe)
         try:
-            self.positive_DMF = ((self.dataframe[self.DMF] >
-                                  self.dataframe[self.SMF_Q]) &
-                                 (self.dataframe[self.DMF] >
-                                  self.dataframe[self.SMF_A]))
-            self.negative_DMF = ((self.dataframe[self.DMF] <
-                                  self.dataframe[self.SMF_Q]) &
-                                 (self.dataframe[self.DMF] <
-                                  self.dataframe[self.SMF_A]))
+            self.compensatory_interactions = ((self.dataframe[self.DMF] >
+                                               self.dataframe[self.SMF_Q]) &
+                                              (self.dataframe[self.DMF] >
+                                               self.dataframe[self.SMF_A]))
+            self.inv_compensatory_interactions = ((self.dataframe[self.DMF] <
+                                                   self.dataframe[self.SMF_Q]) &
+                                                   (self.dataframe[self.DMF] <
+                                                   self.dataframe[self.SMF_A]))
             self.SMF_below_one = (self.dataframe[self.SMF_Q] < 1.0) &\
                                  (self.dataframe[self.SMF_A] < 1.0)
-            self._summary_dict["DMF_positive"] = len(self.dataframe[self.positive_DMF]),
-            self._summary_dict["DMF_negative"] = len(self.dataframe[self.negative_DMF]),
+            self._summary_dict["compensatory_interactions"] = len(self.dataframe[self.compensatory_interactions]),
+            self._summary_dict["inv_compensatory_interactions"] = len(self.dataframe[self.inv_compensatory_interactions]),
         except KeyError:
             warnings.warn("Failed to make fitness-based booleans.",
                           SelectionFailWarning)
