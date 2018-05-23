@@ -247,8 +247,8 @@ class Selector(Columns,
                  dataframe,
                  profiles_similarity_threshold,
                  p_value=0.05,
-                 GIS_min=0.04,
-                 GIS_max=-0.04,
+                 positive_interactions_minimum_GIS=0.16,
+                 negative_interactions_maximum_GIS=-0.12,
                  all_species_in_query=None,
                  any_species_in_query=None,
                  none_species_in_query=None,
@@ -258,8 +258,8 @@ class Selector(Columns,
         if not isinstance(dataframe, pd.DataFrame):
             raise TypeError("Must be pandas.DataFrame")
         if not all([isinstance(i, float) for i in [p_value,
-                                                   GIS_min,
-                                                   GIS_max]]):
+                                                   positive_interactions_minimum_GIS,
+                                                   negative_interactions_maximum_GIS]]):
             raise TypeError("Must be float.")
         if not isinstance(profiles_similarity_threshold, int):
             raise TypeError("Must be int.")
@@ -267,8 +267,8 @@ class Selector(Columns,
         self.dataframe = dataframe
         self._profiles_similarity_threshold = profiles_similarity_threshold
         self._p_value = p_value
-        self._GIS_min = GIS_min
-        self._GIS_max = GIS_max
+        self._GIS_min = positive_interactions_minimum_GIS
+        self._GIS_max = negative_interactions_maximum_GIS
         self._all_species_in_query = all_species_in_query
         self._any_species_in_query = any_species_in_query
         self._none_species_in_query = none_species_in_query
@@ -277,18 +277,18 @@ class Selector(Columns,
         self._none_species_in_array = none_species_in_array
         self._summary_dict["total"] = len(self.dataframe)
         try:
-            self.positive_DMF = ((self.dataframe[self.DMF] >
-                                  self.dataframe[self.SMF_Q]) &
-                                 (self.dataframe[self.DMF] >
-                                  self.dataframe[self.SMF_A]))
-            self.negative_DMF = ((self.dataframe[self.DMF] <
-                                  self.dataframe[self.SMF_Q]) &
-                                 (self.dataframe[self.DMF] <
-                                  self.dataframe[self.SMF_A]))
+            self.compensatory_interactions = ((self.dataframe[self.DMF] >
+                                               self.dataframe[self.SMF_Q]) &
+                                              (self.dataframe[self.DMF] >
+                                               self.dataframe[self.SMF_A]))
+            self.inv_compensatory_interactions = ((self.dataframe[self.DMF] <
+                                                   self.dataframe[self.SMF_Q]) &
+                                                   (self.dataframe[self.DMF] <
+                                                   self.dataframe[self.SMF_A]))
             self.SMF_below_one = (self.dataframe[self.SMF_Q] < 1.0) &\
                                  (self.dataframe[self.SMF_A] < 1.0)
-            self._summary_dict["DMF_positive"] = len(self.dataframe[self.positive_DMF]),
-            self._summary_dict["DMF_negative"] = len(self.dataframe[self.negative_DMF]),
+            self._summary_dict["compensatory_interactions"] = len(self.dataframe[self.compensatory_interactions]),
+            self._summary_dict["inv_compensatory_interactions"] = len(self.dataframe[self.inv_compensatory_interactions]),
         except KeyError:
             warnings.warn("Failed to make fitness-based booleans.",
                           SelectionFailWarning)
@@ -298,8 +298,8 @@ class Selector(Columns,
             warnings.warn("Failed to make p-value-based booleans.",
                           SelectionFailWarning)
         try:
-            self.GIS_max = (self.dataframe[self.GIS] < self._GIS_max)
-            self.GIS_min = (self.dataframe[self.GIS] > self._GIS_min)
+            self.positive_interactions = (self.dataframe[self.GIS] > self._GIS_min)
+            self.negative_interactions = (self.dataframe[self.GIS] < self._GIS_max)
         except KeyError:
             warnings.warn("Failed to make Genetic Interactions Score-based booleans.",
                           SelectionFailWarning)
