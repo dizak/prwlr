@@ -142,9 +142,7 @@ class CostanzoAPITests(unittest.TestCase):
         """
         for sga_version in self.sga_versions:
             for i in list(self.costanzo_api.data[sga_version].values()):
-                os.remove("test_data/{}".format(i).replace("data_files/", "")
-                                                  .replace("%20", "_")
-                                                  .replace(":", "-"))
+                os.remove("test_data/{}".format(i).replace("data_files/", "").replace("%20", "_").replace(":", "-"))
 
     def test_get_data(self):
         """

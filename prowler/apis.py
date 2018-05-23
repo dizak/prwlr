@@ -241,9 +241,7 @@ class CostanzoAPI:
             raise ValueError("unknown option for data arg")
         url = "{0}/{1}".format(self.home[sga_version],
                                self.data[sga_version][data])
-        out_file_name = self.data[sga_version][data].replace("data_files/", "")
-                                                    .replace("%20", "_")
-                                                    .replace(":", "-")
+        out_file_name = self.data[sga_version][data].replace("data_files/", "").replace("%20", "_").replace(":", "-")
         res = rq.get(url)
         with open("{}/{}".format(output_directory, out_file_name), "wb") as fout:
             fout.write(res.content)
