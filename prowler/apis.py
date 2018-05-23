@@ -202,20 +202,25 @@ class CostanzoAPI:
     """
 
     def __init__(self):
-        self.home = "http://drygin.ccbr.utoronto.ca/~costanzo2009"
-        self.data = {"raw": "sgadata_costanzo2009_rawdata_101120.txt.gz",
-                     "raw_matrix": "sgadata_costanzo2009_rawdata_matrix_101120.txt.gz",
-                     "lenient_cutoff": "sgadata_costanzo2009_lenientCutoff_101120.txt.gz",
-                     "intermediate_cutoff": "sgadata_costanzo2009_intermediateCutoff_101120.txt.gz",
-                     "stringent_cutoff": "sgadata_costanzo2009_stringentCutoff_101120.txt.gz",
-                     "bioprocesses": "bioprocess_annotations_costanzo2009.xls",
-                     "chemical_genomics": "chemgenomic_data_costanzo2009.xls",
-                     "query_list": "sgadata_costanzo2009_query_list_101120.txt",
-                     "array_list": "sgadata_costanzo2009_array_list.txt"}
+        self.home = {"v1": "http://drygin.ccbr.utoronto.ca/~costanzo2009",
+                     "v2": "http://thecellmap.org/costanzo2016/"}
+        self.data = {"v1": {"raw": "sgadata_costanzo2009_rawdata_101120.txt.gz",
+                            "raw_matrix": "sgadata_costanzo2009_rawdata_matrix_101120.txt.gz",
+                            "lenient_cutoff": "sgadata_costanzo2009_lenientCutoff_101120.txt.gz",
+                            "intermediate_cutoff": "sgadata_costanzo2009_intermediateCutoff_101120.txt.gz",
+                            "stringent_cutoff": "sgadata_costanzo2009_stringentCutoff_101120.txt.gz",
+                            "bioprocesses": "bioprocess_annotations_costanzo2009.xls",
+                            "chemical_genomics": "chemgenomic_data_costanzo2009.xls",
+                            "query_list": "sgadata_costanzo2009_query_list_101120.txt",
+                            "array_list": "sgadata_costanzo2009_array_list.txt"},
+                       "v2": {"pairwise": "data_files/Raw%20genetic%20interaction%20datasets:%20Pair-wise%20interaction%20format.zip",
+                              "matrix": "data_files/Raw%20genetic%20interaction%20datasets:%20Matrix%20format.zip",
+                              "interaction_profile_similarity_matrices": "data_files/Genetic%20interaction%20profile%20similarity%20matrices.zip"}}
 
     def get_data(self,
                  data,
-                 output_directory="."):
+                 output_directory=".",
+                 sga_version="v2"):
         """Get files from Costanzo's SOM website.
 
         Args:
@@ -232,11 +237,11 @@ class CostanzoAPI:
             out_file_name (str): name for file to be downloaded. Automatically
             same as appropriate Costanzo_API attrib when set to <None>
         """
-        if data not in list(self.data.keys()):
+        if data not in list(self.data[sga_version].keys()):
             raise ValueError("unknown option for data arg")
-        url = "{0}/{1}".format(self.home,
-                               self.data[data])
-        out_file_name = self.data[data]
+        url = "{0}/{1}".format(self.home[sga_version],
+                               self.data[sga_version][data])
+        out_file_name = self.data[sga_version][data].replace("data_files/", "").replace("%20", "_").replace(":", "-")
         res = rq.get(url)
         with open("{}/{}".format(output_directory, out_file_name), "wb") as fout:
             fout.write(res.content)
