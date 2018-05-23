@@ -202,16 +202,16 @@ class CostanzoAPI:
     """
 
     def __init__(self):
-        self.home = "http://drygin.ccbr.utoronto.ca/~costanzo2009"
-        self.data = {"raw": "sgadata_costanzo2009_rawdata_101120.txt.gz",
-                     "raw_matrix": "sgadata_costanzo2009_rawdata_matrix_101120.txt.gz",
-                     "lenient_cutoff": "sgadata_costanzo2009_lenientCutoff_101120.txt.gz",
-                     "intermediate_cutoff": "sgadata_costanzo2009_intermediateCutoff_101120.txt.gz",
-                     "stringent_cutoff": "sgadata_costanzo2009_stringentCutoff_101120.txt.gz",
-                     "bioprocesses": "bioprocess_annotations_costanzo2009.xls",
-                     "chemical_genomics": "chemgenomic_data_costanzo2009.xls",
-                     "query_list": "sgadata_costanzo2009_query_list_101120.txt",
-                     "array_list": "sgadata_costanzo2009_array_list.txt"}
+        self.home_v1 = "http://drygin.ccbr.utoronto.ca/~costanzo2009"
+        self.data_v1 = {"raw": "sgadata_costanzo2009_rawdata_101120.txt.gz",
+                        "raw_matrix": "sgadata_costanzo2009_rawdata_matrix_101120.txt.gz",
+                        "lenient_cutoff": "sgadata_costanzo2009_lenientCutoff_101120.txt.gz",
+                        "intermediate_cutoff": "sgadata_costanzo2009_intermediateCutoff_101120.txt.gz",
+                        "stringent_cutoff": "sgadata_costanzo2009_stringentCutoff_101120.txt.gz",
+                        "bioprocesses": "bioprocess_annotations_costanzo2009.xls",
+                        "chemical_genomics": "chemgenomic_data_costanzo2009.xls",
+                        "query_list": "sgadata_costanzo2009_query_list_101120.txt",
+                        "array_list": "sgadata_costanzo2009_array_list.txt"}
 
     def get_data(self,
                  data,
@@ -232,11 +232,11 @@ class CostanzoAPI:
             out_file_name (str): name for file to be downloaded. Automatically
             same as appropriate Costanzo_API attrib when set to <None>
         """
-        if data not in list(self.data.keys()):
+        if data not in list(self.data_v1.keys()):
             raise ValueError("unknown option for data arg")
-        url = "{0}/{1}".format(self.home,
-                               self.data[data])
-        out_file_name = self.data[data]
+        url = "{0}/{1}".format(self.home_v1,
+                               self.data_v1[data])
+        out_file_name = self.data_v1[data]
         res = rq.get(url)
         with open("{}/{}".format(output_directory, out_file_name), "wb") as fout:
             fout.write(res.content)

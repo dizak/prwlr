@@ -139,14 +139,14 @@ class CostanzoAPITests(unittest.TestCase):
         """
         Distroys files downloaded or created during the tests.
         """
-        for i in list(self.costanzo_api.data.values()):
+        for i in list(self.costanzo_api.data_v1.values()):
             os.remove("test_data/{}".format(i))
 
     def test_get_data(self):
         """
         Tests if apis.CostanzoAPI,get_data downloads data files successfully.
         """
-        for i in list(self.costanzo_api.data.keys()):
+        for i in list(self.costanzo_api.data_v1.keys()):
             self.costanzo_api.get_data(i, "test_data")
 
 
