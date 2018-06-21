@@ -20,66 +20,102 @@ Prowler is numpy- and pandas-based wherever possible. It integrates well with [p
 
 Let's use Prowler!
 
-  i. Parse [KEGG Orthology](http://www.genome.jp/kegg/ko.html).
+Parse [KEGG Orthology](http://www.genome.jp/kegg/ko.html).
 
-  ```
-  import prowler
+```python
+import prowler
 
 
-  kegg_db = prowler.databases.KEGG("Orthology")
+kegg_db = prowler.databases.KEGG("Orthology")
 
-  kegg_db.parse_organism_info(organism="Saccharomyces cerevisiae",
-                              reference_species=['Aeropyrum pernix',
-                                                 'Agrobacterium fabrum',
-                                                 'Arabidopsis thaliana',
-                                                 'Bacillus subtilis',
-                                                 'Caenorhabditis elegans',
-                                                 'Chlamydophila felis',
-                                                 'Dictyostelium discoideum',
-                                                 'Drosophila melanogaster',
-                                                 'Escherichia coli',
-                                                 'Homo sapiens',
-                                                 'Plasmodium falciparum',
-                                                 'Staphylococcus aureus',
-                                                 'Sulfolobus islandicus',
-                                                 'Tetrahymena thermophila',
-                                                 'Trypanosoma cruzi',
-                                                 'Volvox carteri'])
+kegg_db.parse_organism_info(
+    organism="Saccharomyces cerevisiae",
+    reference_species=['Aeropyrum pernix',
+                       'Agrobacterium fabrum',
+                       'Arabidopsis thaliana',
+                       'Bacillus subtilis',
+                       'Caenorhabditis elegans',
+                       'Chlamydophila felis',
+                       'Dictyostelium discoideum',
+                       'Drosophila melanogaster',
+                       'Escherichia coli',
+                       'Homo sapiens',
+                       'Plasmodium falciparum',
+                       'Staphylococcus aureus',
+                       'Sulfolobus islandicus',
+                       'Tetrahymena thermophila',
+                       'Trypanosoma cruzi',
+                       'Volvox carteri'])
 
-  kegg_db.parse_database("./KO_database.txt")
-  ```
-  ii. Parse your **Genetic Interactions** network. It can come from the widely-known [Costanzo Network](http://science.sciencemag.org/content/353/6306/aaf1420) or from any other source.
+kegg_db.parse_database("./KO_database.txt")
+```
 
-  ```
-  sga2 = prowler.databases.SGA2()
+Parse your **Genetic Interactions** network. It can come from the widely-known [Costanzo Network](http://science.sciencemag.org/content/353/6306/aaf1420) or from any other source.
 
-  sga2.parse("./SGA_ExN_NxE.txt")
-  ```
+```python
+sga2 = prowler.databases.SGA2()
 
-  iii. OK, now let's integrate it!
+sga2.parse("./SGA_ExN_NxE.txt")
+```
 
-  ```
-  profint = prowler.databases.ProfInt()
+OK, now let's integrate it...
 
-  profint.merger(kegg_db.database,
-                 kegg_db.X_reference,
-                 sga2.sga)
+```python
+profint = prowler.databases.ProfInt()
 
-  profint.profilize(kegg_db.reference_species,
-                    method="jaccard")
-  ```
+profint.merger(
+    kegg_db.database,
+    kegg_db.X_reference,
+    sga2.sga)
 
-  How does it look now?
+profint.profilize(
+    kegg_db.reference_species,
+    method="jaccard")
+```
 
-  |ORF_Q|GENE_Q|ENTRY_Q|PROF_Q|ORF_A|GENE_A|ENTRY_A|PROF_A|GIS|SMF_Q|SMF_A|DMF|PSS
-  |-----|------|-------|------|-----|------|-------|------|---|-----|-----|---|---
-  |YBL097W|brn1-16|K06676|-+----++-+----+-|YPL110C|gde1|K18696|------+--------+|0.0219|0.8542|1.0235|0.8962|0.8333333
-  |YBL097W|brn1-16|K06676|-+----++-+----+-|YPL115C|bem3|K19840|----------------|0.0121|0.8542|0.9865|0.8547|1.0
-  |YBL097W|brn1-16|K06676|-+----++-+----+-|YPL116W|hos3|K11484|----------------|-0.0147|0.8542|1.01|0.8481|1.0
-  |YBL097W|brn1-16|K06676|-+----++-+----+-|YPL119C|dbp1|K11594|-+--+-++-++--+-+|-0.0036|0.8542|1.013|0.8617|0.5555556
-  |YBL097W|brn1-16|K06676|-+----++-+----+-|YPL120W|vps30|K08334|-+--+-++-+----++|-0.0488|0.8542|0.871|0.6952|0.2857143
-  |YBL097W|brn1-16|K06676|-+----++-+----+-|YPL127C|hho1|K11275|-+--+-++-+-----+|0.0082|0.8542|0.996|0.8589|0.42857143
-  |YBL097W|brn1-16|K06676|-+----++-+----+-|YPL134C|odc1|K15110|----+-++-+-----+|-0.0139|0.8542|1.025|0.8616|0.5714286
-  |YBL097W|brn1-16|K06676|-+----++-+----+-|YPL135W|isu1|K22068|-+--+-++-++--++-|0.0368|0.8542|0.9295|0.8308|0.375
-  |YBL097W|brn1-16|K06676|-+----++-+----+-|YPL138C|spp1|K14960|-------+-+------|-0.0763|0.8542|0.9973|0.7756|0.6
-  |YBL097W|brn1-16|K06676|-+----++-+----+-|YPL140C|mkk2|K08294|----------------|-0.025|0.8542|1.011|0.8386|1.0
+...and make profiles!
+
+```python
+profint.profilize(
+    kegg_db.reference_species,
+    method="jaccard")
+```
+
+How does it look now?
+
+```python
+profint.merged
+```
+
+|ORF_Q|GENE_Q|ENTRY_Q|PROF_Q|ORF_A|GENE_A|ENTRY_A|PROF_A|GIS|SMF_Q|SMF_A|DMF|PSS
+|-----|------|-------|------|-----|------|-------|------|---|-----|-----|---|---
+|YBL097W|brn1-16|K06676|-+----++-+----+-|YPL110C|gde1|K18696|------+--------+|0.0219|0.8542|1.0235|0.8962|0.8333333
+|YBL097W|brn1-16|K06676|-+----++-+----+-|YPL115C|bem3|K19840|----------------|0.0121|0.8542|0.9865|0.8547|1.0
+|YBL097W|brn1-16|K06676|-+----++-+----+-|YPL116W|hos3|K11484|----------------|-0.0147|0.8542|1.01|0.8481|1.0
+|YBL097W|brn1-16|K06676|-+----++-+----+-|YPL119C|dbp1|K11594|-+--+-++-++--+-+|-0.0036|0.8542|1.013|0.8617|0.5555556
+|YBL097W|brn1-16|K06676|-+----++-+----+-|YPL120W|vps30|K08334|-+--+-++-+----++|-0.0488|0.8542|0.871|0.6952|0.2857143
+|YBL097W|brn1-16|K06676|-+----++-+----+-|YPL127C|hho1|K11275|-+--+-++-+-----+|0.0082|0.8542|0.996|0.8589|0.42857143
+|YBL097W|brn1-16|K06676|-+----++-+----+-|YPL134C|odc1|K15110|----+-++-+-----+|-0.0139|0.8542|1.025|0.8616|0.5714286
+|YBL097W|brn1-16|K06676|-+----++-+----+-|YPL135W|isu1|K22068|-+--+-++-++--++-|0.0368|0.8542|0.9295|0.8308|0.375
+|YBL097W|brn1-16|K06676|-+----++-+----+-|YPL138C|spp1|K14960|-------+-+------|-0.0763|0.8542|0.9973|0.7756|0.6
+|YBL097W|brn1-16|K06676|-+----++-+----+-|YPL140C|mkk2|K08294|----------------|-0.025|0.8542|1.011|0.8386|1.0
+
+Maybe you would like to see what's inside on of the profiles?
+
+```python
+profint.merged.iloc[0].PROF_A.get_present()
+```
+
+```
+['DDI', 'VCN']
+```
+
+With something more human-readable?
+
+```python
+[kegg_db.ID_name[i] for i in df.iloc[0].PROF_A.get_present()]
+```
+
+```
+['Dictyostelium discoideum', 'Volvox carteri']
+```
