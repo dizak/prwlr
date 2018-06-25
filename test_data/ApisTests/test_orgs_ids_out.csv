@@ -1,0 +1,101 @@
+	GENOME_ID	DESCRIPTION	KEGG_ORG_ID	NAME	TAXON_ID
+0	gn:T00001	 Haemophilus influenzae Rd KW20 (serotype d)	hin	 HAEIN	 71421
+1	gn:T00002	 Mycoplasma genitalium G37	mge	 MYCGE	 243273
+2	gn:T00003	 Methanocaldococcus jannaschii DSM 2661	mja	 METJA	 243232
+3	gn:T00004	 Synechocystis sp. PCC 6803	syn	 SYNY3	 1148
+4	gn:T00005	 Saccharomyces cerevisiae S288c	sce	 YEAST	 559292
+5	gn:T00006	 Mycoplasma pneumoniae M129	mpn	 MYCPN	 272634
+6	gn:T00007	 Escherichia coli K-12 MG1655	eco	 ECOLI	 511145
+7	gn:T00008	 Helicobacter pylori 26695	hpy	 HELPY	 85962
+8	gn:T00009	 Methanothermobacter thermautotrophicus Delta H	mth	 METTH	 187420
+9	gn:T00010	 Bacillus subtilis subsp. subtilis 168	bsu	 BACSU	 224308
+10	gn:T00011	 Archaeoglobus fulgidus DSM 4304 (VC-16)	afu	 ARCFU	 224325
+11	gn:T00012	 Borrelia burgdorferi B31	bbu	 BORBU	 224326
+12	gn:T00013	 Aquifex aeolicus VF5	aae	 AQUAE	 224324
+13	gn:T00014	 Pyrococcus horikoshii OT3	pho	 PYRHO	 70601
+14	gn:T00015	 Mycobacterium tuberculosis H37Rv, laboratory strain	mtu	 MYCTU	 83332
+15	gn:T00016	 Treponema pallidum subsp. pallidum Nichols	tpa	 TREPA	 243276
+16	gn:T00017	 Chlamydia trachomatis D/UW-3/CX	ctr	 CHLTR	 272561
+17	gn:T00018	 Rickettsia prowazekii Madrid E	rpr	 RICPR	 272947
+18	gn:T00019	 Caenorhabditis elegans (nematode)	cel	 CAEEL	 6239
+19	gn:T00020	 Helicobacter pylori J99	hpj	 HELPJ	 85963
+20	gn:T00021	 Chlamydophila pneumoniae CWL029	cpn	 CHLPN	 115713
+21	gn:T00022	 Thermotoga maritima MSB8	tma	 THEMA	 243274
+22	gn:T00023	 Aeropyrum pernix K1	ape	 AERPE	 272557
+23	gn:T00024	 Pyrococcus abyssi GE5	pab	 PYRAB	 272844
+24	gn:T00025	 Deinococcus radiodurans R1	dra	 DEIRA	 243230
+25	gn:T00026	 Campylobacter jejuni subsp. jejuni NCTC 11168 = ATCC 700819	cje	 CAMJE	 192222
+26	gn:T00027	 Neisseria meningitidis MC58 (serogroup B)	nme	 NEIMB	 122586
+27	gn:T00028	 Chlamydia muridarum Nigg (Chlamydia trachomatis MoPn)	cmu	 CHLMU	 243161
+28	gn:T00029	 Chlamydophila pneumoniae AR39	cpa	 CHLPN	 115711
+29	gn:T00030	 Drosophila melanogaster (fruit fly)	dme	 DROME	 7227
+30	gn:T00031	 Neisseria meningitidis Z2491 (serogroup A)	nma	 NEIMA	 122587
+31	gn:T00032	 Chlamydophila pneumoniae J138	cpj	 CHLPN	 138677
+32	gn:T00033	 Xylella fastidiosa 9a5c	xfa	 XYLFA	 160492
+33	gn:T00034	 Vibrio cholerae O1 biovar El Tor N16961	vch	 VIBCH	 243277
+34	gn:T00035	 Pseudomonas aeruginosa PAO1	pae	 PSEAE	 208964
+35	gn:T00036	 Buchnera aphidicola APS, endosymbiont of Acyrthosiphon pisum (pea aphid)	buc	 BUCAI	 107806
+36	gn:T00037	 Thermoplasma acidophilum DSM 1728	tac	 THEAC	 273075
+37	gn:T00038	 Halobacterium salinarum NRC-1 (Halobacterium sp. NRC-1)	hal	 HALSA	 64091
+38	gn:T00039	 Bacillus halodurans C-125	bha	 BACHD	 272558
+39	gn:T00040	 Ureaplasma parvum serovar 3 ATCC 700970	uur	 UREPA	 273119
+40	gn:T00041	 Arabidopsis thaliana (thale cress)	ath	 ARATH	 3702
+41	gn:T00042	 Thermoplasma volcanium GSS1	tvo	 THEVO	 273116
+42	gn:T00043	 Mesorhizobium japonicum MAFF 303099 (Mesorhizobium loti MAFF303099)	mlo	 RHILO	 266835
+43	gn:T00044	 Escherichia coli O157:H7 EDL933 (EHEC)	ece	 ECOLX	 155864
+44	gn:T00045	 Lactococcus lactis subsp. lactis Il1403	lla	 LACLA	 272623
+45	gn:T00046	 Pasteurella multocida subsp. multocida Pm70	pmu	 PASMU	 272843
+46	gn:T00047	 Mycobacterium leprae TN	mle	 MYCLE	 272631
+47	gn:T00048	 Escherichia coli O157:H7 Sakai (EHEC)	ecs	 ECO57	 386585
+48	gn:T00049	 Caulobacter crescentus CB15	ccr	 CAUCR	 190650
+49	gn:T00050	 Streptococcus pyogenes M1 GAS (serotype M1)	spy	 STRP1	 160490
+50	gn:T00051	 Staphylococcus aureus subsp. aureus N315, hospital-acquired meticillin-resistant, vancomycin-susceptible	sau	 STAAN	 158879
+51	gn:T00052	 Staphylococcus aureus subsp. aureus Mu50, MRSA strain with vancomycin-intermediate resistance	sav	 STAAM	 158878
+52	gn:T00053	 Mycobacterium tuberculosis CDC1551, clinical strain	mtc	 MYCTU	 83331
+53	gn:T00054	 Sulfolobus solfataricus P2	sso	 SULSO	 273057
+54	gn:T00055	 Mycoplasma pulmonis UAB CTIP	mpu	 MYCPU	 272635
+55	gn:T00056	 Clostridium acetobutylicum ATCC 824	cac	 CLOAB	 272562
+56	gn:T00057	 Streptococcus pneumoniae TIGR4 (virulent serotype 4)	spn	 STRPN	 170187
+57	gn:T00058	 Sinorhizobium meliloti 1021	sme	 RHIME	 266834
+58	gn:T00060	 Streptococcus pneumoniae R6 (avirulent, laboratory-adapted D39 derivative)	spr	 STRR6	 171101
+59	gn:T00061	 Rickettsia conorii Malish 7	rco	 RICCN	 272944
+60	gn:T00062	 Sulfolobus tokodaii 7	sto	 SULTO	 273063
+61	gn:T00063	 Yersinia pestis CO92 (biovar Orientalis)	ype	 YERPE	 214092
+62	gn:T00064	 Salmonella enterica subsp. enterica serovar Typhi CT18 (Salmonella typhi CT18)	sty	 SALTI	 220341
+63	gn:T00065	 Salmonella enterica subsp. enterica serovar Typhimurium LT2 (Salmonella typhimurium LT2)	stm	 SALTY	 99287
+64	gn:T00066	 Listeria monocytogenes EGD-e (serotype 1/2a)	lmo	 LISMO	 169963
+65	gn:T00067	 Listeria innocua Clip11262 (serotype 6a)	lin	 LISIN	 272626
+66	gn:T00068	 Escherichia coli K-12 W3110	ecj	 ECOLI	 316407
+67	gn:T00069	 Nostoc sp. PCC 7120 (Anabaena sp. PCC 7120)	ana	 ANASP	 103690
+68	gn:T00070	 Agrobacterium fabrum C58 (Agrobacterium tumefaciens C58)	atu	 AGRT5	 176299
+69	gn:T00071	 Ralstonia solanacearum GMI1000	rso	 RALSO	 267608
+70	gn:T00072	 Brucella melitensis bv. 1 16M	bme	 BRUME	 224914
+71	gn:T00073	 Pyrobaculum aerophilum IM2	pai	 PYRAE	 178306
+72	gn:T00074	 Clostridium perfringens 13	cpe	 CLOPE	 195102
+73	gn:T00075	 Pyrococcus furiosus DSM 3638	pfu	 PYRFU	 186497
+74	gn:T00076	 Schizosaccharomyces pombe 972h-	spo	 SCHPO	 284812
+75	gn:T00077	 Fusobacterium nucleatum subsp. nucleatum ATCC 25586	fnu	 FUSNU	 190304
+76	gn:T00078	 Methanopyrus kandleri AV19	mka	 METKA	 190192
+77	gn:T00079	 Streptococcus pyogenes MGAS8232 (serotype M18)	spm	 STRP8	 186103
+78	gn:T00080	 Methanosarcina acetivorans C2A	mac	 METAC	 188937
+79	gn:T00081	 Thermoanaerobacter tengcongensis MB4(T)	tte	 THETN	 273068
+80	gn:T00082	 Methanosarcina mazei Go1	mma	 METMA	 192952
+81	gn:T00083	 Xanthomonas campestris pv. campestris ATCC 33913	xcc	 XANCP	 190485
+82	gn:T00084	 Xanthomonas citri pv. citri 306 (Xanthomonas axonopodis pv. citri 306)	xac	 XANAC	 190486
+83	gn:T00085	 Streptomyces coelicolor A3(2)	sco	 STRCO	 100226
+84	gn:T00086	 Staphylococcus aureus subsp. aureus MW2, community-acquired MRSA	sam	 STAAW	 196620
+85	gn:T00087	 Buchnera aphidicola Sg, endosymbiont of Schizaphis graminum (greenbug)	bas	 BUCAP	 198804
+86	gn:T00088	 Chlorobium tepidum TLS	cte	 CHLTE	 194439
+87	gn:T00089	 Streptococcus pyogenes MGAS315 (serotype M3)	spg	 STRP3	 198466
+88	gn:T00090	 Thermosynechococcus elongatus BP-1	tel	 SYNEL	 197221
+89	gn:T00091	 Streptococcus agalactiae 2603 (serotype V)	sag	 STRA5	 208435
+90	gn:T00092	 Yersinia pestis KIM10+ (biovar Mediaevalis)	ypk	 YERPE	 187410
+91	gn:T00093	 Oceanobacillus iheyensis HTE831	oih	 OCEIH	 221109
+92	gn:T00094	 Bifidobacterium longum NCC2705	blo	 BIFLO	 206672
+93	gn:T00095	 Plasmodium falciparum 3D7	pfa	 PLAF7	 36329
+94	gn:T00096	 Brucella suis 1330	bms	 BRUSU	 204722
+95	gn:T00097	 Shigella flexneri 301 (serotype 2a)	sfl	 SHIFL	 198214
+96	gn:T00098	 Leptospira interrogans serovar Lai 56601	lil	 LEPIN	 189518
+97	gn:T00099	 Shewanella oneidensis MR-1	son	 SHEON	 211586
+98	gn:T00100	 Streptococcus mutans UA159 (serotype C)	smu	 STRMU	 210007
+99	gn:T00101	 Wigglesworthia glossinidia (Wigglesworthia brevipalpis), endosymbiont of Glossina brevipalpis (tsetse fly)	wbr	 WIGBR	 36870
