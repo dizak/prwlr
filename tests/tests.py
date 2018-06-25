@@ -54,7 +54,8 @@ class UtilsTests(unittest.TestCase):
                                                                  self.test_set_size))
 
 
-class ApisTests(unittest.TestCase):
+class ApisTests(unittest.TestCase,
+                apis.Columns):
     """
     Tests for prowler.apis.
     """
@@ -64,7 +65,11 @@ class ApisTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         super(ApisTests, cls).setUpClass()
-        cls.orgs_ids_out = pd.read_pickle("test_data/ApisTests/test_orgs_ids_out.pickle")
+        cls.orgs_ids_out = pd.read_csv("test_data/ApisTests/test_orgs_ids_out.csv",
+                                        sep='\t',
+                                        index_col=[0])
+        cls.orgs_ids_out = cls.orgs_ids_out.astype({k: v for k, v in cls.dtypes.items()
+                                                    if k in cls.orgs_ids_out.columns})
         cls.org_db_X_ref_out = pd.read_csv("test_data/ApisTests/test_orgs_db_X_ref.csv",
                                            sep="\t",
                                            names=["ORF_ID",
