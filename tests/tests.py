@@ -193,12 +193,26 @@ class DatabasesTests(unittest.TestCase):
         self.IDs = "test_data/ApisTests/test_orgs_ids_in.csv"
         self.X_ref = "test_data/ApisTests/test_orgs_db_X_ref.csv"
         self.out_file_name = "test_data/ApisTests/test_orgs_db_X_ref.csv"
-        self.ref_kegg_db = pd.read_pickle("test_data/DatabasesTests/ref_kegg_db.pickle")
+        self.ref_kegg_db = pd.read_csv("test_data/DatabasesTests/ref_kegg_db.csv",
+                                       sep='\t',
+                                       index_col = [0])
         with open("test_data/DatabasesTests/ref_databases_KEGG_name_ID.pickle", "rb") as fin:
             self.ref_databases_KEGG_name_ID = pickle.load(fin)
         with open("test_data/DatabasesTests/ref_databases_KEGG_ID_name.pickle", "rb") as fin:
             self.ref_databases_KEGG_ID_name = pickle.load(fin)
         self.kegg = databases.KEGG(self.database_type)
+
+        self.ref_kegg_db[self.kegg.GENES] = self.ref_kegg_db[self.kegg.GENES].apply(lambda x: [_.strip()
+                                                                                               for _ in x.replace("[", "").
+                                                                                                          replace("]", "").
+                                                                                                          replace("'", "").
+                                                                                                          split(",")])
+        self.ref_kegg_db[self.kegg.ORGS] = self.ref_kegg_db[self.kegg.ORGS].apply(lambda x: [_.strip()
+                                                                                             for _ in x.replace("[", "").
+                                                                                                  replace("]", "").
+                                                                                                  replace("'", "").
+                                                                                                  split(",")])
+
 
     def test_parse_database(self):
         """
