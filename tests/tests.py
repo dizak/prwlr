@@ -351,10 +351,10 @@ class BioprocessesTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        self.ref_bioprocesses_filename = "test_data/BioprocessesTests/ref_bioproc_100r.pickle"
-        self.test_bioprocesses_filename = "test_data/BioprocessesTests/test_bioproc_100r.xls"
-        self.ref_bioprocesses = pd.read_pickle(self.ref_bioprocesses_filename)
-        self.test_bioprocesses = pd.read_excel(self.test_bioprocesses_filename)
+        self.ref_bioprocesses = pd.read_csv("test_data/BioprocessesTests/ref_bioproc_100r.csv",
+                                            sep='\t',
+                                            index_col=[0])
+        self.test_bioprocesses = pd.read_excel("test_data/BioprocessesTests/test_bioproc_100r.xls")
 
     def test_parse(self):
         """

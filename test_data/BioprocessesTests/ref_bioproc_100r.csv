@@ -1,0 +1,101 @@
+	ORF	GENE	BIOPROC
+0	YAL004W	YAL004W	unknown
+1	YAL005C	SSA1	unknown
+2	YAL007C	ERP2	ER<->Golgi traffic
+3	YAL008W	FUN14	metabolism/mitochondria
+4	YAL010C	MDM10	metabolism/mitochondria
+5	YAL011W	SWC3	chromatin/transcription
+6	YAL012W	CYS3	metabolism/mitochondria;amino acid biosynth&transport/nitrogen utilization
+7	YAL013W	DEP1	chromatin/transcription
+8	YAL014C	SYN8	Golgi/endosome/vacuole/sorting
+9	YAL015C	NTG1	metabolism/mitochondria;DNA replication/repair/HR/cohesion
+10	YAL017W	PSK1	metabolism/mitochondria
+11	YAL018C	YAL018C	unknown
+12	YAL019W	FUN30	unknown
+13	YAL020C	ATS1	ribosome/translation
+14	YAL021C	CCR4	chromatin/transcription;RNA processing
+15	YAL021C_damp	CCR4_damp	chromatin/transcription;RNA processing
+16	YAL022C	FUN26	drug/ion transport
+17	YAL023C	PMT2	protein folding/protein glycosylation/cell wall biogenesis&integrity
+18	YAL024C	LTE1	chromosome segregation/kinetochore/spindle/microtubule
+19	YAL025C_damp	MAK16_damp	ribosome/translation
+20	YAL027W	SAW1	unknown
+21	YAL028W	FRT2	unknown
+22	YAL029C	MYO4	cell polarity/morphogenesis
+23	YAL030W	SNC1	Golgi/endosome/vacuole/sorting
+24	YAL031C	GIP4	signaling/stress response;chromosome segregation/kinetochore/spindle/microtubule
+25	YAL034C	FUN19	unknown
+26	YAL034W-A_tsq235	mtw1-ts	chromosome segregation/kinetochore/spindle/microtubule
+27	YAL036C	RBG1	ribosome/translation
+28	YAL037W	YAL037W	unknown
+29	YAL038W_tsq26	cdc19-1	metabolism/mitochondria
+30	YAL040C	CLN3	G1/S and G2/M cell cycle progression/meiosis;signaling/stress response
+31	YAL041W_tsq148	cdc24-11	cell polarity/morphogenesis
+32	YAL041W_tsq149	cdc24-4	cell polarity/morphogenesis
+33	YAL041W_tsq412	cdc24-3	cell polarity/morphogenesis
+34	YAL042W	ERV46	ER<->Golgi traffic
+35	YAL043C_damp	PTA1_damp	chromatin/transcription;RNA processing
+36	YAL043C-A	YAL043C-A	unknown
+37	YAL045C	YAL045C	unknown
+38	YAL046C	AIM1	unknown
+39	YAL048C	GEM1	metabolism/mitochondria
+40	YAL049C	AIM2	unknown
+41	YAL051W	OAF1	metabolism/mitochondria;chromatin/transcription
+42	YAL053W	FLC2	protein folding/protein glycosylation/cell wall biogenesis&integrity
+43	YAL054C	ACS1	metabolism/mitochondria
+44	YAL056W	GPB2	signaling/stress response
+45	YAL058C-A	YAL058C-A	protein folding/protein glycosylation/cell wall biogenesis&integrity
+46	YAL058W	CNE1	protein folding/protein glycosylation/cell wall biogenesis&integrity;protein degradation/proteosome
+47	YAL059W	ECM1	ribosome/translation
+48	YAL060W	BDH1	metabolism/mitochondria
+49	YAL061W	BDH2	unknown
+50	YAL062W	GDH3	metabolism/mitochondria
+51	YAL063C	FLO9	protein folding/protein glycosylation/cell wall biogenesis&integrity;cell polarity/morphogenesis
+52	YAL064C-A	YAL064C-A	unknown
+53	YAL065C	YAL065C	unknown
+54	YAL066W	YAL066W	unknown
+55	YAL067C	SEO1	drug/ion transport
+56	YAL068C	PAU8	unknown
+57	YAR002C-A	ERP1	ER<->Golgi traffic
+58	YAR002W	NUP60	nuclear-cytoplasic transport
+59	YAR003W	SWD1	chromatin/transcription
+60	YAR014C	BUD14	cell polarity/morphogenesis
+61	YAR015W	ADE1	metabolism/mitochondria;amino acid biosynth&transport/nitrogen utilization
+62	YAR018C	KIN3	unknown
+63	YAR020C	PAU7	metabolism/mitochondria
+64	YAR023C	YAR023C	unknown
+65	YAR027W	UIP3	unknown
+66	YAR028W	YAR028W	unknown
+67	YAR029W	YAR029W	unknown
+68	YAR030C	YAR030C	unknown
+69	YAR031W	PRM9	unknown
+70	YAR035W	YAT1	metabolism/mitochondria
+71	YAR037W	YAR037W	unknown
+72	YAR040C	YAR040C	unknown
+73	YAR042W	SWH1	lipid/sterol/fatty acid biosynth
+74	YAR043C	YAR043C	unknown
+75	YAR044W	YAR044W	unknown
+76	YAR047C	YAR047C	unknown
+77	YAR050W	FLO1	cell polarity/morphogenesis;signaling/stress response
+78	YAR071W	PHO11	protein folding/protein glycosylation/cell wall biogenesis&integrity;metabolism/mitochondria
+79	YBL001C	ECM15	unknown
+80	YBL003C	HTA2	chromatin/transcription
+81	YBL005W	PDR3	drug/ion transport
+82	YBL007C	SLA1	cell polarity/morphogenesis
+83	YBL008W	HIR1	chromatin/transcription
+84	YBL009W	ALK2	unknown
+85	YBL010C	YBL010C	unknown
+86	YBL011W	SCT1	lipid/sterol/fatty acid biosynth
+87	YBL013W	FMT1	ribosome/translation
+88	YBL015W	ACH1	metabolism/mitochondria
+89	YBL017C	PEP1	Golgi/endosome/vacuole/sorting
+90	YBL019W	APN2	DNA replication/repair/HR/cohesion
+91	YBL021C	HAP3	metabolism/mitochondria;chromatin/transcription
+92	YBL023C_tsq111	mcm2-1	DNA replication/repair/HR/cohesion
+93	YBL024W	NCL1	ribosome/translation
+94	YBL027W	RPL19B	ribosome/translation
+95	YBL028C	YBL028C	unknown
+96	YBL029W	YBL029W	unknown
+97	YBL031W	SHE1	chromosome segregation/kinetochore/spindle/microtubule
+98	YBL032W	HEK2	RNA processing
+99	YBL034C_tsq274	stu1-5	chromosome segregation/kinetochore/spindle/microtubule
