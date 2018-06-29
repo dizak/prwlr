@@ -292,8 +292,8 @@ class SGA2Test(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.sga2 = databases.SGA2()
-        self.ref_sga = pd.read_csv("test_data/SGA2Tests/ref_sga_v2_1000r.txt")
-        self.test_sga_filename = "test_data/SGA2Tests/test_sga_v2_1000r.txt"
+        self.ref_sga = pd.read_csv("test_data/SGA2Tests/ref_sga_v2_1000r.csv")
+        self.test_sga_filename = "test_data/SGA2Tests/test_sga_v2_1000r.csv"
         self.ref_sga = self.ref_sga.astype({k: v for k, v in self.sga2.dtypes.items()
                                             if k in self.ref_sga.columns})
 
