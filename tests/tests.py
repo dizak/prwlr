@@ -187,6 +187,27 @@ class DatabasesTests(unittest.TestCase):
                           "hpy",
                           "mth",
                           "bsu"]
+        self.ref_databases_KEGG_ID_name = {'HPY': 'Helicobacter pylori',
+                                           'MJA': 'Methanocaldococcus jannaschii',
+                                           'MGE': 'Mycoplasma genitalium',
+                                           'SCE': 'Saccharomyces cerevisiae',
+                                           'BSU': 'Bacillus subtilis',
+                                           'SYN': 'Synechocystis sp',
+                                           'ECO': 'Escherichia coli',
+                                           'MPN': 'Mycoplasma pneumoniae',
+                                           'MTH': 'Methanothermobacter thermautotrophicus',
+                                           'HIN': 'Haemophilus influenzae'}
+        self.ref_databases_KEGG_name_ID = {'Haemophilus influenzae': 'HIN',
+                                           'Bacillus subtilis': 'BSU',
+                                           'Mycoplasma pneumoniae': 'MPN',
+                                           'Escherichia coli': 'ECO',
+                                           'Methanothermobacter thermautotrophicus': 'MTH',
+                                           'Methanocaldococcus jannaschii': 'MJA',
+                                           'Mycoplasma genitalium': 'MGE',
+                                           'Helicobacter pylori': 'HPY',
+                                           'Saccharomyces cerevisiae': 'SCE',
+                                           'Synechocystis sp': 'SYN'}
+
         self.test_kegg_db_filename = "test_data/DatabasesTests/test_kegg_db"
         self.database_type = "Orthology"
         self.organism_name = "Saccharomyces cerevisiae"
@@ -196,10 +217,6 @@ class DatabasesTests(unittest.TestCase):
         self.ref_kegg_db = pd.read_csv("test_data/DatabasesTests/ref_kegg_db.csv",
                                        sep='\t',
                                        index_col = [0])
-        with open("test_data/DatabasesTests/ref_databases_KEGG_name_ID.pickle", "rb") as fin:
-            self.ref_databases_KEGG_name_ID = pickle.load(fin)
-        with open("test_data/DatabasesTests/ref_databases_KEGG_ID_name.pickle", "rb") as fin:
-            self.ref_databases_KEGG_ID_name = pickle.load(fin)
         self.kegg = databases.KEGG(self.database_type)
 
         self.ref_kegg_db[self.kegg.GENES] = self.ref_kegg_db[self.kegg.GENES].apply(lambda x: [_.strip()
