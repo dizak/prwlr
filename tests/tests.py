@@ -268,9 +268,12 @@ class SGA1Tests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.sga1 = databases.SGA1()
-        self.ref_sga_filename = "test_data/SGA1Tests/ref_sga_v1_1000r.pickle"
-        self.ref_sga = pd.read_pickle(self.ref_sga_filename)
-        self.test_sga_filename = "test_data/SGA1Tests/test_sga_v1_1000r.txt"
+        self.ref_sga = pd.read_csv("test_data/SGA1Tests/ref_sga_v1_1000r.csv",
+                                   sep='\t',
+                                   index_col=[0])
+        self.ref_sga = self.ref_sga.astype({k: v for k, v in self.sga1.dtypes.items()
+                                            if k in self.ref_sga.columns})
+        self.test_sga_filename = "test_data/SGA1Tests/test_sga_v1_1000r.csv"
 
     def test_parse(self):
         """
