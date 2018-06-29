@@ -283,7 +283,7 @@ class SGA1Tests(unittest.TestCase):
         pd.testing.assert_frame_equal(self.ref_sga, self.sga1.sga)
 
 
-class SGA2Test(unittest.TestCase):
+class SGA2Tests(unittest.TestCase):
     """
     Tests for prowler.databases.SGA2
     """
