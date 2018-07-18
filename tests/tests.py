@@ -54,7 +54,8 @@ class UtilsTests(unittest.TestCase):
                                                                  self.test_set_size))
 
 
-class ApisTests(unittest.TestCase):
+class ApisTests(unittest.TestCase,
+                apis.Columns):
     """
     Tests for prowler.apis.
     """
@@ -64,7 +65,11 @@ class ApisTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         super(ApisTests, cls).setUpClass()
-        cls.orgs_ids_out = pd.read_pickle("test_data/ApisTests/test_orgs_ids_out.pickle")
+        cls.orgs_ids_out = pd.read_csv("test_data/ApisTests/test_orgs_ids_out.csv",
+                                        sep='\t',
+                                        index_col=[0])
+        cls.orgs_ids_out = cls.orgs_ids_out.astype({k: v for k, v in cls.dtypes.items()
+                                                    if k in cls.orgs_ids_out.columns})
         cls.org_db_X_ref_out = pd.read_csv("test_data/ApisTests/test_orgs_db_X_ref.csv",
                                            sep="\t",
                                            names=["ORF_ID",
@@ -182,18 +187,49 @@ class DatabasesTests(unittest.TestCase):
                           "hpy",
                           "mth",
                           "bsu"]
+        self.ref_databases_KEGG_ID_name = {'HPY': 'Helicobacter pylori',
+                                           'MJA': 'Methanocaldococcus jannaschii',
+                                           'MGE': 'Mycoplasma genitalium',
+                                           'SCE': 'Saccharomyces cerevisiae',
+                                           'BSU': 'Bacillus subtilis',
+                                           'SYN': 'Synechocystis sp',
+                                           'ECO': 'Escherichia coli',
+                                           'MPN': 'Mycoplasma pneumoniae',
+                                           'MTH': 'Methanothermobacter thermautotrophicus',
+                                           'HIN': 'Haemophilus influenzae'}
+        self.ref_databases_KEGG_name_ID = {'Haemophilus influenzae': 'HIN',
+                                           'Bacillus subtilis': 'BSU',
+                                           'Mycoplasma pneumoniae': 'MPN',
+                                           'Escherichia coli': 'ECO',
+                                           'Methanothermobacter thermautotrophicus': 'MTH',
+                                           'Methanocaldococcus jannaschii': 'MJA',
+                                           'Mycoplasma genitalium': 'MGE',
+                                           'Helicobacter pylori': 'HPY',
+                                           'Saccharomyces cerevisiae': 'SCE',
+                                           'Synechocystis sp': 'SYN'}
+
         self.test_kegg_db_filename = "test_data/DatabasesTests/test_kegg_db"
         self.database_type = "Orthology"
         self.organism_name = "Saccharomyces cerevisiae"
         self.IDs = "test_data/ApisTests/test_orgs_ids_in.csv"
         self.X_ref = "test_data/ApisTests/test_orgs_db_X_ref.csv"
         self.out_file_name = "test_data/ApisTests/test_orgs_db_X_ref.csv"
-        self.ref_kegg_db = pd.read_pickle("test_data/DatabasesTests/ref_kegg_db.pickle")
-        with open("test_data/DatabasesTests/ref_databases_KEGG_name_ID.pickle", "rb") as fin:
-            self.ref_databases_KEGG_name_ID = pickle.load(fin)
-        with open("test_data/DatabasesTests/ref_databases_KEGG_ID_name.pickle", "rb") as fin:
-            self.ref_databases_KEGG_ID_name = pickle.load(fin)
+        self.ref_kegg_db = pd.read_csv("test_data/DatabasesTests/ref_kegg_db.csv",
+                                       sep='\t',
+                                       index_col = [0])
         self.kegg = databases.KEGG(self.database_type)
+
+        self.ref_kegg_db[self.kegg.GENES] = self.ref_kegg_db[self.kegg.GENES].apply(lambda x: [_.strip()
+                                                                                               for _ in x.replace("[", "").
+                                                                                                          replace("]", "").
+                                                                                                          replace("'", "").
+                                                                                                          split(",")])
+        self.ref_kegg_db[self.kegg.ORGS] = self.ref_kegg_db[self.kegg.ORGS].apply(lambda x: [_.strip()
+                                                                                             for _ in x.replace("[", "").
+                                                                                                  replace("]", "").
+                                                                                                  replace("'", "").
+                                                                                                  split(",")])
+
 
     def test_parse_database(self):
         """
@@ -232,9 +268,12 @@ class SGA1Tests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.sga1 = databases.SGA1()
-        self.ref_sga_filename = "test_data/SGA1Tests/ref_sga_v1_1000r.pickle"
-        self.ref_sga = pd.read_pickle(self.ref_sga_filename)
-        self.test_sga_filename = "test_data/SGA1Tests/test_sga_v1_1000r.txt"
+        self.ref_sga = pd.read_csv("test_data/SGA1Tests/ref_sga_v1_1000r.csv",
+                                   sep='\t',
+                                   index_col=[0])
+        self.ref_sga = self.ref_sga.astype({k: v for k, v in self.sga1.dtypes.items()
+                                            if k in self.ref_sga.columns})
+        self.test_sga_filename = "test_data/SGA1Tests/test_sga_v1_1000r.csv"
 
     def test_parse(self):
         """
@@ -244,7 +283,7 @@ class SGA1Tests(unittest.TestCase):
         pd.testing.assert_frame_equal(self.ref_sga, self.sga1.sga)
 
 
-class SGA2Test(unittest.TestCase):
+class SGA2Tests(unittest.TestCase):
     """
     Tests for prowler.databases.SGA2
     """
@@ -253,8 +292,8 @@ class SGA2Test(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.sga2 = databases.SGA2()
-        self.ref_sga = pd.read_csv("test_data/SGA2Tests/ref_sga_v2_1000r.txt")
-        self.test_sga_filename = "test_data/SGA2Tests/test_sga_v2_1000r.txt"
+        self.ref_sga = pd.read_csv("test_data/SGA2Tests/ref_sga_v2_1000r.csv")
+        self.test_sga_filename = "test_data/SGA2Tests/test_sga_v2_1000r.csv"
         self.ref_sga = self.ref_sga.astype({k: v for k, v in self.sga2.dtypes.items()
                                             if k in self.ref_sga.columns})
 
@@ -275,7 +314,9 @@ class AnyNetworkTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        self.ref_anynwrk = pd.read_pickle("test_data/AnyNetworkTests/ref_anynetwork.pickle")
+        self.ref_anynwrk = pd.read_csv('test_data/AnyNetworkTests/ref_anynetwork.csv',
+                                       sep='\t',
+                                       index_col=[0])
         self.test_anynwrk_filename = "test_data/AnyNetworkTests/test_anynetwork.xls"
         self.ORF_query_col = "genotype"
         self.ORF_array_col = "target"
@@ -285,16 +326,21 @@ class AnyNetworkTests(unittest.TestCase):
     def test_parse(self):
         """
         Test if any interaction network in form of xls input file is properly parsed.
+
+        Notes
+        -------
+        <old AA/new AA> column is dropped as pandas.testing.assert_frame_equal
+        recognizes <0> and <NaN> values as different in compared dataframes for
+        unknown reason.
         """
         self.anynwrk.parse(self.test_anynwrk_filename,
                            excel=True,
                            sheet_name=self.sheet_name,
                            ORF_query_col=self.ORF_query_col,
                            ORF_array_col=self.ORF_array_col)
-        pd.testing.assert_frame_equal(self.ref_anynwrk,
-                                      self.anynwrk.sga,
-                                      check_dtype=False,
-                                      check_names=False)
+        pd.testing.assert_frame_equal(self.ref_anynwrk.drop(columns=['old AA/new AA']),
+                                      self.anynwrk.sga.drop(columns=['old AA/new AA']),
+                                      check_column_type=False)
 
 
 class BioprocessesTests(unittest.TestCase):
@@ -305,10 +351,10 @@ class BioprocessesTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        self.ref_bioprocesses_filename = "test_data/BioprocessesTests/ref_bioproc_100r.pickle"
-        self.test_bioprocesses_filename = "test_data/BioprocessesTests/test_bioproc_100r.xls"
-        self.ref_bioprocesses = pd.read_pickle(self.ref_bioprocesses_filename)
-        self.test_bioprocesses = pd.read_excel(self.test_bioprocesses_filename)
+        self.ref_bioprocesses = pd.read_csv("test_data/BioprocessesTests/ref_bioproc_100r.csv",
+                                            sep='\t',
+                                            index_col=[0])
+        self.test_bioprocesses = pd.read_excel("test_data/BioprocessesTests/test_bioproc_100r.xls")
 
     def test_parse(self):
         """

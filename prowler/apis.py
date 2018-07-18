@@ -19,6 +19,7 @@ class Columns:
     TAXON_ID = "TAXON_ID"
     KEGG_ID = "KEGG_ID"
     ORF_ID = "ORF_ID"
+    dtypes = {TAXON_ID: "uint32"}
 
 
 class KEGG_API(Columns):
@@ -88,6 +89,8 @@ class KEGG_API(Columns):
                                       regex=True,
                                       inplace=True)
         self.organisms_ids_df.dropna(inplace=True)
+        self.organisms_ids_df = self.organisms_ids_df.astype({k: v for k, v in self.dtypes.items()
+                                                              if k in self.organisms_ids_df.columns})
 
     def org_name_2_kegg_id(self,
                            organism,
