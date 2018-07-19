@@ -75,6 +75,11 @@ class ApisTests(unittest.TestCase,
                                            names=["ORF_ID",
                                                   "KEGG_ID"],
                                            dtype="object")
+        cls.ref_KOs_db_X_ref_df = pd.read_csv("test_data/ApisTests/ref_KOs_db_X_ref.csv",
+                                               sep="\t",
+                                               names=[apis.Columns.KEGG_ID,
+                                                      apis.Columns.ORG_GENE_ID],
+                                               index_col=[0])
         cls.orgs_names = ["Haemophilus influenzae",
                           "Mycoplasma genitalium",
                           "Methanocaldococcus jannaschii",
@@ -104,6 +109,10 @@ class ApisTests(unittest.TestCase,
                                       target_db="orthology",
                                       out_file_name="test_data/ApisTests/test_orgs_db_X_ref.csv",
                                       skip_dwnld=True)
+        cls.kegg_api.get_KOs_db_X_ref(target_db="genes",
+                                      filename="test_data/ApisTests/test_KOs_db_X_ref.csv",
+                                      skip_dwnld=True)
+
 
     def test_get_organisms_ids(self):
         """
@@ -128,6 +137,15 @@ class ApisTests(unittest.TestCase,
         """
         pd.testing.assert_frame_equal(self.kegg_api.org_db_X_ref_df,
                                       self.org_db_X_ref_out)
+
+    def test_get_KOs_db_X_ref(self):
+        """
+        Test if apis.get_KOs_db_X_ref returns correct KEGG database
+        cross-reference.
+        """
+        pd.testing.assert_frame_equal(self.ref_KOs_db_X_ref_df,
+                                      self.kegg_api.KOs_db_X_ref_df)
+
 
 
 class CostanzoAPITests(unittest.TestCase):

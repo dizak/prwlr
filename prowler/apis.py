@@ -19,6 +19,7 @@ class Columns:
     TAXON_ID = "TAXON_ID"
     KEGG_ID = "KEGG_ID"
     ORF_ID = "ORF_ID"
+    ORG_GENE_ID = "ORG_GENE_ID"
     dtypes = {TAXON_ID: "uint32"}
 
 
@@ -41,6 +42,7 @@ class KEGG_API(Columns):
                           "orthology": "ko",
                           "genome": "genome",
                           "genomes": "gn",
+                          "genes": "genes",
                           "enzyme": "ec"}
         self.organisms_ids_df = None
         self.id_conversions = {"ncbi_gene": "ncbi-geneid",
@@ -160,6 +162,58 @@ class KEGG_API(Columns):
         if strip_prefix is True:
             self.org_db_X_ref_df.replace({"{}:".format(org_id): "",
                                           "{}:".format(self.databases[target_db]): ""},
+                                         regex=True,
+                                         inplace=True)
+
+    def get_KOs_db_X_ref(self,
+                         filename,
+                         target_db='genes',
+                         skip_dwnld=False,
+                         strip_prefix=True,
+                         sep="\t"):
+        """
+        Get desired KEGG's database entries linked with KEGG Orthology Group.
+        Data are downloaded to a local file and then made into pandas.DataFrame.
+        File can be reused.
+
+        Parameters
+        -------
+        filename: str
+            Name of the file to download.
+        targed_db: str
+            Key for KEGG_API.databases of desired database.
+        skip_dwnld: bool, default <False>
+            Read already downloaded file if <True>
+
+        Uses
+        -------
+        KEGG_API.org_db_X_ref_df: pandas.DataFrame
+            Source of the KEGG Orthology Groups.
+
+        Sets
+        -------
+        KEGG_API.KOs_db_X_ref_df: pandas.DataFrame
+            DataFrame of KEGG Orthology Group ID and belonging organisms and
+            genes
+        """
+        if not skip_dwnld:
+            for i in self.org_db_X_ref_df.KEGG_ID:
+                res = rq.get('{}/{}/{}/{}'.format(self.home,
+                                                  self.operations['find_X_ref'],
+                                                  self.databases[target_db],
+                                                  i))
+                with open(filename, 'ab') as fout:
+                    fout.write(res.content)
+        self.KOs_db_X_ref_df = pd.read_csv(filename,
+                                           names=[self.KEGG_ID,
+                                                  self.ORG_GENE_ID],
+                                           header=None,
+                                           sep=sep)
+        if strip_prefix:
+            self.KOs_db_X_ref_df.replace({"{}:".format(self.databases["orthology"]): ""},
+                                         regex=True,
+                                         inplace=True)
+            self.KOs_db_X_ref_df.replace({":.+": ""},
                                          regex=True,
                                          inplace=True)
 
