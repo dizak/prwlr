@@ -197,7 +197,7 @@ class KEGG_API(Columns):
             genes
         """
         if not skip_dwnld:
-            for i in self.org_db_X_ref_df.KEGG_ID:
+            for i in self.org_db_X_ref_df[self.KEGG_ID]:
                 res = rq.get('{}/{}/{}/{}'.format(self.home,
                                                   self.operations['find_X_ref'],
                                                   self.databases[target_db],
