@@ -75,11 +75,15 @@ class ApisTests(unittest.TestCase,
                                            names=["ORF_ID",
                                                   "KEGG_ID"],
                                            dtype="object")
-        cls.ref_KOs_db_X_ref_df = pd.read_csv("test_data/ApisTests/ref_KOs_db_X_ref.csv",
-                                               sep="\t",
-                                               names=[apis.Columns.KEGG_ID,
-                                                      apis.Columns.ORG_GENE_ID],
-                                               index_col=[0])
+        cls.ref_KOs_db_X_ref_df = pd.read_csv(
+            "test_data/ApisTests/ref_KOs_db_X_ref.csv",
+            sep="\t",
+            names=[apis.Columns.KEGG_ID,
+                   apis.Columns.ORG_GENE_ID],
+            index_col=[0]
+            ).groupby(
+                by=[apis.Columns.KEGG_ID]
+                )[apis.Columns.ORG_GENE_ID].apply(list).to_frame().reset_index()
         cls.orgs_names = ["Haemophilus influenzae",
                           "Mycoplasma genitalium",
                           "Methanocaldococcus jannaschii",

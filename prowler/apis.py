@@ -170,6 +170,7 @@ class KEGG_API(Columns):
                          target_db='genes',
                          skip_dwnld=False,
                          strip_prefix=True,
+                         squeeze=True,
                          sep="\t"):
         """
         Get desired KEGG's database entries linked with KEGG Orthology Group.
@@ -184,6 +185,9 @@ class KEGG_API(Columns):
             Key for KEGG_API.databases of desired database.
         skip_dwnld: bool, default <False>
             Read already downloaded file if <True>
+        squeeze: bool, default <True>
+            Compress list of the organisms to list for each KEGG Orthology
+            Group
 
         Uses
         -------
@@ -216,6 +220,10 @@ class KEGG_API(Columns):
             self.KOs_db_X_ref_df.replace({":.+": ""},
                                          regex=True,
                                          inplace=True)
+        if squeeze:
+            self.KOs_db_X_ref_df = self.KOs_db_X_ref_df.groupby(
+                by=[self.KEGG_ID]
+                )[self.ORG_GENE_ID].apply(list).to_frame().reset_index()
 
     def get_db_entries(self,
                        out_file_name):
