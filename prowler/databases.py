@@ -170,7 +170,7 @@ class KEGG(Columns):
                             X_ref=None,
                             KOs=None,
                             strip_prefix=True,
-                            multiprocessing=False):
+                            threads=6):
         if IDs:
             self._api.get_organisms_ids(IDs, skip_dwnld=True)
         else:
@@ -208,9 +208,35 @@ class KEGG(Columns):
             self._api.get_KOs_db_X_ref(filename=KOs_temp.name,
                                        skip_dwnld=False,
                                        squeeze=True,
-                                       multiprocessing=multiprocessing)
+                                       threads=threads)
             KOs_temp.close()
+        try:
+            pd.testing.assert_series_equal(
+                self.X_reference[self.KEGG_ID].
+                drop_duplicates().
+                sort_values().
+                reset_index(drop=True),
+                self._api.KOs_db_X_ref_df[self.KEGG_ID].
+                drop_duplicates().
+                sort_values().
+                reset_index(drop=True)
+            )
         self.KO_organisms = self._api.KOs_db_X_ref_df
+        except AssertionError:
+            if threads > 1:
+                raise ParserError(
+                    """{} of X_reference and KO_organisms are different. This
+                    might be caused by the server access denial. Try
+                    deacreasing number of threads""".format(
+                        self.KEGG_ID
+                    )
+                )
+            else:
+                raise ParserError(
+                    """{} of X_reference and KO_organisms are different.""".
+                    format(self.KEGG_ID)
+                )
+
 
 
 class SGA1(Columns):
