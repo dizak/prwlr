@@ -5,6 +5,7 @@ from __future__ import print_function
 import requests as rq
 import pandas as pd
 from tqdm import tqdm
+import pathos.multiprocessing as ptmp
 
 
 class Columns:
@@ -171,7 +172,8 @@ class KEGG_API(Columns):
                          skip_dwnld=False,
                          strip_prefix=True,
                          squeeze=True,
-                         sep="\t"):
+                         sep="\t",
+                         multiprocessing=False):
         """
         Get desired KEGG's database entries linked with KEGG Orthology Group.
         Data are downloaded to a local file and then made into pandas.DataFrame.
@@ -201,13 +203,23 @@ class KEGG_API(Columns):
             genes
         """
         if not skip_dwnld:
-            for i in self.org_db_X_ref_df[self.KEGG_ID]:
-                res = rq.get('{}/{}/{}/{}'.format(self.home,
-                                                  self.operations['find_X_ref'],
-                                                  self.databases[target_db],
-                                                  i))
-                with open(filename, 'ab') as fout:
-                    fout.write(res.content)
+            if multiprocessing:
+                def f(i):
+                    res = rq.get('{}/{}/{}/{}'.format(self.home,
+                                                      self.operations['find_X_ref'],
+                                                      self.databases[target_db],
+                                                      i))
+                    with open(filename, 'ab') as fout:
+                        fout.write(res.content)
+                ptmp.ProcessingPool().map(f, self.org_db_X_ref_df[self.KEGG_ID])
+            else:
+                for i in self.org_db_X_ref_df[self.KEGG_ID]:
+                    res = rq.get('{}/{}/{}/{}'.format(self.home,
+                                                      self.operations['find_X_ref'],
+                                                      self.databases[target_db],
+                                                      i))
+                    with open(filename, 'ab') as fout:
+                        fout.write(res.content)
         self.KOs_db_X_ref_df = pd.read_csv(filename,
                                            names=[self.KEGG_ID,
                                                   self.ORG_GENE_ID],

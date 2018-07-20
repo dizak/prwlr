@@ -168,7 +168,9 @@ class KEGG(Columns):
                             reference_species,
                             IDs=None,
                             X_ref=None,
-                            strip_prefix=True):
+                            KOs=None,
+                            strip_prefix=True,
+                            multiprocessing=False):
         if IDs:
             self._api.get_organisms_ids(IDs, skip_dwnld=True)
         else:
@@ -198,6 +200,17 @@ class KEGG(Columns):
                                        strip_prefix=True)
             X_ref_tmp.close()
         self.X_reference = self._api.org_db_X_ref_df
+        if KOs:
+            self._api.get_KOs_db_X_ref(filename=KOs,
+                                       skip_dwnld=True)
+        else:
+            KOs_temp = tempfile.NamedTemporaryFile(delete=True)
+            self._api.get_KOs_db_X_ref(filename=KOs_temp.name,
+                                       skip_dwnld=False,
+                                       squeeze=True,
+                                       multiprocessing=multiprocessing)
+            KOs_temp.close()
+        self.KO_organisms = self._api.KOs_db_X_ref_df
 
 
 class SGA1(Columns):
