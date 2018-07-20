@@ -5,7 +5,7 @@ from __future__ import print_function
 import requests as rq
 import pandas as pd
 from tqdm import tqdm
-import pathos.multiprocessing as ptmp
+import pathos.threading as ptth
 
 
 class Columns:
@@ -173,7 +173,7 @@ class KEGG_API(Columns):
                          strip_prefix=True,
                          squeeze=True,
                          sep="\t",
-                         multiprocessing=False):
+                         threads=1):
         """
         Get desired KEGG's database entries linked with KEGG Orthology Group.
         Data are downloaded to a local file and then made into pandas.DataFrame.
@@ -190,6 +190,10 @@ class KEGG_API(Columns):
         squeeze: bool, default <True>
             Compress list of the organisms to list for each KEGG Orthology
             Group
+        sep: str, default: <\t>
+            Delimiter to use.
+        threads: int, default <1>
+            Number of threads to spawn during download.
 
         Uses
         -------
@@ -202,24 +206,20 @@ class KEGG_API(Columns):
             DataFrame of KEGG Orthology Group ID and belonging organisms and
             genes
         """
+        def f(i):
+            res = rq.get('{}/{}/{}/{}'.format(self.home,
+            self.operations['find_X_ref'],
+            self.databases[target_db],
+            i))
+            with open(filename, 'ab') as fout:
+                fout.write(res.content)
         if not skip_dwnld:
-            if multiprocessing:
-                def f(i):
-                    res = rq.get('{}/{}/{}/{}'.format(self.home,
-                                                      self.operations['find_X_ref'],
-                                                      self.databases[target_db],
-                                                      i))
-                    with open(filename, 'ab') as fout:
-                        fout.write(res.content)
-                ptmp.ProcessingPool().map(f, self.org_db_X_ref_df[self.KEGG_ID])
+            if threads > 1:
+                ptth.ThreadPool(
+                    threads
+                ).map(f, self.org_db_X_ref_df[self.KEGG_ID])
             else:
-                for i in self.org_db_X_ref_df[self.KEGG_ID]:
-                    res = rq.get('{}/{}/{}/{}'.format(self.home,
-                                                      self.operations['find_X_ref'],
-                                                      self.databases[target_db],
-                                                      i))
-                    with open(filename, 'ab') as fout:
-                        fout.write(res.content)
+                map(f, self.org_db_X_ref_df[self.KEGG_ID])
         self.KOs_db_X_ref_df = pd.read_csv(filename,
                                            names=[self.KEGG_ID,
                                                   self.ORG_GENE_ID],
