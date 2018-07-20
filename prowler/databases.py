@@ -221,7 +221,7 @@ class KEGG(Columns):
                 sort_values().
                 reset_index(drop=True)
             )
-        self.KO_organisms = self._api.KOs_db_X_ref_df
+            self.KO_organisms = self._api.KOs_db_X_ref_df
         except AssertionError:
             if threads > 1:
                 raise ParserError(
