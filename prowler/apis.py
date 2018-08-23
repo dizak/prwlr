@@ -207,16 +207,18 @@ class KEGG_API(Columns):
             genes
         """
         def f(i):
-            res = rq.get('{}/{}/{}/{}'.format(self.home,
+            res = rq.get('{}/{}/{}/{}'.format(
+            self.home,
             self.operations['find_X_ref'],
             self.databases[target_db],
-            i))
+            i,
+            ))
             with open(filename, 'ab') as fout:
                 fout.write(res.content)
         if not skip_dwnld:
             if threads > 1:
                 ptth.ThreadPool(threads).map(
-                    tqdm(f),
+                    f,
                     self.org_db_X_ref_df[self.KEGG_ID]
                 )
             else:
