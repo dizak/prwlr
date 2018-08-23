@@ -216,7 +216,7 @@ class KEGG_API(Columns):
         if not skip_dwnld:
             if threads > 1:
                 ptth.ThreadPool(threads).map(
-                    f,
+                    tqdm(f),
                     self.org_db_X_ref_df[self.KEGG_ID]
                 )
             else:
