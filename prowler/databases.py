@@ -171,6 +171,7 @@ class KEGG(Columns):
                             KOs=None,
                             strip_prefix=True,
                             threads=6):
+        print("Getting the organisms' KEGG IDs...")
         if IDs:
             self._api.get_organisms_ids(IDs, skip_dwnld=True)
         else:
@@ -185,6 +186,7 @@ class KEGG(Columns):
                                 self.reference_species)))
         self.ID_name = dict(list(zip(self.reference_species, [i for i in reference_species
                                                          if i not in self._api.query_ids_not_found])))
+        print("Getting the ORF-Orthology Group Cross Reference...")
         if X_ref:
             self._api.get_org_db_X_ref(organism=organism,
                                        target_db=self.database_type,
@@ -200,6 +202,7 @@ class KEGG(Columns):
                                        strip_prefix=True)
             X_ref_tmp.close()
         self.X_reference = self._api.org_db_X_ref_df
+        print("Getting the Organisms List for Each of The Orthology Group...")
         if KOs:
             self._api.get_KOs_db_X_ref(filename=KOs,
                                        skip_dwnld=True)
