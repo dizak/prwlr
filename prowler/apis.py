@@ -215,9 +215,10 @@ class KEGG_API(Columns):
                 fout.write(res.content)
         if not skip_dwnld:
             if threads > 1:
-                ptth.ThreadPool(
-                    threads
-                ).map(f, self.org_db_X_ref_df[self.KEGG_ID])
+                ptth.ThreadPool(threads).map(
+                    f,
+                    self.org_db_X_ref_df[self.KEGG_ID]
+                )
             else:
                 map(f, self.org_db_X_ref_df[self.KEGG_ID])
         self.KOs_db_X_ref_df = pd.read_csv(filename,
