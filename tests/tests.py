@@ -18,6 +18,9 @@ class UtilsTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.ref_combinations_number = 3
+        self.ref_string = "abcdefghijk"
+        self.test_string = "abcde[]',fghijk"
+        self.characters_to_remove = "[]',"
         self.test_subset_size = 2
         self.test_set_size = 3
         self.test_reference_iterable = list("abcdefghijk")
@@ -52,6 +55,14 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(self.ref_combinations_number,
                          utils.all_possible_combinations_counter(self.test_subset_size,
                                                                  self.test_set_size))
+
+    def test_remove_char(self):
+        """
+        Test if utils.remove_char returns correct value.
+        """
+        self.assertEqual(self.ref_string,
+                         utils.remove_char(self.test_string,
+                                           self.characters_to_remove))
 
 
 class ApisTests(unittest.TestCase,
