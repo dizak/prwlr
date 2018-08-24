@@ -239,6 +239,22 @@ class KEGG(Columns):
                     """{} of X_reference and KO_organisms are different.""".
                     format(self.KEGG_ID)
                 )
+        self.organism_info = pd.merge(
+            left=self.X_reference,
+            right=self.KO_organisms,
+            on=self.KEGG_ID,
+        )
+        self.organism_info[self.PROF] = self.organism_info[self.ORG_GENE_ID].apply(
+            lambda x: _Profile(
+                x,
+                [i.lower() for i in self.name_ID.values()],
+            )
+        )
+        self.organism_info.drop(
+            columns=self.ORG_GENE_ID,
+            inplace=True,
+        )
+        self.organism_info.drop_duplicates(inplace=True)
 
 
 
