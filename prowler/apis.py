@@ -207,7 +207,7 @@ class KEGG_API(Columns):
             genes
         """
         def f(i):
-            print(f"{i} ", flush=True, end='\r')
+            print("{i} ".format(), flush=True, end='\r')
             res = rq.get('{}/{}/{}/{}'.format(
             self.home,
             self.operations['find_X_ref'],
