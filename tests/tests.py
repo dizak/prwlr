@@ -18,6 +18,9 @@ class UtilsTests(unittest.TestCase):
         Sets up class level attributes for the tests.
         """
         self.ref_combinations_number = 3
+        self.ref_string = "abcdefghijk"
+        self.test_string = "abcde[]',fghijk"
+        self.characters_to_remove = "[]',"
         self.test_subset_size = 2
         self.test_set_size = 3
         self.test_reference_iterable = list("abcdefghijk")
@@ -53,6 +56,14 @@ class UtilsTests(unittest.TestCase):
                          utils.all_possible_combinations_counter(self.test_subset_size,
                                                                  self.test_set_size))
 
+    def test_remove_char(self):
+        """
+        Test if utils.remove_char returns correct value.
+        """
+        self.assertEqual(self.ref_string,
+                         utils.remove_char(self.test_string,
+                                           self.characters_to_remove))
+
 
 class ApisTests(unittest.TestCase,
                 apis.Columns):
@@ -75,6 +86,15 @@ class ApisTests(unittest.TestCase,
                                            names=["ORF_ID",
                                                   "KEGG_ID"],
                                            dtype="object")
+        cls.ref_KOs_db_X_ref_df = pd.read_csv(
+            "test_data/ApisTests/ref_KOs_db_X_ref.csv",
+            sep="\t",
+            names=[apis.Columns.KEGG_ID,
+                   apis.Columns.ORG_GENE_ID],
+            index_col=[0]
+            ).groupby(
+                by=[apis.Columns.KEGG_ID]
+                )[apis.Columns.ORG_GENE_ID].apply(list).to_frame().reset_index()
         cls.orgs_names = ["Haemophilus influenzae",
                           "Mycoplasma genitalium",
                           "Methanocaldococcus jannaschii",
@@ -104,6 +124,10 @@ class ApisTests(unittest.TestCase,
                                       target_db="orthology",
                                       out_file_name="test_data/ApisTests/test_orgs_db_X_ref.csv",
                                       skip_dwnld=True)
+        cls.kegg_api.get_KOs_db_X_ref(target_db="genes",
+                                      filename="test_data/ApisTests/test_KOs_db_X_ref.csv",
+                                      skip_dwnld=True)
+
 
     def test_get_organisms_ids(self):
         """
@@ -128,6 +152,15 @@ class ApisTests(unittest.TestCase,
         """
         pd.testing.assert_frame_equal(self.kegg_api.org_db_X_ref_df,
                                       self.org_db_X_ref_out)
+
+    def test_get_KOs_db_X_ref(self):
+        """
+        Test if apis.get_KOs_db_X_ref returns correct KEGG database
+        cross-reference.
+        """
+        pd.testing.assert_frame_equal(self.ref_KOs_db_X_ref_df,
+                                      self.kegg_api.KOs_db_X_ref_df)
+
 
 
 class CostanzoAPITests(unittest.TestCase):
@@ -213,12 +246,17 @@ class DatabasesTests(unittest.TestCase):
         self.organism_name = "Saccharomyces cerevisiae"
         self.IDs = "test_data/ApisTests/test_orgs_ids_in.csv"
         self.X_ref = "test_data/ApisTests/test_orgs_db_X_ref.csv"
+        self.KOs = "test_data/ApisTests/test_KOs_db_X_ref.csv"
         self.out_file_name = "test_data/ApisTests/test_orgs_db_X_ref.csv"
+        self.ref_organism_info = pd.read_csv(
+            "test_data/DatabasesTests/ref_organism_info.csv",
+            sep="\t",
+            index_col=[0],
+            )
         self.ref_kegg_db = pd.read_csv("test_data/DatabasesTests/ref_kegg_db.csv",
                                        sep='\t',
                                        index_col = [0])
         self.kegg = databases.KEGG(self.database_type)
-
         self.ref_kegg_db[self.kegg.GENES] = self.ref_kegg_db[self.kegg.GENES].apply(lambda x: [_.strip()
                                                                                                for _ in x.replace("[", "").
                                                                                                           replace("]", "").
@@ -230,33 +268,21 @@ class DatabasesTests(unittest.TestCase):
                                                                                                   replace("'", "").
                                                                                                   split(",")])
 
-
-    def test_parse_database(self):
-        """
-        Test if KEGG database is properly parsed.
-        """
-        self.kegg.parse_database(self.test_kegg_db_filename)
-        pd.testing.assert_frame_equal(self.kegg.database, self.ref_kegg_db)
-
-    def test_parse_organism_info_no_dwnld(self):
+    def test_parse_organism_info(self):
         """
         Test if organisms info is properly parsed if input files are supplied.
         """
         self.kegg.parse_organism_info(organism=self.organism_name,
                                       reference_species=self.query_species,
                                       IDs=self.IDs,
-                                      X_ref=self.X_ref)
+                                      X_ref=self.X_ref,
+                                      KOs=self.KOs)
         self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
         self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
-
-    def test_parse_organism_info_dwnld(self):
-        """
-        Test if organisms info is properly parsed if no files are supplied.
-        """
-        self.kegg.parse_organism_info(organism=self.organism_name,
-                                      reference_species=self.query_species)
-        self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
-        self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
+        self.kegg.organism_info[self.kegg.PROF] = self.kegg.organism_info[self.kegg.PROF].apply(
+            lambda x: x.to_string()
+        )
+        pd.testing.assert_frame_equal(self.kegg.organism_info, self.ref_organism_info)
 
 
 class SGA1Tests(unittest.TestCase):

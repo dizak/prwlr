@@ -58,6 +58,30 @@ def remove_from_list(element,
     return iterable
 
 
+def remove_char(string,
+                iterable):
+    """
+    Return str without given elements from the iterable. More convenient than
+    chaining the built-in replace methods.
+
+    Parameters
+    -------
+    string: str
+        String from which the characters from the iterable are removed.
+    iterable: str, list, tuple, set
+        Iterable with characters that are removed from the string.
+
+    Returns
+    -------
+    str
+        Without elements from the iterable.
+
+    """
+    for i in iterable:
+        string = string.replace(i, "")
+    return string
+
+
 def all_possible_combinations_counter(subset_size,
                                       set_size):
     """
