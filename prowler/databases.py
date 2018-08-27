@@ -168,7 +168,10 @@ class KEGG(Columns):
                             reference_species,
                             IDs=None,
                             X_ref=None,
-                            strip_prefix=True):
+                            KOs=None,
+                            strip_prefix=True,
+                            threads=6):
+        print("Getting the organisms' KEGG IDs...")
         if IDs:
             self._api.get_organisms_ids(IDs, skip_dwnld=True)
         else:
@@ -183,6 +186,7 @@ class KEGG(Columns):
                                 self.reference_species)))
         self.ID_name = dict(list(zip(self.reference_species, [i for i in reference_species
                                                          if i not in self._api.query_ids_not_found])))
+        print("Getting the ORF-Orthology Group Cross Reference...")
         if X_ref:
             self._api.get_org_db_X_ref(organism=organism,
                                        target_db=self.database_type,
@@ -198,6 +202,60 @@ class KEGG(Columns):
                                        strip_prefix=True)
             X_ref_tmp.close()
         self.X_reference = self._api.org_db_X_ref_df
+        print("Getting the Organisms List for Each of The Orthology Group...")
+        if KOs:
+            self._api.get_KOs_db_X_ref(filename=KOs,
+                                       skip_dwnld=True)
+        else:
+            KOs_temp = tempfile.NamedTemporaryFile(delete=True)
+            self._api.get_KOs_db_X_ref(filename=KOs_temp.name,
+                                       skip_dwnld=False,
+                                       squeeze=True,
+                                       threads=threads)
+            KOs_temp.close()
+        try:
+            pd.testing.assert_series_equal(
+                self.X_reference[self.KEGG_ID].
+                drop_duplicates().
+                sort_values().
+                reset_index(drop=True),
+                self._api.KOs_db_X_ref_df[self.KEGG_ID].
+                drop_duplicates().
+                sort_values().
+                reset_index(drop=True)
+            )
+            self.KO_organisms = self._api.KOs_db_X_ref_df
+        except AssertionError:
+            if threads > 1:
+                raise ParserError(
+                    """{} of X_reference and KO_organisms are different. This
+                    might be caused by the server access denial. Try
+                    deacreasing number of threads""".format(
+                        self.KEGG_ID
+                    )
+                )
+            else:
+                raise ParserError(
+                    """{} of X_reference and KO_organisms are different.""".
+                    format(self.KEGG_ID)
+                )
+        self.organism_info = pd.merge(
+            left=self.X_reference,
+            right=self.KO_organisms,
+            on=self.KEGG_ID,
+        )
+        self.organism_info[self.PROF] = self.organism_info[self.ORG_GENE_ID].apply(
+            lambda x: _Profile(
+                x,
+                [i.lower() for i in self.name_ID.values()],
+            )
+        )
+        self.organism_info.drop(
+            columns=self.ORG_GENE_ID,
+            inplace=True,
+        )
+        self.organism_info.drop_duplicates(inplace=True)
+
 
 
 class SGA1(Columns):
