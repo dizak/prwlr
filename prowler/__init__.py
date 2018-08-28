@@ -21,8 +21,8 @@ def profilize_organism(
     KOs=None
 ):
     """
-    Returns pandas.DataFrame with Phylogenetic Profile for each ORF name when a
-    biological name of the organism is given.
+    Returns pandas.DataFrame with Phylogenetic Profile for each ORF name of an
+    organism.
 
     Parameters
     -------
@@ -31,18 +31,18 @@ def profilize_organism(
     species: list of str
         List of full biological names to build the Phylogenetic Profile.
     IDs: str, filename
-        Filename of the KEGG Organism IDs. Downloaded each time to a temporary
-        file if <None>.
+        Filename of the KEGG Organism IDs. Downloaded to a temporary file if
+        <None>.
     X_ref: str, filename
         Filename of the ORF-KEGG Orthology Group cross-reference.
-        Downloaded each time to a temporary file if <None>.
+        Downloaded to a temporary file if <None>.
     KOs: str, filename
         Filename of the KEGG Orthology Group-Organism cross-reference.
-        Downloaded each time to a temporary file if <None>.
+        Downloaded to a temporary file if <None>.
 
     Returns
     ------
-    pandas.DataFrame with ORF names and Phylogenetic Profiles.
+    pandas.DataFrame
     """
     kegg_db = databases.KEGG('Orthology')
     kegg_db.parse_organism_info(
