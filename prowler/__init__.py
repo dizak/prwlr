@@ -56,13 +56,13 @@ def profilize_organism(
         Full biological name of the organism.
     species: list of str
         List of full biological names to build the Phylogenetic Profile.
-    IDs: str, filename
+    IDs: str, path
         Filename of the KEGG Organism IDs. Downloaded to a temporary file if
         <None>.
-    X_ref: str, filename
+    X_ref: str, path
         Filename of the ORF-KEGG Orthology Group cross-reference.
         Downloaded to a temporary file if <None>.
-    KOs: str, filename
+    KOs: str, path
         Filename of the KEGG Orthology Group-Organism cross-reference.
         Downloaded to a temporary file if <None>.
 
@@ -79,3 +79,31 @@ def profilize_organism(
         KOs=KOs,
     )
     return kegg_db.organism_info.drop(columns=databases.Columns.KEGG_ID)
+
+def read_sga(
+    filename,
+    version=2,
+):
+    """
+    Returns pandas.DataFrame with Genetic Interaction Network from
+    the Costanzo's SGA experiment either version 1 or 2.
+
+    Parameters
+    -------
+    filename: str, path
+        Filename of the SGA.
+    version: int
+        Version number of the Costanzo's SGA experiment. 1 or 2 available.
+
+    Returns
+    -------
+    pandas.DataFrame
+    """
+    if version == 1:
+        sga = databases.SGA1()
+    elif version == 2:
+        sga = databases.SGA2()
+    else:
+        raise errors.ParserError("Only versions 1 and 2 of Costanzo's SGA experiment are supported.")
+    sga.parse(filename=filename)
+    return sga.sga
