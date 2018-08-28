@@ -13,12 +13,38 @@ __all__ = ["apis",
 from prowler import *
 
 
+def get_IDs_names(
+    species,
+):
+    """
+    Returns dict of KEGG Organism IDs as keys and biological names as values.
+
+    Parameters
+    -------
+    species: list of str
+        List of full biological names to convert into KEGG Organism IDs.
+
+    Returns
+    ------
+    dict
+    """
+    kegg_db = databases.KEGG('Orthology')
+    kegg_db.parse_organism_info(
+        organism=None,
+        reference_species=species,
+        IDs=None,
+        X_ref=None,
+        KOs=None,
+        IDs_only=True,
+    )
+    return {k.lower(): v for k, v in kegg_db.ID_name.items()}
+
 def profilize_organism(
     organism,
     species,
     IDs=None,
     X_ref=None,
-    KOs=None
+    KOs=None,
 ):
     """
     Returns pandas.DataFrame with Phylogenetic Profile for each ORF name of an
