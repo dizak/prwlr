@@ -10,6 +10,7 @@ __all__ = ["apis",
            "utils"]
 
 
+import pandas as pd
 from prowler import *
 
 
@@ -107,3 +108,38 @@ def read_sga(
         raise errors.ParserError("Only versions 1 and 2 of Costanzo's SGA experiment are supported.")
     sga.parse(filename=filename)
     return sga.sga
+
+def merge_sga_profiles(
+    sga,
+    profiles
+):
+    """
+    Returns Genetic Interaction Network from the Costanzo's SGA experiment with
+    Phylogenetic Profiles.
+    """
+    merged = pd.merge(
+        left=sga,
+        right=profiles,
+        left_on=databases.Columns.ORF_Q,
+        right_on=databases.Columns.ORF_ID,
+        how="left",
+    ).merge(
+        right=profiles,
+        left_on=databases.Columns.ORF_A,
+        right_on=databases.Columns.ORF_ID,
+        how="left",
+        suffixes=(
+            databases.Columns.QUERY_SUF,
+            databases.Columns.ARRAY_SUF,
+        )
+    )
+    merged.drop(
+        columns=[
+            databases.Columns.ORF_ID_Q,
+            databases.Columns.ORF_ID_A,
+        ],
+        axis=1,
+        inplace=True,
+    )
+    merged.dropna(inplace=True)
+    return merged
