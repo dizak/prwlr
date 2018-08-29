@@ -147,3 +147,29 @@ def merge_sga_profiles(
         inplace=True,
     )
     return merged
+
+def calculate_pss(
+    network,
+    method,
+):
+    """
+    Returns Genetic Interaction Network from the Costanzo's SGA experiment with
+    Profiles Similarity Score.
+
+    Parameters
+    -------
+    network: pandas.DataFrame
+    method: str
+
+    Returns
+    -------
+    pandas.DataFrame
+    """
+    network[databases.Columns.PSS] = network.apply(
+        lambda x: x[databases.Columns.PROF_Q].calculate_pss(
+            x[databases.Columns.PROF_A],
+            method=method,
+            ),
+        axis=1,
+    )
+    return network
