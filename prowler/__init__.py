@@ -10,7 +10,7 @@ __all__ = ["apis",
            "utils"]
 
 
-import pandas as pd
+import pandas as _pd
 from prowler import *
 
 
@@ -117,7 +117,7 @@ def merge_sga_profiles(
     Returns Genetic Interaction Network from the Costanzo's SGA experiment with
     Phylogenetic Profiles.
     """
-    merged = pd.merge(
+    merged = _pd.merge(
         left=sga,
         right=profiles,
         left_on=databases.Columns.ORF_Q,
