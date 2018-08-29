@@ -170,6 +170,7 @@ class KEGG(Columns):
                             X_ref=None,
                             KOs=None,
                             strip_prefix=True,
+                            IDs_only=False,
                             threads=6):
         print("Getting the organisms' KEGG IDs...")
         if IDs:
@@ -186,6 +187,8 @@ class KEGG(Columns):
                                 self.reference_species)))
         self.ID_name = dict(list(zip(self.reference_species, [i for i in reference_species
                                                          if i not in self._api.query_ids_not_found])))
+        if IDs_only:
+            return
         print("Getting the ORF-Orthology Group Cross Reference...")
         if X_ref:
             self._api.get_org_db_X_ref(organism=organism,
