@@ -142,4 +142,8 @@ def merge_sga_profiles(
         inplace=True,
     )
     merged.dropna(inplace=True)
+    merged.reset_index(
+        drop=True,
+        inplace=True,
+    )
     return merged
