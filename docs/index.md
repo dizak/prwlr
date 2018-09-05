@@ -20,71 +20,74 @@ Prowler is numpy- and pandas-based wherever possible. It integrates well with [p
 
 Let's use Prowler!
 
-Parse [KEGG Orthology](http://www.genome.jp/kegg/ko.html).
+Get the Phylogenetic Profiles for each of the organism's ORF.
 
 ```python
-import prowler
+import prowler as prwl
 
+species=[
+    'Aeropyrum pernix',
+    'Agrobacterium fabrum',
+    'Arabidopsis thaliana',
+    'Bacillus subtilis',
+    'Caenorhabditis elegans',
+    'Chlamydophila felis',
+    'Dictyostelium discoideum',
+    'Drosophila melanogaster',
+    'Escherichia coli',
+    'Homo sapiens',
+    'Plasmodium falciparum',
+    'Staphylococcus aureus',
+    'Sulfolobus islandicus',
+    'Tetrahymena thermophila',
+    'Trypanosoma cruzi',
+    'Volvox carteri',
+]
 
-kegg_db = prowler.databases.KEGG("Orthology")
-
-kegg_db.parse_organism_info(
+profiles = prwl.profilize_organism(
     organism="Saccharomyces cerevisiae",
-    reference_species=['Aeropyrum pernix',
-                       'Agrobacterium fabrum',
-                       'Arabidopsis thaliana',
-                       'Bacillus subtilis',
-                       'Caenorhabditis elegans',
-                       'Chlamydophila felis',
-                       'Dictyostelium discoideum',
-                       'Drosophila melanogaster',
-                       'Escherichia coli',
-                       'Homo sapiens',
-                       'Plasmodium falciparum',
-                       'Staphylococcus aureus',
-                       'Sulfolobus islandicus',
-                       'Tetrahymena thermophila',
-                       'Trypanosoma cruzi',
-                       'Volvox carteri'])
+    species=species
+)
 
-kegg_db.parse_database("./KO_database.txt")
+profiles.head()
 ```
+
+|ORF_ID|PROF
+|------|----
+|YNL113W|-+--+-+-++--+++
+|YNL130C|--------+------
+|YNL141W|-++-+-++++---++
+|YNL151C|-+--+---+------
+|YNL162W|++--+-+-++-++++
 
 Parse your **Genetic Interactions** network. It can come from the widely-known [Costanzo Network](http://science.sciencemag.org/content/353/6306/aaf1420) or from any other source.
 
 ```python
-sga2 = prowler.databases.SGA2()
-
-sga2.parse("./SGA_ExN_NxE.txt")
+ExN_NxE = prwl.read_sga('./SGA_ExN_NxE.txt')
 ```
 
 OK, now let's integrate it...
 
 ```python
-profint = prowler.databases.ProfInt()
-
-profint.merger(
-    kegg_db.database,
-    kegg_db.X_reference,
-    sga2.sga)
-
-profint.profilize(
-    kegg_db.reference_species,
-    method="jaccard")
+ExN_NxE_profiles = prwl.merge_sga_profiles(
+    ExN_NxE,
+    profiles,
+)
 ```
 
-...and make profiles!
+...and calculate the distances between the profiles!
 
 ```python
-profint.profilize(
-    kegg_db.reference_species,
-    method="jaccard")
+ExN_NxE_profiles_pss = prwl.calculate_pss(
+    ExN_NxE_profiles,
+    method='jaccard',
+)
 ```
 
 How does it look now?
 
 ```python
-profint.merged
+ExN_NxE_profiles_pss
 ```
 
 |ORF_Q|GENE_Q|ENTRY_Q|PROF_Q|ORF_A|GENE_A|ENTRY_A|PROF_A|GIS|SMF_Q|SMF_A|DMF|PSS
@@ -103,7 +106,7 @@ profint.merged
 Maybe you would like to see what's inside on of the profiles?
 
 ```python
-profint.merged.iloc[0].PROF_A.get_present()
+ExN_NxE_profiles_pss.iloc[0].PROF_A.get_present()
 ```
 
 ```
@@ -113,7 +116,12 @@ profint.merged.iloc[0].PROF_A.get_present()
 With something more human-readable?
 
 ```python
-[kegg_db.ID_name[i] for i in df.iloc[0].PROF_A.get_present()]
+IDs_names = prwl.get_IDs_names(species)
+
+[
+    IDs_names[i]
+    for i in ExN_NxE_profiles_pss.iloc[0].PROF_A.get_present()
+]
 ```
 
 ```
