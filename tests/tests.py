@@ -255,7 +255,7 @@ class DatabasesTests(unittest.TestCase):
             )
         self.ref_kegg_db = pd.read_csv("test_data/DatabasesTests/ref_kegg_db.csv",
                                        sep='\t',
-                                       index_col = [0])
+                                       index_col=[0])
         self.kegg = databases.KEGG(self.database_type)
         self.ref_kegg_db[self.kegg.GENES] = self.ref_kegg_db[self.kegg.GENES].apply(lambda x: [_.strip()
                                                                                                for _ in x.replace("[", "").
