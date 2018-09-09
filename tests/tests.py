@@ -564,30 +564,6 @@ class StatsTests(unittest.TestCase):
         self.desired_pss = 14
         self.ref_PSS_sum = int(pd.DataFrame(self.ref_nwrk.groupby(by=[stats.Columns.PSS]).size()).sum())
 
-    def test_permute_profiles(self):
-        """
-        Test if permute_profiles returns proper dataframes using
-        multiprocessing.
-        """
-        self.permuted = stats.permute_profiles(self.ref_nwrk,
-                                               self.permutations_number,
-                                               return_series=True)
-        for i in range(self.permutations_number):
-            self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
-
-    def test_permute_profiles_multiprocessing(self):
-        """
-        Test if permute_profiles returns proper dataframes using
-        multiprocessing.
-        """
-        self.permuted = stats.permute_profiles(self.ref_nwrk,
-                                               self.permutations_number,
-                                               return_series=True,
-                                               multiprocessing=True,
-                                               mp_backend="pathos")
-        for i in range(self.permutations_number):
-            self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
-
     def test_binomial_pss_test(self):
         """
         Test if binomial test returns values within correct range.
