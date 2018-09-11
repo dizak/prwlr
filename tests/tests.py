@@ -566,7 +566,7 @@ class StatsTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        self.ref_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
+        self.ref_nwrk = pd.read_csv("test_data/StatsTests/ref_nwrk.csv", sep="\t")
         self.permutations_number = 10
         self.desired_pss = 14
         self.ref_PSS_sum = int(pd.DataFrame(self.ref_nwrk.groupby(by=[stats.Columns.PSS]).size()).sum())
