@@ -255,7 +255,7 @@ class DatabasesTests(unittest.TestCase):
             )
         self.ref_kegg_db = pd.read_csv("test_data/DatabasesTests/ref_kegg_db.csv",
                                        sep='\t',
-                                       index_col = [0])
+                                       index_col=[0])
         self.kegg = databases.KEGG(self.database_type)
         self.ref_kegg_db[self.kegg.GENES] = self.ref_kegg_db[self.kegg.GENES].apply(lambda x: [_.strip()
                                                                                                for _ in x.replace("[", "").
@@ -267,6 +267,13 @@ class DatabasesTests(unittest.TestCase):
                                                                                                   replace("]", "").
                                                                                                   replace("'", "").
                                                                                                   split(",")])
+
+    def test_parse_database(self):
+        """
+        Test if kegg database if properly parsed.
+        """
+        self.kegg.parse_database(self.test_kegg_db_filename)
+        pd.testing.assert_frame_equal(self.ref_kegg_db, self.kegg.database)
 
     def test_parse_organism_info(self):
         """
@@ -388,71 +395,6 @@ class BioprocessesTests(unittest.TestCase):
         """
         pd.testing.assert_frame_equal(self.ref_bioprocesses,
                                       self.test_bioprocesses)
-
-
-class ProfIntTests(unittest.TestCase):
-    """
-    Tests for prowler.databases.ProfInt
-    """
-    def setUp(self):
-        """
-        Sets up class level attributes for the tests.
-        """
-        self.profint = databases.ProfInt()
-        self.methods = ["pairwise",
-                        "jaccard",
-                        "dice",
-                        "hamming",
-                        "kulsinski",
-                        "rogerstanimoto",
-                        "russellrao",
-                        "sokalmichener"]
-        self.ref_merged = pd.read_pickle("test_data/ProfIntTests/ref_merged.pickle")
-        self.ref_profilized_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
-        self.reference_species = self.ref_profilized_nwrk[self.profint.PROF_Q].iloc[0].query
-        self.test_non_profilized_nwrk = self.ref_profilized_nwrk.drop([self.profint.PROF_Q,
-                                                                       self.profint.PROF_A,
-                                                                       self.profint.PSS],
-                                                                      axis=1)
-        self.test_kegg_db = pd.read_pickle("test_data/ProfIntTests/test_kegg_database.pickle")
-        self.test_X_reference = pd.read_pickle("test_data/ProfIntTests/test_X_reference.pickle")
-        self.test_sga = pd.read_pickle("test_data/ProfIntTests/test_sga.pickle")
-
-    def test_merger(self):
-        """
-        Test if prowler.databases.SGA1.sga or prowler.databases.SGA2.sga is
-        properly merged with prowler.apis.org_db_X_ref_df and
-        prowler.databases.KEGG.database
-        """
-        self.profint.merger(self.test_kegg_db,
-                            self.test_X_reference,
-                            self.test_sga)
-        pd.testing.assert_frame_equal(self.ref_merged, self.profint.merged)
-
-    def test_profilize(self):
-        """
-        Tests if databases.ProfInt.merged is properly appended with
-        profiles.Profile.
-        """
-        self.profint.merged = self.test_non_profilized_nwrk
-        self.profint.profilize(self.reference_species)
-        pd.testing.assert_series_equal(self.ref_profilized_nwrk[self.profint.PROF_Q].apply(lambda x: sorted(x.get_present())),
-                                       self.profint.merged[self.profint.PROF_Q].apply(lambda x: sorted(x.get_present())))
-        pd.testing.assert_series_equal(self.ref_profilized_nwrk[self.profint.PROF_Q].apply(lambda x: sorted(x.get_absent())),
-                                       self.profint.merged[self.profint.PROF_Q].apply(lambda x: sorted(x.get_absent())))
-
-    def test_pss(self):
-        for method in self.methods:
-            self.ref_df = pd.read_pickle("test_data/ProfIntTests/ref_nwrk_{}.pickle".format(method))
-            self.profint.merged = self.test_non_profilized_nwrk
-            self.profint.profilize(self.reference_species, method=method)
-            pd.testing.assert_series_equal(self.ref_df[self.profint.PSS],
-                                           self.profint.merged[self.profint.PSS])
-            # print(method)
-            # self.profint.merged = self.test_non_profilized_nwrk
-            # self.profint.profilize(self.reference_species, method=method)
-            # print(self.profint.merged)
-            # self.profint.merged.to_pickle("test_data/ProfIntTests/ref_nwrk_{}.pickle".format(method))
 
 
 class ProfileTests(unittest.TestCase):
@@ -616,175 +558,6 @@ class ProfileTests(unittest.TestCase):
         self.assertEqual(self.test_profile.get_absent(), self.ref_absent)
 
 
-class SelectorTests(unittest.TestCase):
-    """
-    Test for prowler.stats.Selector.
-    """
-    def setUp(self):
-        """
-        Sets up class level attributes for the tests.
-        """
-        self.profiles_similarity_threshold = 14
-        self.p_value = 0.05
-        self.GIS_min = 0.04
-        self.GIS_max = -0.04
-        self.query_species = ["CEL", "DME"]
-        self.none_query_species = ["ATH", "DDI"]
-        self.array_species = ["APE", "CEL", "DDI", "DME", "HSA"]
-        self.ref_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
-        self.ref_all_species_in_query_nwrk = pd.read_pickle("test_data/SelectorTests/ref_all_species_in_query_nwrk.pickle")
-        self.ref_any_species_in_query_nwrk = pd.read_pickle("test_data/SelectorTests/ref_any_species_in_query_nwrk.pickle")
-        self.ref_none_species_in_query_nwrk = pd.read_pickle("test_data/SelectorTests/ref_none_species_in_query_nwrk.pickle")
-        self.ref_all_species_in_array_nwrk = pd.read_pickle("test_data/SelectorTests/ref_all_species_in_array_nwrk.pickle")
-        self.ref_any_species_in_array_nwrk = pd.read_pickle("test_data/SelectorTests/ref_any_species_in_array_nwrk.pickle")
-        self.ref_none_species_in_array_nwrk = pd.read_pickle("test_data/SelectorTests/ref_none_species_in_array_nwrk.pickle")
-        self.selector = stats.Selector(self.ref_nwrk,
-                                       profiles_similarity_threshold=14,
-                                       all_species_in_query=self.query_species,
-                                       any_species_in_query=self.query_species,
-                                       none_species_in_query=self.none_query_species,
-                                       all_species_in_array=self.array_species,
-                                       any_species_in_array=self.array_species,
-                                       none_species_in_array=self.array_species)
-        self.ref_nwrk_str = pd.read_csv("test_data/StatsTests/ref_nwrk.csv")
-        self.flat_plu = "+" * 16
-        self.flat_min = "-" * 16
-
-    def test_flat_plu_q(self):
-        """
-        Test if flat_plu_q selector returns dataframe of same length as
-        selection on str.
-        """
-        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_plu_q]
-                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] ==
-                                                         self.flat_plu][self.selector.PROF_Q])
-
-    def test_flat_plu_a(self):
-        """
-        Test if flat_plu_a selector returns dataframe of same length as
-        selection on str.
-        """
-        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_plu_a]
-                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] ==
-                                                         self.flat_plu][self.selector.PROF_A])
-
-    def test_flat_min_q(self):
-        """
-        Test if flat_min_q selector returns dataframe of same length as
-        selection on str.
-        """
-        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_min_q]
-                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] ==
-                                                         self.flat_min][self.selector.PROF_Q])
-
-    def test_flat_min_a(self):
-        """
-        Test if flat_min_a selector returns dataframe of same length as
-        selection on str.
-        """
-        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.flat_min_a]
-                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] ==
-                                                         self.flat_min][self.selector.PROF_A])
-
-    def test_no_flat_plu_q(self):
-        """
-        Test if no_flat_plu_q selector returns dataframe of same length as
-        selection on str.
-        """
-        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_plu_q]
-                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] !=
-                                                         self.flat_plu][self.selector.PROF_Q])
-
-    def test_no_flat_plu_a(self):
-        """
-        Test if no_flat_plu_a selector returns dataframe of same length as
-        selection on str.
-        """
-        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_plu_a]
-                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] !=
-                                                         self.flat_plu][self.selector.PROF_A])
-
-    def test_no_flat_min_q(self):
-        """
-        Test if no_flat_min_q selector returns dataframe of same length as
-        selection on str.
-        """
-        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_min_q]
-                                       [self.selector.PROF_Q].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_Q] !=
-                                                         self.flat_min][self.selector.PROF_Q])
-
-    def test_no_flat_min_a(self):
-        """
-        Test if no_flat_min_a selector returns dataframe of same length as
-        selection on str.
-        """
-        pd.testing.assert_series_equal(self.selector.dataframe[self.selector.no_flat_min_a]
-                                       [self.selector.PROF_A].apply(lambda x: x.to_string()),
-                                       self.ref_nwrk_str[self.ref_nwrk_str[self.selector.PROF_A] !=
-                                                         self.flat_min][self.selector.PROF_A])
-
-    def test_all_species_in_query(self):
-        """
-        Test if all_species_in_query returns an expected dataframe.
-        """
-        pd.testing.assert_series_equal(self.ref_all_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())),
-                                       self.selector.dataframe[self.selector.all_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())))
-        pd.testing.assert_series_equal(self.ref_all_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())),
-                                       self.selector.dataframe[self.selector.all_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())))
-
-    def test_any_species_in_query(self):
-        """
-        Test if any_species_in_query returns an expected dataframe.
-        """
-        pd.testing.assert_series_equal(self.ref_any_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())),
-                                       self.selector.dataframe[self.selector.any_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())))
-        pd.testing.assert_series_equal(self.ref_any_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())),
-                                       self.selector.dataframe[self.selector.any_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())))
-
-    def test_none_species_in_query(self):
-        """
-        Test if none_species_in_query returns an expected dataframe.
-        """
-        pd.testing.assert_series_equal(self.ref_none_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())),
-                                       self.selector.dataframe[self.selector.none_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_present())))
-        pd.testing.assert_series_equal(self.ref_none_species_in_query_nwrk[self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())),
-                                       self.selector.dataframe[self.selector.none_species_in_query][self.selector.PROF_Q].apply(lambda x: sorted(x.get_absent())))
-
-    def test_all_species_in_array(self):
-        """
-        Test if all_species_in_array returns an expected dataframe.
-        """
-        pd.testing.assert_series_equal(self.ref_all_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_present())),
-                                       self.selector.dataframe[self.selector.all_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_present())))
-        pd.testing.assert_series_equal(self.ref_all_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())),
-                                       self.selector.dataframe[self.selector.all_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())))
-
-    def test_any_species_in_array(self):
-        """
-        Test if any_species_in_array returns an expected dataframe.
-        """
-        pd.testing.assert_series_equal(self.ref_any_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_present())),
-                                       self.selector.dataframe[self.selector.any_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_present())))
-        pd.testing.assert_series_equal(self.ref_any_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())),
-                                       self.selector.dataframe[self.selector.any_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())))
-
-    def test_none_species_in_array(self):
-        """
-        Test if none_species_in_array returns an expected dataframe.
-        """
-        pd.testing.assert_series_equal(self.ref_none_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_present())),
-                                       self.selector.dataframe[self.selector.none_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_present())))
-        pd.testing.assert_series_equal(self.ref_none_species_in_array_nwrk[self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())),
-                                       self.selector.dataframe[self.selector.none_species_in_array][self.selector.PROF_A].apply(lambda x: sorted(x.get_absent())))
-
-
 class StatsTests(unittest.TestCase):
     """
     Tests of prowler.stats top-level functions.
@@ -793,34 +566,10 @@ class StatsTests(unittest.TestCase):
         """
         Sets up class level attributes for the tests.
         """
-        self.ref_nwrk = pd.read_pickle("test_data/StatsTests/ref_nwrk.pickle").reset_index(drop=True)
+        self.ref_nwrk = pd.read_csv("test_data/StatsTests/ref_nwrk.csv", sep="\t")
         self.permutations_number = 10
         self.desired_pss = 14
         self.ref_PSS_sum = int(pd.DataFrame(self.ref_nwrk.groupby(by=[stats.Columns.PSS]).size()).sum())
-
-    def test_permute_profiles(self):
-        """
-        Test if permute_profiles returns proper dataframes using
-        multiprocessing.
-        """
-        self.permuted = stats.permute_profiles(self.ref_nwrk,
-                                               self.permutations_number,
-                                               return_series=True)
-        for i in range(self.permutations_number):
-            self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
-
-    def test_permute_profiles_multiprocessing(self):
-        """
-        Test if permute_profiles returns proper dataframes using
-        multiprocessing.
-        """
-        self.permuted = stats.permute_profiles(self.ref_nwrk,
-                                               self.permutations_number,
-                                               return_series=True,
-                                               multiprocessing=True,
-                                               mp_backend="pathos")
-        for i in range(self.permutations_number):
-            self.assertEqual(self.ref_PSS_sum, int(self.permuted[i].sum()))
 
     def test_binomial_pss_test(self):
         """

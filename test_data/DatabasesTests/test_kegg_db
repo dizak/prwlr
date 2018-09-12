@@ -11,23 +11,27 @@ MODULE      M00181  RNA polymerase III, eukaryotes
             M00182  RNA polymerase I, eukaryotes
 DISEASE     H00610  Treacher Collins syndrome
 BRITE       KEGG Orthology (KO) [BR:ko00001]
-             Metabolism
-              Nucleotide metabolism
+             09100 Metabolism
+              09104 Nucleotide metabolism
                00230 Purine metabolism
                 K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
                00240 Pyrimidine metabolism
                 K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
-             Genetic Information Processing
-              Transcription
+             09120 Genetic Information Processing
+              09121 Transcription
                03020 RNA polymerase
                 K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
-             Organismal Systems
-              Immune system
+             09150 Organismal Systems
+              09151 Immune system
                04623 Cytosolic DNA-sensing pathway
                 K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
-             Human Diseases
-              Infectious diseases
+             09160 Human Diseases
+              09172 Infectious diseases: Viral
                05169 Epstein-Barr virus infection
+                K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
+             09180 Brite Hierarchies
+              09182 Protein families: genetic information processing
+               03021 Transcription machinery
                 K03020  RPC19, POLR1D; DNA-directed RNA polymerases I and III subunit RPAC2
             KEGG modules [BR:ko00002]
              Structural complex
@@ -87,6 +91,7 @@ GENES       HSA: 51082(POLR1D)
             CDK: 105086579(POLR1D)
             BACU: 103018134(POLR1D)
             LVE: 103081571(POLR1D)
+            OOR: 101279252
             ECB: 100629435(POLR1D)
             EPZ: 103560996(POLR1D)
             EAI: 106832903(POLR1D)
@@ -95,7 +100,7 @@ GENES       HSA: 51082(POLR1D)
             HAI: 109395229(POLR1D)
             RSS: 109449835(POLR1D) 109459162
             PALE: 102883866(POLR1D)
-            LAV: 100671293(POLR1D)
+            LAV: 100671293
             TMU: 101347622
             MDO: 100031257
             SHR: 100926318
@@ -218,7 +223,7 @@ GENES       HSA: 51082(POLR1D)
             AQU: 100636270
             ATH: AT2G29540(RPC14)
             ALY: ARALYDRAFT_668653
-            CRB: CARUB_v10024331mg
+            CRB: 17889254
             CSAT: 104700543 104716050 104749927 104786726
             EUS: EUTSA_v10017434mg
             BRP: 103864994 103868028
@@ -231,6 +236,7 @@ GENES       HSA: 51082(POLR1D)
             TCC: 18590572
             GRA: 105761990 105771034 105775526 105788753 105791873 105798517
             GHI: 107886036 107904798 107904804 107911446 107946924 107950223 107956201 107956761 107963362
+            DZI: 111286511 111303706
             EGR: 104452942 104452947 104455183
             GMX: 100500695 100807892
             PVU: PHAVU_004G063100g PHAVU_008G020000g
@@ -239,9 +245,9 @@ GENES       HSA: 51082(POLR1D)
             CCAJ: 109802450 109814005
             MTR: MTR_7g020830
             CAM: 101508940
+            LJA: Lj0g3v0213949.1(Lj0g3v0213949.1) Lj0g3v0333049.1(Lj0g3v0333049.1) Lj0g3v0333049.2(Lj0g3v0333049.2) Lj6g3v1752970.1(Lj6g3v1752970.1)
             ADU: 107475386 107487374
             AIP: 107609358 107625793
-            LJA: Lj0g3v0213949.1(Lj0g3v0213949.1) Lj0g3v0333049.1(Lj0g3v0333049.1) Lj0g3v0333049.2(Lj0g3v0333049.2) Lj6g3v1752970.1(Lj6g3v1752970.1)
             LANG: 109354750
             FVE: 101294774 101300387
             PPER: 18781503
@@ -253,10 +259,14 @@ GENES       HSA: 51082(POLR1D)
             CSV: 101212403 101216823
             CMO: 103497108
             MCHA: 111018936
+            CMAX: 111469385 111493371
+            CMOS: 111452057
+            CPEP: 111785917 111788722
             RCU: 107261365
             JCU: 105631134
             HBR: 110640643 110666407
-            POP: POPTR_0001s25380g(POPTRDRAFT_641125)
+            POP: 7485677
+            JRE: 108998490
             VVI: 100245061
             SLY: 101255651 101262015
             SPEN: 107003495 107023426
@@ -267,7 +277,10 @@ GENES       HSA: 51082(POLR1D)
             NTO: 104098040
             INI: 109163771 109185163
             SIND: 105175682
+            OEU: 111372726 111402247
             HAN: 110878961
+            LSV: 111907239
+            DCR: 108206774 108216054
             BVG: 104900027
             SOE: 110800214
             NNU: 104601162
@@ -280,11 +293,12 @@ GENES       HSA: 51082(POLR1D)
             ZMA: 100276725(pco137632)
             SITA: 101754829 101786403
             PDA: 103723351
-            EGU: 105035955 105037893 105051577
+            EGU: 105035955 105051577
             MUS: 103993762
+            AOF: 109824424
             ATR: 18448400
             SMO: SELMODRAFT_160051 SELMODRAFT_28501 SELMODRAFT_49652 SELMODRAFT_49918
-            PPP: PHYPADRAFT_129266
+            PPP: 112280374
             CRE: CHLREDRAFT_123383(RPC19)
             VCN: VOLCADRAFT_63657
             OLU: OSTLU_30435
@@ -299,7 +313,8 @@ GENES       HSA: 51082(POLR1D)
             SCE: YNL113W(RPC19)
             AGO: AGOS_AFL220C
             ERC: Ecym_5423
-            KLA: KLLA0F23760g
+            KLA: KLLA0_F23760g
+            KMX: KLMA_60236(RPC19)
             LTH: KLTH0D09350g
             VPO: Kpol_165p2
             ZRO: ZYRO0B09878g
@@ -332,6 +347,7 @@ GENES       HSA: 51082(POLR1D)
             CTHR: CTHT_0023150
             MGR: MGG_06311
             TMN: UCRPA7_1684
+            SSCK: SPSK_03699
             FGR: FGSG_06937
             FPU: FPSE_04788
             FVR: FVEG_08260
@@ -348,12 +364,13 @@ GENES       HSA: 51082(POLR1D)
             ELA: UCREL1_8394
             PFY: PFICI_07473
             SSL: SS1G_00588
-            BFU: BC1G_06580
+            BFU: BCIN_03g02430
             MBE: MBM_03627
             PSCO: LY89DRAFT_594174
             GLZ: GLAREA_07111
             ANI: AN6558.2
             AFM: AFUA_6G04610
+            AOR: AO090701000084
             ANG: ANI_1_134134(An15g00700)
             AFV: AFLA_055410
             ACT: ACLA_095950
@@ -373,6 +390,7 @@ GENES       HSA: 51082(POLR1D)
             BZE: COCCADRAFT_29047
             BSC: COCSADRAFT_188250
             BOR: COCMIDRAFT_85583
+            AALT: CC77DRAFT_988103
             ZTR: MYCGRDRAFT_45952
             PFJ: MYCFIDRAFT_77593
             NPA: UCRNP2_7612
@@ -414,11 +432,11 @@ GENES       HSA: 51082(POLR1D)
             DPP: DICPUDRAFT_32831
             DFA: DFA_11628(rpc19)
             ACAN: ACA1_090040
-            PFA: PF14_0150
+            PFA: PF3D7_1415200
             PFH: PFHG_05127
-            PYO: PY04455
+            PYO: PY17X_1029900(PY04455)
             PCB: PCHAS_102830(PC000134.02.0)
-            PBE: PB000985.02.0
+            PBE: PBANKA_102750
             PKN: PKH_133200
             PVX: PVX_085690
             PCY: PCYB_134150
@@ -426,6 +444,7 @@ GENES       HSA: 51082(POLR1D)
             TPV: TP04_0471
             BEQ: BEWA_008340
             BBO: BBOV_II001150(18.m06085)
+            BMIC: BMR1_02g02925
             TGO: TGME49_261540
             TET: TTHERM_00011760
             PTM: GSPATT00020004001 GSPATT00022238001
@@ -465,17 +484,17 @@ PATHWAY     ko00440  Phosphonate and phosphinate metabolism
             ko05231  Choline metabolism in cancer
 MODULE      M00090  Phosphatidylcholine (PC) biosynthesis, choline => PC
 BRITE       KEGG Orthology (KO) [BR:ko00001]
-             Metabolism
-              Lipid metabolism
+             09100 Metabolism
+              09103 Lipid metabolism
                00564 Glycerophospholipid metabolism
                 K00994  CHPT1, CPT1; diacylglycerol cholinephosphotransferase
                00565 Ether lipid metabolism
                 K00994  CHPT1, CPT1; diacylglycerol cholinephosphotransferase
-              Metabolism of other amino acids
+              09106 Metabolism of other amino acids
                00440 Phosphonate and phosphinate metabolism
                 K00994  CHPT1, CPT1; diacylglycerol cholinephosphotransferase
-             Human Diseases
-              Cancers
+             09160 Human Diseases
+              09161 Cancers: Overview
                05231 Choline metabolism in cancer
                 K00994  CHPT1, CPT1; diacylglycerol cholinephosphotransferase
             KEGG modules [BR:ko00002]
@@ -531,6 +550,7 @@ GENES       HSA: 56994(CHPT1)
             CDK: 105097458(CHPT1)
             BACU: 103018700(CHPT1)
             LVE: 103085556(CHPT1)
+            OOR: 101272174(CHPT1)
             ECB: 106782693(CHPT1)
             EPZ: 103555701(CHPT1)
             EAI: 106827266(CHPT1)
@@ -542,7 +562,6 @@ GENES       HSA: 56994(CHPT1)
             LAV: 104846858(CHPT1)
             TMU: 101360133
             MDO: 100020969(CHPT1)
-            SHR: 105750678(CHPT1)
             OAA: 100075425(CHPT1)
             GGA: 418098(CHPT1)
             MGP: 100546891
@@ -593,14 +612,17 @@ GENES       HSA: 56994(CHPT1)
             SASA: 106576273 106609452
             ELS: 105030153(chpt1)
             SFM: 108931393(chpt1) 108942231
+            LCM: 102361623(CHPT1)
             CMK: 103179874(chpt1)
             APLC: 110979864
             HRO: HELRODRAFT_116477
+            OVI: T265_13771
             AQU: 100638347
             SCE: YNL130C(CPT1)
             AGO: AGOS_AGR344W
             ERC: Ecym_8190
-            KLA: KLLA0F24354g
+            KLA: KLLA0_F24354g
+            KMX: KLMA_60263(CPT1)
             LTH: KLTH0B05478g
             VPO: Kpol_1048p10
             ZRO: ZYRO0G06226g
@@ -612,6 +634,7 @@ GENES       HSA: 56994(CHPT1)
             TDL: TDEL_0B05000(TDEL0B05000)
             KAF: KAFR_0F00670(KAFR0F00670) KAFR_0J02190(KAFR0J02190)
             PPA: PAS_chr2-2_0357
+            YLI: YALI0C10989g
 REFERENCE   PMID:12221122
   AUTHORS   Henneberry AL, Wright MM, McMaster CR
   TITLE     The major sites of cellular phospholipid synthesis and molecular determinants of Fatty Acid and lipid head group specificity.
