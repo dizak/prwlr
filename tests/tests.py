@@ -81,7 +81,7 @@ class ApisTests(unittest.TestCase,
                                         index_col=[0])
         cls.orgs_ids_out = cls.orgs_ids_out.astype({k: v for k, v in cls.dtypes.items()
                                                     if k in cls.orgs_ids_out.columns})
-        cls.org_db_X_ref_out = pd.read_csv("test_data/ApisTests/test_orgs_db_X_ref.csv",
+        cls.ref_org_db_X_df = pd.read_csv("test_data/ApisTests/ref_orgs_db_X_ref.csv",
                                            sep="\t",
                                            names=["ORF_ID",
                                                   "KEGG_ID"],
@@ -151,7 +151,7 @@ class ApisTests(unittest.TestCase,
         cross-reference.
         """
         pd.testing.assert_frame_equal(self.kegg_api.org_db_X_ref_df,
-                                      self.org_db_X_ref_out)
+                                      self.ref_org_db_X_df)
 
     def test_get_KOs_db_X_ref(self):
         """
