@@ -26,7 +26,7 @@ class Profile:
             iter(query)
         except TypeError:
             raise ProfileConstructorError("Query must be an iterable.")
-        self.reference = tuple(reference)
+        self.reference = sorted(tuple(reference))
         self.query = sorted(tuple(query))
         self._construct()
 
