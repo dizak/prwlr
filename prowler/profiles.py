@@ -36,6 +36,10 @@ class Profile:
     def __repr__(self):
         return self.to_string()
 
+    def __eq__(self,
+               other):
+        return self.profile == other.profile and self.reference == other.reference and self.query == other.query
+
     def _construct(self):
         """
         Construct profile from Profile.reference and Profile.query.
