@@ -36,6 +36,26 @@ class Profile:
     def __repr__(self):
         return self.to_string()
 
+    def __lt__(self,
+               other):
+        return self.profile < other.profile
+
+    def __le__(self,
+               other):
+        return self.profile <= other.profile
+
+    def __gt__(self,
+               other):
+        return self.profile > other.profile
+
+    def __ge__(self,
+               other):
+        return self.profile >= other.profile
+
+    def __ne__(self,
+               other):
+        return self.profile != other.profile
+
     def __eq__(self,
                other):
         return self.profile == other.profile and self.query == other.query
