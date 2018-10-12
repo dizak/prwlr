@@ -40,6 +40,9 @@ class Profile:
                other):
         return self.profile == other.profile and self.query == other.query
 
+    def __hash__(self):
+        return hash(self.profile)
+
     def _construct(self):
         """
         Construct profile from Profile.reference and Profile.query.
