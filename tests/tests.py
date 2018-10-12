@@ -411,6 +411,7 @@ class ProfileTests(unittest.TestCase):
                             list('acdfhi@#$%'),
                             list("qoadzv!@#$")]
         self.ref_reference = list("bcefghijklmnprstuwxy")
+        self.ref_reference_2 = list("ybcefghijklmnprstuwx")
         self.ref_bound = [("a", False),
                           ("c", True),
                           ("d", False),
@@ -450,7 +451,7 @@ class ProfileTests(unittest.TestCase):
         self.ref_pss_ignore = 10
         self.test_profile = profiles.Profile(reference=self.ref_reference,
                                              query=self.ref_query)
-        self.test_profile_2 = profiles.Profile(reference=self.ref_reference,
+        self.test_profile_2 = profiles.Profile(reference=self.ref_reference_2,
                                                query=self.ref_query)
         self.test_pss_methods_profile = profiles.Profile(reference=self.ref_reference,
                                                          query=self.ref_query[:10])
