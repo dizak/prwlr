@@ -257,7 +257,10 @@ class KEGG(Columns):
             columns=self.ORG_GENE_ID,
             inplace=True,
         )
-        self.organism_info.drop_duplicates(inplace=True)
+        self.organism_info.drop_duplicates(
+            subset=[self.ORF_ID, self.KEGG_ID],
+            inplace=True,
+            )
 
 
 
