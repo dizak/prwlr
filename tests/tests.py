@@ -412,7 +412,7 @@ class ProfileTests(unittest.TestCase):
                             list("qoadzv!@#$")]
         self.ref_reference = list("bcefghijklmnprstuwxy")
         self.ref_reference_2 = list("ybcefghijklmnprstuwx")
-        self.ref_bound = [("a", False),
+        self.ref_bound = (("a", False),
                           ("c", True),
                           ("d", False),
                           ("f", True),
@@ -424,13 +424,13 @@ class ProfileTests(unittest.TestCase):
                           ("s", True),
                           ("t", True),
                           ("u", True),
-                          ("z", False)]
-        self.ref_present = ["c", "f", "h", "i", "k", "l", "s", "t", "u"]
-        self.ref_absent = ["a", "d", "o", "z"]
+                          ("z", False))
+        self.ref_present = ("c", "f", "h", "i", "k", "l", "s", "t", "u")
+        self.ref_absent = ("a", "d", "o", "z")
         self.alt_pos_sing = "$"
         self.alt_neg_sing = "#"
         self.ref_profile = "-+-+++++-+++-"
-        self.ref_alt_profile = "#$#$$$$$#$$$#"
+        self.ref_alt_profile = '#$#$$$$$#$$$#'
         self.methods = ["pairwise",
                         "jaccard",
                         "dice",
@@ -466,9 +466,12 @@ class ProfileTests(unittest.TestCase):
         """
         Test if profile is properly converted.
         """
+        print(self.test_profile)
+        print(self.test_profile._convert(positive_sign=self.alt_pos_sing,
+                                         negative_sign=self.alt_neg_sing))
         self.assertEqual(self.test_profile._convert(positive_sign=self.alt_pos_sing,
                                                     negative_sign=self.alt_neg_sing),
-                         list(self.ref_alt_profile))
+                         tuple(self.ref_alt_profile))
 
     def test__bind(self):
         """
