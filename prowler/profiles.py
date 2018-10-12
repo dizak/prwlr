@@ -27,7 +27,7 @@ class Profile:
         except TypeError:
             raise ProfileConstructorError("Query must be an iterable.")
         self.reference = set(reference)
-        self.query = set(query)
+        self.query = sorted(tuple(set(query)))
         self._construct()
 
     def __len__(self):
@@ -44,13 +44,13 @@ class Profile:
         """
         Construct profile from Profile.reference and Profile.query.
         """
-        self.profile = [True if i in self.reference else False for i in self.query]
+        self.profile = tuple(True if i in self.reference else False for i in self.query)
 
     def _bind(self):
         """
         Return zipped Profile.query and Profile.profile.
         """
-        return list(zip(self.query, self.profile))
+        return tuple(zip(self.query, self.profile))
 
     def _convert(self,
                  positive_sign,
@@ -58,26 +58,26 @@ class Profile:
         """
         Convert profile to given sign.
         """
-        return [positive_sign if i is True else negative_sign for i in self.profile]
+        return tuple(positive_sign if i is True else negative_sign for i in self.profile)
 
     def isall(self,
-              query_list):
+              queries):
         """
-        Returns <True> if all positions from query_list are present in the
+        Returns <True> if all positions from queries are present in the
         profile.
         """
-        if all([dict(list(zip(self.query, self.profile)))[i] for i in query_list]):
+        if all([dict(tuple(zip(self.query, self.profile)))[i] for i in queries]):
             return True
         else:
             return False
 
     def isany(self,
-              query_list):
+              queries):
         """
-        Return <True> if any of the positions from query_list is present in the
+        Return <True> if any of the positions from queries is present in the
         profile.
         """
-        if any([dict(list(zip(self.query, self.profile)))[i] for i in query_list]):
+        if any([dict(tuple(zip(self.query, self.profile)))[i] for i in queries]):
             return True
         else:
             return False
@@ -156,11 +156,15 @@ class Profile:
         if ignore:
             for i in ignore:
                 try:
+                    prof_1.profile = list(prof_1.profile)
                     del prof_1.profile[prof_1.query.index(i)]
+                    prof_1.profile = tuple(prof_1.profile)
                 except IndexError:
                     raise ProfileError("Element to ignore not in profile")
                 try:
+                    prof_2.profile = list(prof_2.profile)
                     del prof_2.profile[prof_2.query.index(i)]
+                    prof_2.profile = tuple(prof_2.profile)
                 except IndexError:
                     raise ProfileError("Element to ignore not in profile")
         if method == "pairwise":
@@ -186,10 +190,10 @@ class Profile:
         """
         Return elements present in the profile.
         """
-        return [k for k, v in self._bind() if v is True]
+        return tuple(k for k, v in self._bind() if v is True)
 
     def get_absent(self):
         """
         Return element absent in the profile.
         """
-        return [k for k, v in self._bind() if v is False]
+        return tuple(k for k, v in self._bind() if v is False)
