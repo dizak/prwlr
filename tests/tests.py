@@ -411,7 +411,8 @@ class ProfileTests(unittest.TestCase):
                             list('acdfhi@#$%'),
                             list("qoadzv!@#$")]
         self.ref_reference = list("bcefghijklmnprstuwxy")
-        self.ref_bound = [("a", False),
+        self.ref_reference_2 = list("ybcefghijklmnprstuwx")
+        self.ref_bound = (("a", False),
                           ("c", True),
                           ("d", False),
                           ("f", True),
@@ -423,13 +424,13 @@ class ProfileTests(unittest.TestCase):
                           ("s", True),
                           ("t", True),
                           ("u", True),
-                          ("z", False)]
-        self.ref_present = ["c", "f", "h", "i", "k", "l", "s", "t", "u"]
-        self.ref_absent = ["a", "d", "o", "z"]
+                          ("z", False))
+        self.ref_present = ("c", "f", "h", "i", "k", "l", "s", "t", "u")
+        self.ref_absent = ("a", "d", "o", "z")
         self.alt_pos_sing = "$"
         self.alt_neg_sing = "#"
         self.ref_profile = "-+-+++++-+++-"
-        self.ref_alt_profile = "#$#$$$$$#$$$#"
+        self.ref_alt_profile = '#$#$$$$$#$$$#'
         self.methods = ["pairwise",
                         "jaccard",
                         "dice",
@@ -450,16 +451,27 @@ class ProfileTests(unittest.TestCase):
         self.ref_pss_ignore = 10
         self.test_profile = profiles.Profile(reference=self.ref_reference,
                                              query=self.ref_query)
+        self.test_profile_2 = profiles.Profile(reference=self.ref_reference_2,
+                                               query=self.ref_query)
         self.test_pss_methods_profile = profiles.Profile(reference=self.ref_reference,
                                                          query=self.ref_query[:10])
+
+    def test___eq__(self):
+        """
+        Test if two profiles instances are equal when using Python comparison.
+        """
+        self.assertEqual(self.test_profile, self.test_profile_2)
 
     def test__convert(self):
         """
         Test if profile is properly converted.
         """
+        print(self.test_profile)
+        print(self.test_profile._convert(positive_sign=self.alt_pos_sing,
+                                         negative_sign=self.alt_neg_sing))
         self.assertEqual(self.test_profile._convert(positive_sign=self.alt_pos_sing,
                                                     negative_sign=self.alt_neg_sing),
-                         list(self.ref_alt_profile))
+                         tuple(self.ref_alt_profile))
 
     def test__bind(self):
         """
