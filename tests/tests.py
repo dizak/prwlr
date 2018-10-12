@@ -450,8 +450,16 @@ class ProfileTests(unittest.TestCase):
         self.ref_pss_ignore = 10
         self.test_profile = profiles.Profile(reference=self.ref_reference,
                                              query=self.ref_query)
+        self.test_profile_2 = profiles.Profile(reference=self.ref_reference,
+                                               query=self.ref_query)
         self.test_pss_methods_profile = profiles.Profile(reference=self.ref_reference,
                                                          query=self.ref_query[:10])
+
+    def test__eq__(self):
+        """
+        Test if two profiles instances are equal when using Python comparison.
+        """
+        self.assertEqual(self.test_profile, self.test_profile_2)
 
     def test__convert(self):
         """
