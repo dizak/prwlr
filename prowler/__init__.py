@@ -11,6 +11,7 @@ __all__ = ["apis",
 
 
 import pandas as _pd
+import numpy as np
 from prowler import *
 
 
@@ -165,11 +166,25 @@ def calculate_pss(
     -------
     pandas.DataFrame
     """
-    network[databases.Columns.PSS] = network.apply(
-        lambda x: x[databases.Columns.PROF_Q].calculate_pss(
-            x[databases.Columns.PROF_A],
-            method=method,
-            ),
-        axis=1,
-    )
+    if method == 'pairwise':
+        def pss(ar1, ar2):
+            return sum(a == b for a, b in zip(ar1, ar2))
+        pss_vect = np.vectorize(pss)
+        network[databases.Columns.PSS] = pss_vect(
+            network[databases.Columns.PROF_Q].apply(lambda x: x.profile),
+            network[databases.Columns.PROF_A].apply(lambda x: x.profile),
+            )
+    else:
+        network[databases.Columns.PSS] = network.apply(
+            lambda x: x[databases.Columns.PROF_Q].calculate_pss(
+                x[databases.Columns.PROF_A],
+                method=method,
+                ),
+            axis=1,
+        )
     return network
+
+def pss(ar1, ar2):
+    return sum(a == b for a, b in zip(ar1, ar2))
+
+pss_vect = np.vectorize(pss)
