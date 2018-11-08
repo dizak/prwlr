@@ -12,7 +12,7 @@ __all__ = ["apis",
 
 import pandas as _pd
 import numpy as np
-from prowler import *
+from prwlr import *
 
 
 def get_IDs_names(

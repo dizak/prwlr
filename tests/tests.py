@@ -2,7 +2,7 @@
 
 
 import unittest
-from prowler import *
+from prwlr import *
 import pandas as pd
 import numpy as np
 import pickle
@@ -11,7 +11,7 @@ import os
 
 class UtilsTests(unittest.TestCase):
     """
-    Tests for prowler.utils.
+    Tests for prwlr.utils.
     """
     def setUp(self):
         """
@@ -68,7 +68,7 @@ class UtilsTests(unittest.TestCase):
 class ApisTests(unittest.TestCase,
                 apis.Columns):
     """
-    Tests for prowler.apis.
+    Tests for prwlr.apis.
     """
     @classmethod
     def setUpClass(cls):
@@ -165,7 +165,7 @@ class ApisTests(unittest.TestCase,
 
 class CostanzoAPITests(unittest.TestCase):
     """
-    Test of prowler.apis.CostanzoAPI.
+    Test of prwlr.apis.CostanzoAPI.
     """
     def setUp(self):
         """
@@ -193,7 +193,7 @@ class CostanzoAPITests(unittest.TestCase):
 
 class DatabasesTests(unittest.TestCase):
     """
-    Tests for prowler.databases.
+    Tests for prwlr.databases.
     """
     def setUp(self):
         """
@@ -294,7 +294,7 @@ class DatabasesTests(unittest.TestCase):
 
 class SGA1Tests(unittest.TestCase):
     """
-    Tests of prowler.SGA1
+    Tests of prwlr.SGA1
     """
     def setUp(self):
         """
@@ -318,7 +318,7 @@ class SGA1Tests(unittest.TestCase):
 
 class SGA2Tests(unittest.TestCase):
     """
-    Tests for prowler.databases.SGA2
+    Tests for prwlr.databases.SGA2
     """
     def setUp(self):
         """
@@ -341,7 +341,7 @@ class SGA2Tests(unittest.TestCase):
 
 class AnyNetworkTests(unittest.TestCase):
     """
-    Tests for prowler.databases.SGA2
+    Tests for prwlr.databases.SGA2
     """
     def setUp(self):
         """
@@ -378,7 +378,7 @@ class AnyNetworkTests(unittest.TestCase):
 
 class BioprocessesTests(unittest.TestCase):
     """
-    Tests for prowler.databases.Bioprocesses
+    Tests for prwlr.databases.Bioprocesses
     """
     def setUp(self):
         """
@@ -399,7 +399,7 @@ class BioprocessesTests(unittest.TestCase):
 
 class ProfileTests(unittest.TestCase):
     """
-    Test for prowler.profiles.Profile.
+    Test for prwlr.profiles.Profile.
     """
     def setUp(self):
         """
@@ -572,7 +572,7 @@ class ProfileTests(unittest.TestCase):
 
 class StatsTests(unittest.TestCase):
     """
-    Tests of prowler.stats top-level functions.
+    Tests of prwlr.stats top-level functions.
     """
     def setUp(self):
         """

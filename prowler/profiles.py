@@ -2,7 +2,7 @@
 
 
 from __future__ import print_function
-from prowler.errors import *
+from prwlr.errors import *
 import numpy as np
 import pandas as pd
 from scipy.spatial import distance as dist

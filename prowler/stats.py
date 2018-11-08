@@ -10,10 +10,10 @@ from functools import partial
 import numpy as np
 import pathos.multiprocessing as ptmp
 from tqdm import tqdm
-from prowler.errors import *
-from prowler.utils import *
-from prowler.databases import Columns as _DatabasesColumns
-from prowler.profiles import Profile as _Profile
+from prwlr.errors import *
+from prwlr.utils import *
+from prwlr.databases import Columns as _DatabasesColumns
+from prwlr.profiles import Profile as _Profile
 
 
 class Columns(_DatabasesColumns):

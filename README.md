@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/dizak/prowler.svg?branch=master)](https://travis-ci.org/dizak/prowler)
+[![Build Status](https://travis-ci.org/dizak/prwlr.svg?branch=master)](https://travis-ci.org/dizak/prwlr)
 
 
-# prowler
+# prwlr
 
-prowler (*profiles crawler*) integrates **Genetic Interactions** and **Phylogenetic Profiles**.
-prowler aimes to be self-contained (as far as possible) and easy-to-use python library.
+prwlr (*profiles crawler*) integrates **Genetic Interactions** and **Phylogenetic Profiles**.
+prwlr aimes to be self-contained (as far as possible) and easy-to-use python library.

@@ -7,11 +7,11 @@ import pathos.multiprocessing as ptmp
 import numpy as np
 import pandas as pd
 import tempfile
-from prowler.apis import KEGG_API as _KEGG_API
-from prowler.apis import Columns as _ApisColumns
-from prowler.errors import *
-from prowler.profiles import Profile as _Profile
-from prowler.utils import *
+from prwlr.apis import KEGG_API as _KEGG_API
+from prwlr.apis import Columns as _ApisColumns
+from prwlr.errors import *
+from prwlr.profiles import Profile as _Profile
+from prwlr.utils import *
 
 
 class Columns(_ApisColumns):
@@ -76,7 +76,7 @@ class Columns(_ApisColumns):
 
 class KEGG(Columns):
     """
-    Parses data downloaded with prowler.apis and restructures them.
+    Parses data downloaded with prwlr.apis and restructures them.
 
     Parameters
     -------

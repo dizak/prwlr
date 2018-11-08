@@ -1,14 +1,14 @@
-[![Build Status](https://travis-ci.org/dizak/prowler.svg?branch=master)](https://travis-ci.org/dizak/prowler)
+[![Build Status](https://travis-ci.org/dizak/prwlr.svg?branch=master)](https://travis-ci.org/dizak/prwlr)
 
-# Prowler - profiles crawler
+# Prwlr - profiles crawler
 
-Prowler integrates **Genetic Interactions** and **Phylogenetic Profiles**.
+Prwlr integrates **Genetic Interactions** and **Phylogenetic Profiles**.
 
 > Nothing is more fun that BLASTing each protein sequence from the organisms of interest!
 
 
-Prowler uses **[KEGG Orthology](http://www.genome.jp/kegg/ko.html)** to determine who is the ortholog of whom.
-You don't have to download it manually - Prowler uses its API!
+Prwlr uses **[KEGG Orthology](http://www.genome.jp/kegg/ko.html)** to determine who is the ortholog of whom.
+You don't have to download it manually - Prwlr uses its API!
 
 > We all love to use 20-or-so different software pieces just to annotate one network! And to store the profiles in some unintelligible form!
 
@@ -16,14 +16,14 @@ You don't have to download it manually - Prowler uses its API!
 
 > Bioinformatics software is difficult to create so it should be hard for someone else!
 
-Prowler is numpy- and pandas-based wherever possible. It integrates well with [pandas.DataFrames](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html).
+Prwlr is numpy- and pandas-based wherever possible. It integrates well with [pandas.DataFrames](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html).
 
-Let's use Prowler!
+Let's use Prwlr!
 
 Get the Phylogenetic Profiles for each of the organism's ORF.
 
 ```python
-import prowler as prwl
+import prwlr as prwl
 
 species=[
     'Aeropyrum pernix',
