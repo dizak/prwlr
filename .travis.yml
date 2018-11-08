@@ -10,18 +10,18 @@ install:
   - conda info -a
 
 before_script:
-  - conda env create --file prowler_py27.yml
-  - conda env create --file prowler_py36.yml
+  - conda env create --file prwlr_py27.yml
+  - conda env create --file prwlr_py36.yml
 
 script:
-  - source activate prowler_py27
+  - source activate prwlr_py27
   - pip install nose
   - pip install coverage
-  - nosetests --with-coverage --cover-package prowler
-  - source activate prowler_py36
+  - nosetests --with-coverage --cover-package prwlr
+  - source activate prwlr_py36
   - pip install nose
   - pip install coverage
-  - nosetests --with-coverage --cover-package prowler
+  - nosetests --with-coverage --cover-package prwlr
 
 notifications:
   email:

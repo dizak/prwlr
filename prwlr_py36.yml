@@ -1,4 +1,4 @@
-name: prowler_py36
+name: prwlr_py36
 channels:
   - conda-forge
   - defaults
