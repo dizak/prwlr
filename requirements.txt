@@ -1,0 +1,10 @@
+requests
+tqdm
+pathos
+numpy
+pandas
+networkx
+scipy
+matplotlib
+pip:
+xlrd
