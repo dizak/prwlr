@@ -1,4 +1,5 @@
 from setuptools import setup
+from setuptools import find_packages
 from prwlr import __version__ as VERSION
 from prwlr import __author__ as AUTHOR
 
