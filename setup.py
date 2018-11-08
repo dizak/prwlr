@@ -24,7 +24,7 @@ setup(
         'pathway',
         'kegg',
         'evolution',
-    ]
+    ],
     classifiers=[
         "License :: OSI Approved :: BSD License",
         "Operating System :: POSIX :: Linux",
