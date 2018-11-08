@@ -13,5 +13,6 @@ dependencies:
   - pandas
   - networkx
   - scipy
+  - matplotlib
   - pip:
     - xlrd
