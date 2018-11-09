@@ -1,13 +1,14 @@
 from distutils.core import setup
 from setuptools import find_packages
-from prwlr._version import __version__ as VERSION
-from prwlr._author import __author__ as AUTHOR
+import subprocess as sp
 
+
+VERSION = sp.check_output('git tag -l', shell=True).split()[-1]
 
 setup(
     name="prwlr",
     version=VERSION,
-    author=AUTHOR,
+    author='Dariusz Izak IBB PAS',
     packages=find_packages(exclude=["*test*"]),
     install_requires=open("requirements.txt").readlines(),
     long_description=open("README.md").read(),
