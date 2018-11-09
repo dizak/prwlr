@@ -18,4 +18,4 @@ try:
     import subprocess as _sp
     from prwlr.core import *
 except ImportError:
-    print('Could not import dependencies. Ignore on install.')
+    print('Could not import dependencies. Ignore if running setup.')
