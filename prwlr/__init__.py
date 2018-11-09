@@ -1,22 +1,15 @@
-__author__ = "Dariusz Izak, IBB PAS"
-__version__ = "0.0.0"
+import pandas as _pd
+import numpy as np
+from prwlr import *
+
 
 __all__ = ["apis",
-           "databases",
-           "errors",
-           "network",
-           "profiles",
-           "stats",
-           "utils"]
-
-
-try:
-    import pandas as _pd
-    import numpy as np
-    from prwlr import *
-except ImportError:
-    print('Import error. Ignore if installation.')
-    quit()
+"databases",
+"errors",
+"network",
+"profiles",
+"stats",
+"utils"]
 
 
 def get_IDs_names(
