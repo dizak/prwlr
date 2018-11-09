@@ -1,5 +1,5 @@
 import pandas as _pd
-import numpy as np
+import numpy as _np
 from prwlr import *
 
 
