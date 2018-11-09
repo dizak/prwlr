@@ -10,9 +10,13 @@ __all__ = ["apis",
            "utils"]
 
 
-import pandas as _pd
-import numpy as np
-from prwlr import *
+try:
+    import pandas as _pd
+    import numpy as np
+    from prwlr import *
+except ImportError:
+    print('Import error. Ignore if installation.')
+    quit()
 
 
 def get_IDs_names(
