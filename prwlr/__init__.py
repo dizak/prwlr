@@ -4,7 +4,7 @@ import subprocess as _sp
 from prwlr import *
 
 
-__version__ = _sp.check_output('git tag -l', shell=True).split()[-1]
+__version__ = '0.0.0'
 __author__ = 'Dariusz Izak IBB PAS'
 
 

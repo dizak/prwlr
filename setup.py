@@ -1,9 +1,8 @@
 from distutils.core import setup
 from setuptools import find_packages
-import subprocess as sp
 
 
-VERSION = sp.check_output('git tag -l', shell=True).split()[-1]
+VERSION = '0.0.0'
 
 setup(
     name="prwlr",
