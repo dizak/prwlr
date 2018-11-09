@@ -1,8 +1,22 @@
 import pandas as _pd
 import numpy as _np
+import subprocess as _sp
 from prwlr import *
 
 
+__version__ = _sp.check_output('git tag -l', shell=True).split()[-1]
+__author__ = 'Dariusz Izak IBB PAS'
+
+
+__all__ = [
+    "apis",
+    "databases",
+    "errors",
+    "network",
+    "profiles",
+    "stats",
+    "utils"
+]
 
 
 def get_IDs_names(
@@ -159,7 +173,7 @@ def calculate_pss(
     if method == 'pairwise':
         def pss(ar1, ar2):
             return sum(a == b for a, b in zip(ar1, ar2))
-        pss_vect = np.vectorize(pss)
+        pss_vect = _np.vectorize(pss)
         network[databases.Columns.PSS] = pss_vect(
             network[databases.Columns.PROF_Q].apply(lambda x: x.profile),
             network[databases.Columns.PROF_A].apply(lambda x: x.profile),
@@ -177,4 +191,4 @@ def calculate_pss(
 def pss(ar1, ar2):
     return sum(a == b for a, b in zip(ar1, ar2))
 
-pss_vect = np.vectorize(pss)
+pss_vect = _np.vectorize(pss)
