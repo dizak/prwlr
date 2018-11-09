@@ -1,5 +1,15 @@
 language: python
 
+deploy:
+  provider: pypi
+  user: dizak
+  password: $pypi_passwd
+  distributions: sdist
+  on:
+    tags: true
+    branch: master
+    python: 3.6
+
 python:
   - '2.7'
   - '3.4'
