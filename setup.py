@@ -1,7 +1,7 @@
 from distutils.core import setup
 from setuptools import find_packages
-from prwlr import __version__ as VERSION
-from prwlr import __author__ as AUTHOR
+from prwlr._version import __version__ as VERSION
+from prwlr._author import __author__ as AUTHOR
 
 
 setup(
