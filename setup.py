@@ -1,13 +1,16 @@
 from distutils.core import setup
 from setuptools import find_packages
+from prwlr import __version__
+from prwlr import __author__
 
 
-VERSION = '0.0.0'
+VERSION = __version__
+AUTHOR = __author__
 
 setup(
     name="prwlr",
     version=VERSION,
-    author='Dariusz Izak IBB PAS',
+    author=AUTHOR,
     packages=find_packages(exclude=["*test*"]),
     install_requires=open("requirements.txt").readlines(),
     long_description=open("README.md").read(),
