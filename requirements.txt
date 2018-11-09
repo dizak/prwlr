@@ -1,0 +1,9 @@
+requests
+tqdm
+pathos
+numpy
+pandas
+networkx
+scipy
+matplotlib
+xlrd

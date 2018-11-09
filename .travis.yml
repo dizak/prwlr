@@ -1,26 +1,29 @@
 language: python
 
-os: linux
+deploy:
+  provider: pypi
+  user: dizak
+  password: $pypi_passwd
+  distributions: sdist
+  on:
+    tags: true
+    branch: master
+    python: 3.6
+
+python:
+  - '2.7'
+  - '3.4'
+  - '3.5'
+  - '3.6'
 
 install:
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-  - bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda3
-  - export PATH=$HOME/miniconda3/bin:$PATH
-  - conda config --set always_yes yes --set changeps1 no
-  - conda info -a
-
-before_script:
-  - conda env create --file prwlr_py27.yml
-  - conda env create --file prwlr_py36.yml
+  - python setup.py sdist
+  - pip install dist/prwlr-*.tar.gz
+  - pip install nose
+  - pip install coverage
 
 script:
-  - source activate prwlr_py27
-  - pip install nose
-  - pip install coverage
   - nosetests --with-coverage --cover-package prwlr
-  - source activate prwlr_py36
-  - pip install nose
-  - pip install coverage
   - nosetests --with-coverage --cover-package prwlr
 
 notifications:
