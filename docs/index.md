@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/dizak/prwlr.svg?branch=master)](https://travis-ci.org/dizak/prwlr)
 
+[![Downloads](https://pepy.tech/badge/prwlr)](https://pepy.tech/project/prwlr)
+
 # Prwlr - profiles crawler
 
 Prwlr integrates **Genetic Interactions** and **Phylogenetic Profiles**.
