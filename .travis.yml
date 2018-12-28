@@ -24,7 +24,6 @@ install:
 
 script:
   - nosetests --with-coverage --cover-package prwlr
-  - nosetests --with-coverage --cover-package prwlr
 
 notifications:
   email:
