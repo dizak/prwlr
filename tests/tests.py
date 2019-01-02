@@ -619,6 +619,9 @@ class CoreTests(unittest.TestCase):
         self.ref_query_1 = list('acdfhiklostuz')
         self.ref_reference_2 = list('acefghijklmnprstuwxy')
         self.ref_query_2 = list('abdfhiklostuz')
+        self.test_profiles_filename = 'test_data/CoreTests/test_profiles.csv'
+        self.test_saved_profiles_filename = 'test_data/CoreTests/test_save_profiles.csv'
+
         self.ref_profile_1, self.ref_profile_2 = (
             prwlr.profiles.Profile(
                 reference=self.ref_reference_1,
@@ -634,9 +637,24 @@ class CoreTests(unittest.TestCase):
         )
 
         self.test_profiles_srs = prwlr.core.read_profiles(
-            'test_data/CoreTests/test_profiles.csv',
+            self.test_profiles_filename,
             index_col=[0],
         )
+
+        prwlr.core.save_profiles(
+            self.ref_profiles_srs,
+            self.test_saved_profiles_filename,
+        )
+        self.test_profiles_after_save_srs = prwlr.core.read_profiles(
+            self.test_saved_profiles_filename,
+            index_col=[0],
+        )
+
+    def tearDown(self):
+        """
+        Removes files created during the tests.
+        """
+        os.remove(self.test_saved_profiles_filename)
 
     def test_read_profiles(self):
         """
@@ -646,6 +664,15 @@ class CoreTests(unittest.TestCase):
         pd.testing.assert_series_equal(
             self.ref_profiles_srs,
             self.test_profiles_srs,
+        )
+
+    def test_save_profiles(self):
+        """
+        Tests if prwlr.core.save_profiles writes CSV file with correct values.
+        """
+        pd.testing.assert_series_equal(
+            self.ref_profiles_srs,
+            self.test_profiles_after_save_srs,
         )
 
 

@@ -134,6 +134,28 @@ def read_profiles(
         axis=1,
     )
 
+def save_profiles(
+    series,
+    filename,
+    reference_column=Columns.REF,
+    query_column=Columns.QRY,
+    str_sep='|',
+    **kwargs,
+):
+    """
+    Writes pandas.Series with prwlr.profiles.Profile objects to CSV file.
+
+    Parameters
+    -------
+    Filename: str, path
+        Name of the file.
+    """
+    _pd.DataFrame(
+        {
+            Columns.REF: series.apply(lambda x: x.reference).str.join(str_sep),
+            Columns.QRY: series.apply(lambda x: x.query).str.join(str_sep),
+        },
+    ).to_csv(filename, **kwargs)
 
 def merge_sga_profiles(
     sga,
