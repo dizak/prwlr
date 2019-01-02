@@ -605,5 +605,51 @@ class StatsTests(unittest.TestCase):
                         650)
 
 
+class CoreTests(unittest.TestCase):
+    """
+    Tests of prwlr.core functions.
+    """
+    def setUp(self):
+        """
+        Sets up class level attributes for the tests.
+        """
+        import prwlr.core
+
+        self.ref_reference_1 = list('bcefghijklmnprstuwxy')
+        self.ref_query_1 = list('acdfhiklostuz')
+        self.ref_reference_2 = list('acefghijklmnprstuwxy')
+        self.ref_query_2 = list('abdfhiklostuz')
+        self.ref_profile_1, self.ref_profile_2 = (
+            prwlr.profiles.Profile(
+                reference=self.ref_reference_1,
+                query=self.ref_query_1,
+            ),
+            prwlr.profiles.Profile(
+                reference=self.ref_reference_2,
+                query=self.ref_query_2,
+            ),
+        )
+        self.ref_profiles_srs = pd.Series(
+            [self.ref_profile_1, self.ref_profile_2],
+        )
+        print(self.ref_profiles_srs)
+
+        self.test_profiles_srs = prwlr.core.read_profiles(
+            'test_data/CoreTests/test_profiles.csv',
+            index_col=[0],
+        )
+        print(self.test_profiles_srs)
+
+    def test_read_profiles(self):
+        """
+        Tests if prwlr.core.read_profiles returns pandas.Series with correct
+        prwlr.profiles.Profile objects.
+        """
+        pd.testing.assert_series_equal(
+            self.ref_profiles_srs,
+            self.test_profiles_srs,
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
