@@ -632,13 +632,11 @@ class CoreTests(unittest.TestCase):
         self.ref_profiles_srs = pd.Series(
             [self.ref_profile_1, self.ref_profile_2],
         )
-        print(self.ref_profiles_srs)
 
         self.test_profiles_srs = prwlr.core.read_profiles(
             'test_data/CoreTests/test_profiles.csv',
             index_col=[0],
         )
-        print(self.test_profiles_srs)
 
     def test_read_profiles(self):
         """
