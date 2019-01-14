@@ -113,7 +113,7 @@ def read_profiles(
     reference_column=Columns.REF,
     query_column=Columns.QRY,
     str_sep='|',
-    **kwargs,
+    **kwargs
 ):
     """
     Returns pandas.Series with prwlr.profiles.Profile objects from CSV.
@@ -140,7 +140,7 @@ def save_profiles(
     reference_column=Columns.REF,
     query_column=Columns.QRY,
     str_sep='|',
-    **kwargs,
+    **kwargs
 ):
     """
     Writes pandas.Series with prwlr.profiles.Profile objects to CSV file.
