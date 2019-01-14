@@ -1,7 +1,17 @@
 import pandas as _pd
 import numpy as _np
 from . import databases
+from . import profiles as _profiles
 
+class Columns:
+    """
+    Container for the columns names defined in this module.
+    """
+    SPLIT_SUF = '_SPLIT'
+    REF = 'REF'
+    QRY = 'QRY'
+    REF_SPLIT = '{}{}'.format(REF, SPLIT_SUF)
+    QRY_SPLIT = '{}{}'.format(QRY, SPLIT_SUF)
 
 def get_IDs_names(
     species,
@@ -97,6 +107,55 @@ def read_sga(
         raise errors.ParserError("Only versions 1 and 2 of Costanzo's SGA experiment are supported.")
     sga.parse(filename=filename)
     return sga.sga
+
+def read_profiles(
+    filename,
+    reference_column=Columns.REF,
+    query_column=Columns.QRY,
+    str_sep='|',
+    **kwargs
+):
+    """
+    Returns pandas.Series with prwlr.profiles.Profile objects from CSV.
+
+    Parameters
+    -------
+    filename: str, path
+        Filename of the CSV.
+    """
+    ref_qry_df = _pd.read_csv(filename, **kwargs)
+    ref_qry_df[Columns.REF_SPLIT] = ref_qry_df[Columns.REF].str.split(str_sep)
+    ref_qry_df[Columns.QRY_SPLIT] = ref_qry_df[Columns.QRY].str.split(str_sep)
+    return ref_qry_df[[Columns.REF_SPLIT, Columns.QRY_SPLIT]].apply(
+        lambda x: _profiles.Profile(
+            reference=x[Columns.REF_SPLIT],
+            query=x[Columns.QRY_SPLIT],
+        ),
+        axis=1,
+    )
+
+def save_profiles(
+    series,
+    filename,
+    reference_column=Columns.REF,
+    query_column=Columns.QRY,
+    str_sep='|',
+    **kwargs
+):
+    """
+    Writes pandas.Series with prwlr.profiles.Profile objects to CSV file.
+
+    Parameters
+    -------
+    Filename: str, path
+        Name of the file.
+    """
+    _pd.DataFrame(
+        {
+            Columns.REF: series.apply(lambda x: x.reference).str.join(str_sep),
+            Columns.QRY: series.apply(lambda x: x.query).str.join(str_sep),
+        },
+    ).to_csv(filename, **kwargs)
 
 def merge_sga_profiles(
     sga,
