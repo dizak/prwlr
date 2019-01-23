@@ -620,8 +620,8 @@ class CoreTests(unittest.TestCase):
         self.ref_reference_2 = list('acefghijklmnprstuwxy')
         self.ref_query_2 = list('abdfhiklostuz')
         self.test_profiles_filename = 'test_data/CoreTests/test_profiles.csv'
+        self.test_network_filename = 'test_data/CoreTests/test_network.csv'
         self.test_saved_profiles_filename = 'test_data/CoreTests/test_save_profiles.csv'
-        self.test_save_network_filename = 'test_data/CoreTests/test_save_network.csv'
 
         self.ref_profile_1, self.ref_profile_2 = (
             prwlr.profiles.Profile(
