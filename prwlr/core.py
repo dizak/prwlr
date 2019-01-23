@@ -3,7 +3,7 @@ import numpy as _np
 from . import databases
 from . import profiles as _profiles
 
-class Columns:
+class Columns(databases.Columns):
     """
     Container for the columns names defined in this module.
     """
@@ -12,6 +12,8 @@ class Columns:
     QRY = 'QRY'
     REF_SPLIT = '{}{}'.format(REF, SPLIT_SUF)
     QRY_SPLIT = '{}{}'.format(QRY, SPLIT_SUF)
+    PROF_Q = databases.Columns.PROF_Q
+    PROF_A = databases.Columns.PROF_A
 
 def get_IDs_names(
     species,
