@@ -621,6 +621,7 @@ class CoreTests(unittest.TestCase):
         self.ref_query_2 = list('abdfhiklostuz')
         self.test_profiles_filename = 'test_data/CoreTests/test_profiles.csv'
         self.test_saved_profiles_filename = 'test_data/CoreTests/test_save_profiles.csv'
+        self.test_save_network_filename = 'test_data/CoreTests/test_save_network.csv'
 
         self.ref_profile_1, self.ref_profile_2 = (
             prwlr.profiles.Profile(
@@ -634,6 +635,17 @@ class CoreTests(unittest.TestCase):
         )
         self.ref_profiles_srs = pd.Series(
             [self.ref_profile_1, self.ref_profile_2],
+        )
+        self.ref_network_df = pd.DataFrame(
+            [{
+                'ORF_Q': 'YAL001',
+                'ORF_A': 'YAL002',
+                'PROF_Q': self.ref_profile_1,
+                'PROF_A': self.ref_profile_2,
+                'PSS': self.ref_profile_1.calculate_pss(self.ref_profile_2),
+                'ATTRIB_Q': 'attribute_query',
+                'ATTRIB_A': 'attribute_array',
+            }]
         )
 
         self.test_profiles_srs = prwlr.core.read_profiles(
@@ -665,6 +677,16 @@ class CoreTests(unittest.TestCase):
             self.ref_profiles_srs,
             self.test_profiles_srs,
         )
+
+    def test_read_network(self):
+        """
+        Tests if prwlr.core.read_network returns pandas.DataFrame with correct
+        prwlr.profiles.Profile objects.
+        """
+        # pd.testing.assert_frame_equal(
+        #     self.ref_network_df,
+        #     self.test_network_df,
+        # )
 
     def test_save_profiles(self):
         """
