@@ -136,6 +136,25 @@ def read_profiles(
         axis=1,
     )
 
+def read_network(
+    filename,
+    profiles_columns=[Columns.PROF_Q, Columns.PROF_A,]
+    profile_reference_column_suffix=Columns.REF,
+    profile_query_column_suffix=Columns.QRY,
+    str_sep='|',
+    **kwargs
+):
+    """
+    Returns pandas.DataFrame with prwlr.profiles.Profile objects from CSV.
+
+    Parameters
+    -------
+    filename: str, path
+        Filename of the CSV.
+    """
+    df = _pd.read_csv(filename, **kwargs)
+
+
 def save_profiles(
     series,
     filename,
