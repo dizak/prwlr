@@ -138,7 +138,7 @@ def read_profiles(
 
 def read_network(
     filename,
-    profiles_columns=[Columns.PROF_Q, Columns.PROF_A,]
+    profiles_columns=[Columns.PROF_Q, Columns.PROF_A,],
     profile_reference_column_suffix=Columns.REF,
     profile_query_column_suffix=Columns.QRY,
     str_sep='|',
