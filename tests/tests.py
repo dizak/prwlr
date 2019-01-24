@@ -2,12 +2,31 @@
 
 
 import unittest
+import requests as rq
 from prwlr import *
 import pandas as pd
 import numpy as np
 import pickle
 import os
 
+def isUp(url):
+    """
+    Returns <True> if status code of the website/server is 200.
+
+    Parameters
+    -------
+    url: str
+        URL to check.
+
+    Returns
+    -------
+        bool
+    """
+    try:
+        res = rq.get(url)
+    except:
+        return False
+    return True if res.status_code == 200 else False
 
 class UtilsTests(unittest.TestCase):
     """
