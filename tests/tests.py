@@ -690,6 +690,7 @@ class CoreTests(unittest.TestCase):
         pd.testing.assert_frame_equal(
             self.ref_network_df,
             self.test_network_df,
+            check_like=True,
         )
 
     def test_save_profiles(self):
