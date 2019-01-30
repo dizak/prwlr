@@ -182,7 +182,7 @@ class ApisTests(unittest.TestCase,
 
 
 
-@unittest.skipUnless(isUp(apis.CostanzoAPI().home['v1']), 'No connection')
+# @unittest.skipUnless(isUp(apis.CostanzoAPI().home['v1']), 'No connection')
 @unittest.skipUnless(isUp(apis.CostanzoAPI().home['v2']), 'No connection')
 class CostanzoAPITests(unittest.TestCase):
     """
