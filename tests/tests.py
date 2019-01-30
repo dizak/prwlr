@@ -182,42 +182,42 @@ class ApisTests(unittest.TestCase,
 
 
 
-@unittest.skipUnless(
-    all(
-        isUp(address)
-        for address in (
-            apis.CostanzoAPI().home['v1'],
-            apis.CostanzoAPI().home['v2'],
-        )
-    ),
-    'No connection',
-    )
-class CostanzoAPITests(unittest.TestCase):
-    """
-    Test of prwlr.apis.CostanzoAPI.
-    """
-    def setUp(self):
-        """
-        Sets up class level attributes for the tests.
-        """
-        self.costanzo_api = apis.CostanzoAPI()
-        self.sga_versions = ["v1", "v2"]
-
-    def tearDown(self):
-        """
-        Distroys files downloaded or created during the tests.
-        """
-        for sga_version in self.sga_versions:
-            for i in list(self.costanzo_api.data[sga_version].values()):
-                os.remove("test_data/{}".format(i).replace("data_files/", "").replace("%20", "_").replace(":", "-"))
-
-    def test_get_data(self):
-        """
-        Tests if apis.CostanzoAPI,get_data downloads data files successfully.
-        """
-        for sga_version in self.sga_versions:
-            for i in list(self.costanzo_api.data[sga_version].keys()):
-                self.costanzo_api.get_data(i, "test_data", sga_version)
+# @unittest.skipUnless(
+#     all(
+#         isUp(address)
+#         for address in (
+#             apis.CostanzoAPI().home['v1'],
+#             apis.CostanzoAPI().home['v2'],
+#         )
+#     ),
+#     'No connection',
+#     )
+# class CostanzoAPITests(unittest.TestCase):
+#     """
+#     Test of prwlr.apis.CostanzoAPI.
+#     """
+#     def setUp(self):
+#         """
+#         Sets up class level attributes for the tests.
+#         """
+#         self.costanzo_api = apis.CostanzoAPI()
+#         self.sga_versions = ["v1", "v2"]
+#
+#     def tearDown(self):
+#         """
+#         Distroys files downloaded or created during the tests.
+#         """
+#         for sga_version in self.sga_versions:
+#             for i in list(self.costanzo_api.data[sga_version].values()):
+#                 os.remove("test_data/{}".format(i).replace("data_files/", "").replace("%20", "_").replace(":", "-"))
+#
+#     def test_get_data(self):
+#         """
+#         Tests if apis.CostanzoAPI,get_data downloads data files successfully.
+#         """
+#         for sga_version in self.sga_versions:
+#             for i in list(self.costanzo_api.data[sga_version].keys()):
+#                 self.costanzo_api.get_data(i, "test_data", sga_version)
 
 
 class DatabasesTests(unittest.TestCase):
