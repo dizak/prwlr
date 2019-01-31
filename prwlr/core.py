@@ -1,9 +1,9 @@
 import pandas as _pd
 import numpy as _np
-from . import databases
+from . import databases as _databases
 from . import profiles as _profiles
 
-class Columns:
+class Columns(_databases.Columns):
     """
     Container for the columns names defined in this module.
     """
@@ -12,6 +12,8 @@ class Columns:
     QRY = 'QRY'
     REF_SPLIT = '{}{}'.format(REF, SPLIT_SUF)
     QRY_SPLIT = '{}{}'.format(QRY, SPLIT_SUF)
+    PROF_Q = _databases.Columns.PROF_Q
+    PROF_A = _databases.Columns.PROF_A
 
 def get_IDs_names(
     species,
@@ -28,7 +30,7 @@ def get_IDs_names(
     ------
     dict
     """
-    kegg_db = databases.KEGG('Orthology')
+    kegg_db = _databases.KEGG('Orthology')
     kegg_db.parse_organism_info(
         organism=None,
         reference_species=species,
@@ -70,7 +72,7 @@ def profilize_organism(
     ------
     pandas.DataFrame
     """
-    kegg_db = databases.KEGG('Orthology')
+    kegg_db = _databases.KEGG('Orthology')
     kegg_db.parse_organism_info(
         organism=organism,
         reference_species=species,
@@ -78,7 +80,7 @@ def profilize_organism(
         X_ref=X_ref,
         KOs=KOs,
     )
-    return kegg_db.organism_info.drop(columns=databases.Columns.KEGG_ID)
+    return kegg_db.organism_info.drop(columns=_databases.Columns.KEGG_ID)
 
 def read_sga(
     filename,
@@ -100,9 +102,9 @@ def read_sga(
     pandas.DataFrame
     """
     if version == 1:
-        sga = databases.SGA1()
+        sga = _databases.SGA1()
     elif version == 2:
-        sga = databases.SGA2()
+        sga = _databases.SGA2()
     else:
         raise errors.ParserError("Only versions 1 and 2 of Costanzo's SGA experiment are supported.")
     sga.parse(filename=filename)
@@ -133,6 +135,68 @@ def read_profiles(
         ),
         axis=1,
     )
+
+def read_network(
+    filename,
+    profile_query_column=Columns.PROF_Q,
+    profile_array_column=Columns.PROF_A,
+    profile_reference_column_suffix=Columns.REF,
+    profile_query_column_suffix=Columns.QRY,
+    str_sep='|',
+    **kwargs
+):
+    """
+    Returns pandas.DataFrame with prwlr.profiles.Profile objects from CSV.
+
+    Parameters
+    -------
+    filename: str, path
+        Filename of the CSV.
+    profile_query_column: str, default prwlr.core.Columns.PROF_Q
+        Column name of the query profile. The default value is taken from the
+        module-wide settings.
+    profile_array_column: str, default prwlr.core.Columns.PROF_A
+        Column name of the array profile. The default value is taken from the
+        module-wide settings.
+    profile_reference_column_suffix: str, default prwlr.core.Columns.REF
+        Column name suffix  of the profile's reference
+        (see prwlr.profiles.Profile).
+    profile_query_column_suffix: str, default prwlr.core.Columns.QRY
+        Column name suffix  of the profile's query
+        (see prwlr.profiles.Profile).
+    str_sep: str, default '|'
+        The internal separator for the profile's reference/query.
+
+    Returns
+    -------
+        pandas.DataFrame
+    """
+    qry_ref_col = '{}_{}'.format(profile_query_column, profile_reference_column_suffix)
+    qry_qry_col = '{}_{}'.format(profile_query_column, profile_query_column_suffix)
+    arr_ref_col = '{}_{}'.format(profile_array_column, profile_reference_column_suffix)
+    arr_qry_col = '{}_{}'.format(profile_array_column, profile_query_column_suffix)
+    df = _pd.read_csv(filename, **kwargs)
+    df[profile_query_column] = df[[qry_ref_col, qry_qry_col]].apply(
+        lambda x: _profiles.Profile(
+            reference=x[qry_ref_col].split(str_sep),
+            query=x[qry_qry_col].split(str_sep),
+        ),
+        axis=1,
+    )
+    df[profile_array_column] = df[[arr_ref_col, arr_qry_col]].apply(
+        lambda x: _profiles.Profile(
+            reference=x[arr_ref_col].split(str_sep),
+            query=x[arr_qry_col].split(str_sep),
+        ),
+        axis=1,
+    )
+    return df.drop(columns=[
+        qry_ref_col,
+        qry_qry_col,
+        arr_ref_col,
+        arr_qry_col,
+    ])
+
 
 def save_profiles(
     series,
@@ -168,23 +232,23 @@ def merge_sga_profiles(
     merged = _pd.merge(
         left=sga,
         right=profiles,
-        left_on=databases.Columns.ORF_Q,
-        right_on=databases.Columns.ORF_ID,
+        left_on=_databases.Columns.ORF_Q,
+        right_on=_databases.Columns.ORF_ID,
         how="left",
     ).merge(
         right=profiles,
-        left_on=databases.Columns.ORF_A,
-        right_on=databases.Columns.ORF_ID,
+        left_on=_databases.Columns.ORF_A,
+        right_on=_databases.Columns.ORF_ID,
         how="left",
         suffixes=(
-            databases.Columns.QUERY_SUF,
-            databases.Columns.ARRAY_SUF,
+            _databases.Columns.QUERY_SUF,
+            _databases.Columns.ARRAY_SUF,
         )
     )
     merged.drop(
         columns=[
-            databases.Columns.ORF_ID_Q,
-            databases.Columns.ORF_ID_A,
+            _databases.Columns.ORF_ID_Q,
+            _databases.Columns.ORF_ID_A,
         ],
         axis=1,
         inplace=True,
@@ -217,14 +281,14 @@ def calculate_pss(
         def pss(ar1, ar2):
             return sum(a == b for a, b in zip(ar1, ar2))
         pss_vect = _np.vectorize(pss)
-        network[databases.Columns.PSS] = pss_vect(
-            network[databases.Columns.PROF_Q].apply(lambda x: x.profile),
-            network[databases.Columns.PROF_A].apply(lambda x: x.profile),
+        network[_databases.Columns.PSS] = pss_vect(
+            network[_databases.Columns.PROF_Q].apply(lambda x: x.profile),
+            network[_databases.Columns.PROF_A].apply(lambda x: x.profile),
             )
     else:
-        network[databases.Columns.PSS] = network.apply(
-            lambda x: x[databases.Columns.PROF_Q].calculate_pss(
-                x[databases.Columns.PROF_A],
+        network[_databases.Columns.PSS] = network.apply(
+            lambda x: x[_databases.Columns.PROF_Q].calculate_pss(
+                x[_databases.Columns.PROF_A],
                 method=method,
                 ),
             axis=1,

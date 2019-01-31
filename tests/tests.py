@@ -182,34 +182,42 @@ class ApisTests(unittest.TestCase,
 
 
 
-@unittest.skipUnless(isUp(apis.CostanzoAPI().home['v1']), 'No connection')
-@unittest.skipUnless(isUp(apis.CostanzoAPI().home['v2']), 'No connection')
-class CostanzoAPITests(unittest.TestCase):
-    """
-    Test of prwlr.apis.CostanzoAPI.
-    """
-    def setUp(self):
-        """
-        Sets up class level attributes for the tests.
-        """
-        self.costanzo_api = apis.CostanzoAPI()
-        self.sga_versions = ["v1", "v2"]
-
-    def tearDown(self):
-        """
-        Distroys files downloaded or created during the tests.
-        """
-        for sga_version in self.sga_versions:
-            for i in list(self.costanzo_api.data[sga_version].values()):
-                os.remove("test_data/{}".format(i).replace("data_files/", "").replace("%20", "_").replace(":", "-"))
-
-    def test_get_data(self):
-        """
-        Tests if apis.CostanzoAPI,get_data downloads data files successfully.
-        """
-        for sga_version in self.sga_versions:
-            for i in list(self.costanzo_api.data[sga_version].keys()):
-                self.costanzo_api.get_data(i, "test_data", sga_version)
+# @unittest.skipUnless(
+#     all(
+#         isUp(address)
+#         for address in (
+#             apis.CostanzoAPI().home['v1'],
+#             apis.CostanzoAPI().home['v2'],
+#         )
+#     ),
+#     'No connection',
+#     )
+# class CostanzoAPITests(unittest.TestCase):
+#     """
+#     Test of prwlr.apis.CostanzoAPI.
+#     """
+#     def setUp(self):
+#         """
+#         Sets up class level attributes for the tests.
+#         """
+#         self.costanzo_api = apis.CostanzoAPI()
+#         self.sga_versions = ["v1", "v2"]
+#
+#     def tearDown(self):
+#         """
+#         Distroys files downloaded or created during the tests.
+#         """
+#         for sga_version in self.sga_versions:
+#             for i in list(self.costanzo_api.data[sga_version].values()):
+#                 os.remove("test_data/{}".format(i).replace("data_files/", "").replace("%20", "_").replace(":", "-"))
+#
+#     def test_get_data(self):
+#         """
+#         Tests if apis.CostanzoAPI,get_data downloads data files successfully.
+#         """
+#         for sga_version in self.sga_versions:
+#             for i in list(self.costanzo_api.data[sga_version].keys()):
+#                 self.costanzo_api.get_data(i, "test_data", sga_version)
 
 
 class DatabasesTests(unittest.TestCase):
@@ -641,6 +649,7 @@ class CoreTests(unittest.TestCase):
         self.ref_reference_2 = list('acefghijklmnprstuwxy')
         self.ref_query_2 = list('abdfhiklostuz')
         self.test_profiles_filename = 'test_data/CoreTests/test_profiles.csv'
+        self.test_network_filename = 'test_data/CoreTests/test_network.csv'
         self.test_saved_profiles_filename = 'test_data/CoreTests/test_save_profiles.csv'
 
         self.ref_profile_1, self.ref_profile_2 = (
@@ -656,9 +665,24 @@ class CoreTests(unittest.TestCase):
         self.ref_profiles_srs = pd.Series(
             [self.ref_profile_1, self.ref_profile_2],
         )
+        self.ref_network_df = pd.DataFrame(
+            [{
+                'ORF_Q': 'YAL001',
+                'ORF_A': 'YAL002',
+                'PROF_Q': self.ref_profile_1,
+                'PROF_A': self.ref_profile_2,
+                'PSS': self.ref_profile_1.calculate_pss(self.ref_profile_2),
+                'ATTRIB_Q': 'attribute_query',
+                'ATTRIB_A': 'attribute_array',
+            }]
+        )
 
         self.test_profiles_srs = prwlr.core.read_profiles(
             self.test_profiles_filename,
+            index_col=[0],
+        )
+        self.test_network_df = prwlr.core.read_network(
+            self.test_network_filename,
             index_col=[0],
         )
 
@@ -685,6 +709,17 @@ class CoreTests(unittest.TestCase):
         pd.testing.assert_series_equal(
             self.ref_profiles_srs,
             self.test_profiles_srs,
+        )
+
+    def test_read_network(self):
+        """
+        Tests if prwlr.core.read_network returns pandas.DataFrame with correct
+        prwlr.profiles.Profile objects.
+        """
+        pd.testing.assert_frame_equal(
+            self.ref_network_df,
+            self.test_network_df,
+            check_like=True,
         )
 
     def test_save_profiles(self):
