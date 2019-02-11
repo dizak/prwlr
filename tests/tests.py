@@ -651,6 +651,7 @@ class CoreTests(unittest.TestCase):
         self.test_profiles_filename = 'test_data/CoreTests/test_profiles.csv'
         self.test_network_filename = 'test_data/CoreTests/test_network.csv'
         self.test_saved_profiles_filename = 'test_data/CoreTests/test_save_profiles.csv'
+        self.test_saved_network_filename = 'test_data/CoreTests/test_save_network.csv'
 
         self.ref_profile_1, self.ref_profile_2 = (
             prwlr.profiles.Profile(
@@ -690,7 +691,16 @@ class CoreTests(unittest.TestCase):
             self.ref_profiles_srs,
             self.test_saved_profiles_filename,
         )
+        prwlr.core.save_network(
+            self.ref_network_df,
+            self.test_saved_network_filename,
+        )
+
         self.test_profiles_after_save_srs = prwlr.core.read_profiles(
+            self.test_saved_profiles_filename,
+            index_col=[0],
+        )
+        self.test_network_after_save_df = prwlr.core.read_network(
             self.test_saved_profiles_filename,
             index_col=[0],
         )
@@ -700,6 +710,7 @@ class CoreTests(unittest.TestCase):
         Removes files created during the tests.
         """
         os.remove(self.test_saved_profiles_filename)
+        os.remove(self.test_saved_network_filename)
 
     def test_read_profiles(self):
         """
@@ -720,6 +731,16 @@ class CoreTests(unittest.TestCase):
             self.ref_network_df,
             self.test_network_df,
             check_like=True,
+        )
+
+    def test_save_network(self):
+        """
+        Tests if prwlr.core.save_network saves network suitable for
+        prwlr.core.read_network.
+        """
+        pd.testing.assert_frame_equal(
+            self.ref_network_df,
+            self.test_network_after_save_df,
         )
 
     def test_save_profiles(self):
