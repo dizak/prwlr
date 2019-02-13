@@ -221,6 +221,60 @@ def save_profiles(
         },
     ).to_csv(filename, **kwargs)
 
+def save_network(
+    dataframe,
+    filename,
+    profile_query_column=Columns.PROF_Q,
+    profile_array_column=Columns.PROF_A,
+    profile_reference_column_suffix=Columns.REF,
+    profile_query_column_suffix=Columns.QRY,
+    str_sep='|',
+    **kwargs
+):
+    """
+    Saves pandas.DataFrame with prwlr.profiles.Profile to CSV.
+
+    Parameters
+    -------
+    filename: str, path
+        Filename of the CSV.
+    profile_query_column: str, default prwlr.core.Columns.PROF_Q
+        Column name of the query profile. The default value is taken from the
+        module-wide settings.
+    profile_array_column: str, default prwlr.core.Columns.PROF_A
+        Column name of the array profile. The default value is taken from the
+        module-wide settings.
+    profile_reference_column_suffix: str, default prwlr.core.Columns.REF
+        Column name suffix  of the profile's reference
+        (see prwlr.profiles.Profile).
+    profile_query_column_suffix: str, default prwlr.core.Columns.QRY
+        Column name suffix  of the profile's query
+        (see prwlr.profiles.Profile).
+    str_sep: str, default '|'
+        The internal separator for the profile's reference/query.
+
+    Returns
+    -------
+        pandas.DataFrame
+    """
+    qry_ref_col = '{}_{}'.format(profile_query_column, profile_reference_column_suffix)
+    qry_qry_col = '{}_{}'.format(profile_query_column, profile_query_column_suffix)
+    arr_ref_col = '{}_{}'.format(profile_array_column, profile_reference_column_suffix)
+    arr_qry_col = '{}_{}'.format(profile_array_column, profile_query_column_suffix)
+    dataframe[qry_ref_col] = dataframe[profile_query_column].apply(
+        lambda x: x.reference,
+    ).str.join(str_sep)
+    dataframe[qry_qry_col] = dataframe[profile_query_column].apply(
+        lambda x: x.query,
+    ).str.join(str_sep)
+    dataframe[arr_ref_col] = dataframe[profile_array_column].apply(
+        lambda x: x.reference,
+    ).str.join(str_sep)
+    dataframe[arr_qry_col] = dataframe[profile_array_column].apply(
+        lambda x: x.query,
+    ).str.join(str_sep)
+    dataframe.to_csv(filename, **kwargs)
+
 def merge_sga_profiles(
     sga,
     profiles
