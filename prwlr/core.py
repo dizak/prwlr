@@ -273,7 +273,9 @@ def save_network(
     dataframe[arr_qry_col] = dataframe[profile_array_column].apply(
         lambda x: x.query,
     ).str.join(str_sep)
-    dataframe.to_csv(filename, **kwargs)
+    dataframe.drop(
+        columns=[profile_query_column, profile_array_column],
+    ).to_csv(filename, **kwargs)
 
 def merge_sga_profiles(
     sga,
