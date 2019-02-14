@@ -353,8 +353,3 @@ def calculate_pss(
             axis=1,
         )
     return network
-
-def pss(ar1, ar2):
-    return sum(a == b for a, b in zip(ar1, ar2))
-
-pss_vect = _np.vectorize(pss)
