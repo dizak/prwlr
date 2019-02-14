@@ -684,6 +684,8 @@ class CoreTests(unittest.TestCase):
         """
         if os.path.exists(self.test_saved_profiles_filename):
             os.remove(self.test_saved_profiles_filename)
+        if os.path.exists(self.test_saved_network_filename):
+            os.remove(self.test_saved_network_filename)
 
     def test_read_profiles(self):
         """
