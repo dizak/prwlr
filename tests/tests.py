@@ -723,11 +723,20 @@ class CoreTests(unittest.TestCase):
         Tests if prwlr.core.save_network saves network suitable for
         prwlr.core.read_network.
         """
-        # pd.testing.assert_frame_equal(
-        #     self.ref_network_df,
-        #     self.test_network_after_save_df,
-        # )
-        pass
+        import prwlr.core
+
+        prwlr.core.save_network(
+            self.ref_network_df,
+            self.test_saved_network_filename,
+        )
+        pd.testing.assert_frame_equal(
+            self.ref_network_df,
+            prwlr.core.read_network(
+                self.test_saved_network_filename,
+                index_col=[0],
+                ),
+            check_like=True,
+        )
 
     def test_save_profiles(self):
         """
