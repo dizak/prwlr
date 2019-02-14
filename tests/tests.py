@@ -677,22 +677,12 @@ class CoreTests(unittest.TestCase):
             }]
         )
 
-
-
-        prwlr.core.save_profiles(
-            self.ref_profiles_srs,
-            self.test_saved_profiles_filename,
-        )
-        self.test_profiles_after_save_srs = prwlr.core.read_profiles(
-            self.test_saved_profiles_filename,
-            index_col=[0],
-        )
-
     def tearDown(self):
         """
         Removes files created during the tests.
         """
-        os.remove(self.test_saved_profiles_filename)
+        if os.path.exists(self.test_saved_profiles_filename):
+            os.remove(self.test_saved_profiles_filename)
 
     def test_read_profiles(self):
         """
@@ -729,9 +719,18 @@ class CoreTests(unittest.TestCase):
         """
         Tests if prwlr.core.save_profiles writes CSV file with correct values.
         """
+        import prwlr.core
+
+        prwlr.core.save_profiles(
+            self.ref_profiles_srs,
+            self.test_saved_profiles_filename,
+        )
         pd.testing.assert_series_equal(
             self.ref_profiles_srs,
-            self.test_profiles_after_save_srs,
+            prwlr.core.read_profiles(
+                self.test_saved_profiles_filename,
+                index_col=[0],
+            ),
         )
 
 
