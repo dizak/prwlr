@@ -678,48 +678,26 @@ class CoreTests(unittest.TestCase):
             }]
         )
 
-        self.test_profiles_srs = prwlr.core.read_profiles(
-            self.test_profiles_filename,
-            index_col=[0],
-        )
-        self.test_network_df = prwlr.core.read_network(
-            self.test_network_filename,
-            index_col=[0],
-        )
-
-        prwlr.core.save_profiles(
-            self.ref_profiles_srs,
-            self.test_saved_profiles_filename,
-        )
-        prwlr.core.save_network(
-            self.ref_network_df,
-            self.test_saved_network_filename,
-        )
-
-        self.test_profiles_after_save_srs = prwlr.core.read_profiles(
-            self.test_saved_profiles_filename,
-            index_col=[0],
-        )
-        self.test_network_after_save_df = prwlr.core.read_network(
-            self.test_saved_profiles_filename,
-            index_col=[0],
-        )
-
     def tearDown(self):
         """
         Removes files created during the tests.
         """
-        os.remove(self.test_saved_profiles_filename)
-        os.remove(self.test_saved_network_filename)
+        if os.path.exists(self.test_saved_profiles_filename):
+            os.remove(self.test_saved_profiles_filename)
 
     def test_read_profiles(self):
         """
         Tests if prwlr.core.read_profiles returns pandas.Series with correct
         prwlr.profiles.Profile objects.
         """
+        import prwlr.core
+
         pd.testing.assert_series_equal(
             self.ref_profiles_srs,
-            self.test_profiles_srs,
+            prwlr.core.read_profiles(
+                self.test_profiles_filename,
+                index_col=[0],
+            ),
         )
 
     def test_read_network(self):
@@ -727,9 +705,14 @@ class CoreTests(unittest.TestCase):
         Tests if prwlr.core.read_network returns pandas.DataFrame with correct
         prwlr.profiles.Profile objects.
         """
+        import prwlr.core
+
         pd.testing.assert_frame_equal(
             self.ref_network_df,
-            self.test_network_df,
+            prwlr.core.read_network(
+                self.test_network_filename,
+                index_col=[0],
+            ),
             check_like=True,
         )
 
@@ -747,9 +730,18 @@ class CoreTests(unittest.TestCase):
         """
         Tests if prwlr.core.save_profiles writes CSV file with correct values.
         """
+        import prwlr.core
+
+        prwlr.core.save_profiles(
+            self.ref_profiles_srs,
+            self.test_saved_profiles_filename,
+        )
         pd.testing.assert_series_equal(
             self.ref_profiles_srs,
-            self.test_profiles_after_save_srs,
+            prwlr.core.read_profiles(
+                self.test_saved_profiles_filename,
+                index_col=[0],
+            ),
         )
 
 
