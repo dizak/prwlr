@@ -677,10 +677,6 @@ class CoreTests(unittest.TestCase):
             }]
         )
 
-        self.test_profiles_srs = prwlr.core.read_profiles(
-            self.test_profiles_filename,
-            index_col=[0],
-        )
         self.test_network_df = prwlr.core.read_network(
             self.test_network_filename,
             index_col=[0],
@@ -706,9 +702,14 @@ class CoreTests(unittest.TestCase):
         Tests if prwlr.core.read_profiles returns pandas.Series with correct
         prwlr.profiles.Profile objects.
         """
+        import prwlr.core
+
         pd.testing.assert_series_equal(
             self.ref_profiles_srs,
-            self.test_profiles_srs,
+            prwlr.core.read_profiles(
+                self.test_profiles_filename,
+                index_col=[0],
+            ),
         )
 
     def test_read_network(self):
