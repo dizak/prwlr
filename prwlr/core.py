@@ -1,3 +1,4 @@
+import gc
 import pandas as _pd
 import numpy as _np
 from . import databases as _databases
@@ -277,6 +278,7 @@ def save_network(
     df.drop(
         columns=[profile_query_column, profile_array_column],
     ).to_csv(filename, **kwargs)
+    del df; gc.collect()
 
 def merge_sga_profiles(
     sga,
