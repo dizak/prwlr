@@ -261,19 +261,20 @@ def save_network(
     qry_qry_col = '{}_{}'.format(profile_query_column, profile_query_column_suffix)
     arr_ref_col = '{}_{}'.format(profile_array_column, profile_reference_column_suffix)
     arr_qry_col = '{}_{}'.format(profile_array_column, profile_query_column_suffix)
-    dataframe[qry_ref_col] = dataframe[profile_query_column].apply(
+    df = dataframe.copy()
+    df[qry_ref_col] = df[profile_query_column].apply(
         lambda x: x.reference,
     ).str.join(str_sep)
-    dataframe[qry_qry_col] = dataframe[profile_query_column].apply(
+    df[qry_qry_col] = df[profile_query_column].apply(
         lambda x: x.query,
     ).str.join(str_sep)
-    dataframe[arr_ref_col] = dataframe[profile_array_column].apply(
+    df[arr_ref_col] = df[profile_array_column].apply(
         lambda x: x.reference,
     ).str.join(str_sep)
-    dataframe[arr_qry_col] = dataframe[profile_array_column].apply(
+    df[arr_qry_col] = df[profile_array_column].apply(
         lambda x: x.query,
     ).str.join(str_sep)
-    dataframe.drop(
+    df.drop(
         columns=[profile_query_column, profile_array_column],
     ).to_csv(filename, **kwargs)
 
