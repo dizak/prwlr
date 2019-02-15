@@ -15,6 +15,7 @@ class Columns(_databases.Columns):
     QRY_SPLIT = '{}{}'.format(QRY, SPLIT_SUF)
     PROF_Q = _databases.Columns.PROF_Q
     PROF_A = _databases.Columns.PROF_A
+    STR_SEP = '|'
 
 def get_IDs_names(
     species,
@@ -113,22 +114,25 @@ def read_sga(
 
 def read_profiles(
     filename,
-    reference_column=Columns.REF,
-    query_column=Columns.QRY,
-    str_sep='|',
     **kwargs
 ):
     """
-    Returns pandas.Series with prwlr.profiles.Profile objects from CSV.
+    Returns pandas.Series with prwlr.profiles.Profile objects from CSV file.
+    Together with prwlr.core.save_profiles provides a convenient way of
+    saving/reading-in prwlr.profiles.Profile objects to/from a flat text file.
 
     Parameters
     -------
     filename: str, path
-        Filename of the CSV.
+        CSV file name.
+
+    Returns
+    ------
+    pandas.Series
     """
     ref_qry_df = _pd.read_csv(filename, **kwargs)
-    ref_qry_df[Columns.REF_SPLIT] = ref_qry_df[Columns.REF].str.split(str_sep)
-    ref_qry_df[Columns.QRY_SPLIT] = ref_qry_df[Columns.QRY].str.split(str_sep)
+    ref_qry_df[Columns.REF_SPLIT] = ref_qry_df[Columns.REF].str.split(Columns.STR_SEP)
+    ref_qry_df[Columns.QRY_SPLIT] = ref_qry_df[Columns.QRY].str.split(Columns.STR_SEP)
     return ref_qry_df[[Columns.REF_SPLIT, Columns.QRY_SPLIT]].apply(
         lambda x: _profiles.Profile(
             reference=x[Columns.REF_SPLIT],
@@ -137,57 +141,63 @@ def read_profiles(
         axis=1,
     )
 
-def read_network(
+def save_profiles(
+    series,
     filename,
-    profile_query_column=Columns.PROF_Q,
-    profile_array_column=Columns.PROF_A,
-    profile_reference_column_suffix=Columns.REF,
-    profile_query_column_suffix=Columns.QRY,
-    str_sep='|',
     **kwargs
 ):
     """
-    Returns pandas.DataFrame with prwlr.profiles.Profile objects from CSV.
+    Writes pandas.Series with prwlr.profiles.Profile objects to CSV file.
+    Together with prwlr.core.read_profiles provides a convenient way of
+    saving/reading-in prwlr.profiles.Profile objects to/from a flat text file.
+
+    Parameters
+    -------
+    Filename: str, path
+        CSV file name.
+    """
+    _pd.DataFrame(
+        {
+            Columns.REF: series.apply(lambda x: x.reference).str.join(Columns.STR_SEP),
+            Columns.QRY: series.apply(lambda x: x.query).str.join(Columns.STR_SEP),
+        },
+    ).to_csv(filename, **kwargs)
+
+def read_network(
+    filename,
+    **kwargs
+):
+    """
+    Returns pandas.DataFrame representing a Genetic Interaction Network with
+    prwlr.profiles.Profile objects from CSV file. Together with
+    prwlr.core.save_profiles provides a convenient way of saving/reading-in
+    prwlr.profiles.Profile objects to/from a flat text file.
 
     Parameters
     -------
     filename: str, path
-        Filename of the CSV.
-    profile_query_column: str, default prwlr.core.Columns.PROF_Q
-        Column name of the query profile. The default value is taken from the
-        module-wide settings.
-    profile_array_column: str, default prwlr.core.Columns.PROF_A
-        Column name of the array profile. The default value is taken from the
-        module-wide settings.
-    profile_reference_column_suffix: str, default prwlr.core.Columns.REF
-        Column name suffix  of the profile's reference
-        (see prwlr.profiles.Profile).
-    profile_query_column_suffix: str, default prwlr.core.Columns.QRY
-        Column name suffix  of the profile's query
-        (see prwlr.profiles.Profile).
-    str_sep: str, default '|'
-        The internal separator for the profile's reference/query.
+        CSV file name.
 
     Returns
     -------
-        pandas.DataFrame
+    pandas.DataFrame
     """
-    qry_ref_col = '{}_{}'.format(profile_query_column, profile_reference_column_suffix)
-    qry_qry_col = '{}_{}'.format(profile_query_column, profile_query_column_suffix)
-    arr_ref_col = '{}_{}'.format(profile_array_column, profile_reference_column_suffix)
-    arr_qry_col = '{}_{}'.format(profile_array_column, profile_query_column_suffix)
+    qry_ref_col = '{}_{}'.format(Columns.PROF_Q, Columns.REF)
+    qry_qry_col = '{}_{}'.format(Columns.PROF_Q, Columns.QRY)
+    arr_ref_col = '{}_{}'.format(Columns.PROF_A, Columns.REF)
+    arr_qry_col = '{}_{}'.format(Columns.PROF_A, Columns.QRY)
     df = _pd.read_csv(filename, **kwargs)
-    df[profile_query_column] = df[[qry_ref_col, qry_qry_col]].apply(
+    df[Columns.PROF_Q] = df[[qry_ref_col, qry_qry_col]].apply(
         lambda x: _profiles.Profile(
-            reference=x[qry_ref_col].split(str_sep),
-            query=x[qry_qry_col].split(str_sep),
+            reference=x[qry_ref_col].split(Columns.STR_SEP),
+            query=x[qry_qry_col].split(Columns.STR_SEP),
         ),
         axis=1,
     )
-    df[profile_array_column] = df[[arr_ref_col, arr_qry_col]].apply(
+    df[Columns.PROF_A] = df[[arr_ref_col, arr_qry_col]].apply(
         lambda x: _profiles.Profile(
-            reference=x[arr_ref_col].split(str_sep),
-            query=x[arr_qry_col].split(str_sep),
+            reference=x[arr_ref_col].split(Columns.STR_SEP),
+            query=x[arr_qry_col].split(Columns.STR_SEP),
         ),
         axis=1,
     )
@@ -198,85 +208,41 @@ def read_network(
         arr_qry_col,
     ])
 
-
-def save_profiles(
-    series,
-    filename,
-    reference_column=Columns.REF,
-    query_column=Columns.QRY,
-    str_sep='|',
-    **kwargs
-):
-    """
-    Writes pandas.Series with prwlr.profiles.Profile objects to CSV file.
-
-    Parameters
-    -------
-    Filename: str, path
-        Name of the file.
-    """
-    _pd.DataFrame(
-        {
-            Columns.REF: series.apply(lambda x: x.reference).str.join(str_sep),
-            Columns.QRY: series.apply(lambda x: x.query).str.join(str_sep),
-        },
-    ).to_csv(filename, **kwargs)
-
 def save_network(
     dataframe,
     filename,
-    profile_query_column=Columns.PROF_Q,
-    profile_array_column=Columns.PROF_A,
-    profile_reference_column_suffix=Columns.REF,
-    profile_query_column_suffix=Columns.QRY,
-    str_sep='|',
     **kwargs
 ):
     """
-    Saves pandas.DataFrame with prwlr.profiles.Profile to CSV.
+    Writes pandas.DataFrame representing a Genetic Interaction Network with
+    prwlr.profiles.Profile objects to CSV file. Together with
+    prwlr.core.save_profiles provides a convenient way of saving/reading-in
+    prwlr.profiles.Profile objects to/from a flat text file.
 
     Parameters
     -------
     filename: str, path
-        Filename of the CSV.
-    profile_query_column: str, default prwlr.core.Columns.PROF_Q
-        Column name of the query profile. The default value is taken from the
-        module-wide settings.
-    profile_array_column: str, default prwlr.core.Columns.PROF_A
-        Column name of the array profile. The default value is taken from the
-        module-wide settings.
-    profile_reference_column_suffix: str, default prwlr.core.Columns.REF
-        Column name suffix  of the profile's reference
-        (see prwlr.profiles.Profile).
-    profile_query_column_suffix: str, default prwlr.core.Columns.QRY
-        Column name suffix  of the profile's query
-        (see prwlr.profiles.Profile).
-    str_sep: str, default '|'
-        The internal separator for the profile's reference/query.
-
-    Returns
-    -------
-        pandas.DataFrame
+        CSV file name.
     """
-    qry_ref_col = '{}_{}'.format(profile_query_column, profile_reference_column_suffix)
-    qry_qry_col = '{}_{}'.format(profile_query_column, profile_query_column_suffix)
-    arr_ref_col = '{}_{}'.format(profile_array_column, profile_reference_column_suffix)
-    arr_qry_col = '{}_{}'.format(profile_array_column, profile_query_column_suffix)
+    qry_ref_col = '{}_{}'.format(Columns.PROF_Q, Columns.REF)
+    qry_qry_col = '{}_{}'.format(Columns.PROF_Q, Columns.QRY)
+    arr_ref_col = '{}_{}'.format(Columns.PROF_A, Columns.REF)
+    arr_qry_col = '{}_{}'.format(Columns.PROF_A, Columns.QRY)
     df = dataframe.copy()
-    df[qry_ref_col] = df[profile_query_column].apply(
+    df[qry_ref_col] = df[Columns.PROF_Q].apply(
         lambda x: x.reference,
-    ).str.join(str_sep)
-    df[qry_qry_col] = df[profile_query_column].apply(
+    ).str.join(Columns.STR_SEP)
+    df[qry_qry_col] = df[Columns.PROF_Q].apply(
         lambda x: x.query,
-    ).str.join(str_sep)
-    df[arr_ref_col] = df[profile_array_column].apply(
+    ).str.join(Columns.STR_SEP)
+    df[arr_ref_col] = df[Columns.PROF_A].apply(
         lambda x: x.reference,
-    ).str.join(str_sep)
-    df[arr_qry_col] = df[profile_array_column].apply(
+    ).str.join(Columns.STR_SEP)
+    df[arr_qry_col] = df[Columns.PROF_A].apply(
         lambda x: x.query,
-    ).str.join(str_sep)
+    ).str.join(Columns.STR_SEP)
     df.drop(
-        columns=[profile_query_column, profile_array_column],
+        columns=[Columns.PROF_Q, Columns.PROF_A],
     ).to_csv(filename, **kwargs)
     del df; gc.collect()
 
