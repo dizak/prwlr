@@ -138,8 +138,6 @@ def read_profiles(
 def save_profiles(
     series,
     filename,
-    reference_column=Columns.REF,
-    query_column=Columns.QRY,
     str_sep='|',
     **kwargs
 ):
