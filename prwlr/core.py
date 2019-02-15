@@ -15,6 +15,7 @@ class Columns(_databases.Columns):
     QRY_SPLIT = '{}{}'.format(QRY, SPLIT_SUF)
     PROF_Q = _databases.Columns.PROF_Q
     PROF_A = _databases.Columns.PROF_A
+    STR_SEP = '|'
 
 def get_IDs_names(
     species,
@@ -113,7 +114,6 @@ def read_sga(
 
 def read_profiles(
     filename,
-    str_sep='|',
     **kwargs
 ):
     """
@@ -125,8 +125,8 @@ def read_profiles(
         Filename of the CSV.
     """
     ref_qry_df = _pd.read_csv(filename, **kwargs)
-    ref_qry_df[Columns.REF_SPLIT] = ref_qry_df[Columns.REF].str.split(str_sep)
-    ref_qry_df[Columns.QRY_SPLIT] = ref_qry_df[Columns.QRY].str.split(str_sep)
+    ref_qry_df[Columns.REF_SPLIT] = ref_qry_df[Columns.REF].str.split(Columns.STR_SEP)
+    ref_qry_df[Columns.QRY_SPLIT] = ref_qry_df[Columns.QRY].str.split(Columns.STR_SEP)
     return ref_qry_df[[Columns.REF_SPLIT, Columns.QRY_SPLIT]].apply(
         lambda x: _profiles.Profile(
             reference=x[Columns.REF_SPLIT],
@@ -138,7 +138,6 @@ def read_profiles(
 def save_profiles(
     series,
     filename,
-    str_sep='|',
     **kwargs
 ):
     """
@@ -151,14 +150,13 @@ def save_profiles(
     """
     _pd.DataFrame(
         {
-            Columns.REF: series.apply(lambda x: x.reference).str.join(str_sep),
-            Columns.QRY: series.apply(lambda x: x.query).str.join(str_sep),
+            Columns.REF: series.apply(lambda x: x.reference).str.join(Columns.STR_SEP),
+            Columns.QRY: series.apply(lambda x: x.query).str.join(Columns.STR_SEP),
         },
     ).to_csv(filename, **kwargs)
 
 def read_network(
     filename,
-    str_sep='|',
     **kwargs
 ):
     """
@@ -168,8 +166,6 @@ def read_network(
     -------
     filename: str, path
         Filename of the CSV.
-    str_sep: str, default '|'
-        The internal separator for the profile's reference/query.
 
     Returns
     -------
@@ -182,15 +178,15 @@ def read_network(
     df = _pd.read_csv(filename, **kwargs)
     df[Columns.PROF_Q] = df[[qry_ref_col, qry_qry_col]].apply(
         lambda x: _profiles.Profile(
-            reference=x[qry_ref_col].split(str_sep),
-            query=x[qry_qry_col].split(str_sep),
+            reference=x[qry_ref_col].split(Columns.STR_SEP),
+            query=x[qry_qry_col].split(Columns.STR_SEP),
         ),
         axis=1,
     )
     df[Columns.PROF_A] = df[[arr_ref_col, arr_qry_col]].apply(
         lambda x: _profiles.Profile(
-            reference=x[arr_ref_col].split(str_sep),
-            query=x[arr_qry_col].split(str_sep),
+            reference=x[arr_ref_col].split(Columns.STR_SEP),
+            query=x[arr_qry_col].split(Columns.STR_SEP),
         ),
         axis=1,
     )
@@ -204,7 +200,6 @@ def read_network(
 def save_network(
     dataframe,
     filename,
-    str_sep='|',
     **kwargs
 ):
     """
@@ -214,8 +209,6 @@ def save_network(
     -------
     filename: str, path
         Filename of the CSV.
-    str_sep: str, default '|'
-        The internal separator for the profile's reference/query.
 
     Returns
     -------
@@ -228,16 +221,16 @@ def save_network(
     df = dataframe.copy()
     df[qry_ref_col] = df[Columns.PROF_Q].apply(
         lambda x: x.reference,
-    ).str.join(str_sep)
+    ).str.join(Columns.STR_SEP)
     df[qry_qry_col] = df[Columns.PROF_Q].apply(
         lambda x: x.query,
-    ).str.join(str_sep)
+    ).str.join(Columns.STR_SEP)
     df[arr_ref_col] = df[Columns.PROF_A].apply(
         lambda x: x.reference,
-    ).str.join(str_sep)
+    ).str.join(Columns.STR_SEP)
     df[arr_qry_col] = df[Columns.PROF_A].apply(
         lambda x: x.query,
-    ).str.join(str_sep)
+    ).str.join(Columns.STR_SEP)
     df.drop(
         columns=[Columns.PROF_Q, Columns.PROF_A],
     ).to_csv(filename, **kwargs)
