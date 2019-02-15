@@ -113,8 +113,6 @@ def read_sga(
 
 def read_profiles(
     filename,
-    reference_column=Columns.REF,
-    query_column=Columns.QRY,
     str_sep='|',
     **kwargs
 ):
