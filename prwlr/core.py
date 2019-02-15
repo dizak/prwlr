@@ -124,7 +124,7 @@ def read_profiles(
     Parameters
     -------
     filename: str, path
-        Filename of the CSV.
+        CSV file name.
 
     Returns
     ------
@@ -148,11 +148,13 @@ def save_profiles(
 ):
     """
     Writes pandas.Series with prwlr.profiles.Profile objects to CSV file.
+    Together with prwlr.core.read_profiles provides a convenient way of
+    saving/reading-in prwlr.profiles.Profile objects to/from a flat text file.
 
     Parameters
     -------
     Filename: str, path
-        Name of the file.
+        CSV file name.
     """
     _pd.DataFrame(
         {
