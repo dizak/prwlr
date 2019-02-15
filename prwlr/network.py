@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import json
 
 
-class Ortho_Network:
+class Ortho_Network(object):
     """Calculates and holds data about interactions in form of network,
     exportable to other software (e.g. Cytoscape) or drawable by matplotlib.
 

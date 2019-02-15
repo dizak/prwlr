@@ -8,7 +8,7 @@ import pandas as pd
 from scipy.spatial import distance as dist
 
 
-class Profile:
+class Profile(object):
     """
     Profile object.
     """

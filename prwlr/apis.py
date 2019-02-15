@@ -8,7 +8,7 @@ from tqdm import tqdm
 import pathos.threading as ptth
 
 
-class Columns:
+class Columns(object):
     """
     Container for the columns names defined in this module.
     """
@@ -273,7 +273,7 @@ class KEGG_API(Columns):
                 fout.write(res.content)
 
 
-class CostanzoAPI:
+class CostanzoAPI(object):
     """Provides connectivity with the Costanzo's SOM website of the Genetic
     Landscape of the Cell project, allowing data files download.
 
