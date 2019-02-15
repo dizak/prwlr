@@ -648,9 +648,10 @@ class CoreTests(unittest.TestCase):
         self.ref_query_1 = list('acdfhiklostuz')
         self.ref_reference_2 = list('acefghijklmnprstuwxy')
         self.ref_query_2 = list('abdfhiklostuz')
-        self.test_profiles_filename = 'test_data/CoreTests/test_profiles.csv'
-        self.test_network_filename = 'test_data/CoreTests/test_network.csv'
+        self.ref_profiles_filename = 'test_data/CoreTests/ref_profiles.csv'
+        self.ref_network_filename = 'test_data/CoreTests/ref_network.csv'
         self.test_saved_profiles_filename = 'test_data/CoreTests/test_save_profiles.csv'
+        self.test_saved_network_filename = 'test_data/CoreTests/test_save_network.csv'
 
         self.ref_profile_1, self.ref_profile_2 = (
             prwlr.profiles.Profile(
@@ -683,6 +684,8 @@ class CoreTests(unittest.TestCase):
         """
         if os.path.exists(self.test_saved_profiles_filename):
             os.remove(self.test_saved_profiles_filename)
+        if os.path.exists(self.test_saved_network_filename):
+            os.remove(self.test_saved_network_filename)
 
     def test_read_profiles(self):
         """
@@ -694,7 +697,7 @@ class CoreTests(unittest.TestCase):
         pd.testing.assert_series_equal(
             self.ref_profiles_srs,
             prwlr.core.read_profiles(
-                self.test_profiles_filename,
+                self.ref_profiles_filename,
                 index_col=[0],
             ),
         )
@@ -709,9 +712,29 @@ class CoreTests(unittest.TestCase):
         pd.testing.assert_frame_equal(
             self.ref_network_df,
             prwlr.core.read_network(
-                self.test_network_filename,
+                self.ref_network_filename,
                 index_col=[0],
             ),
+            check_like=True,
+        )
+
+    def test_save_network(self):
+        """
+        Tests if prwlr.core.save_network saves network suitable for
+        prwlr.core.read_network.
+        """
+        import prwlr.core
+
+        prwlr.core.save_network(
+            self.ref_network_df,
+            self.test_saved_network_filename,
+        )
+        pd.testing.assert_frame_equal(
+            self.ref_network_df,
+            prwlr.core.read_network(
+                self.test_saved_network_filename,
+                index_col=[0],
+                ),
             check_like=True,
         )
 
