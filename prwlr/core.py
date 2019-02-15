@@ -117,12 +117,18 @@ def read_profiles(
     **kwargs
 ):
     """
-    Returns pandas.Series with prwlr.profiles.Profile objects from CSV.
+    Returns pandas.Series with prwlr.profiles.Profile objects from CSV file.
+    Together with prwlr.core.save_profiles provides a convenient way of
+    saving/reading-in prwlr.profiles.Profile objects to/from a flat text file.
 
     Parameters
     -------
     filename: str, path
         Filename of the CSV.
+
+    Returns
+    ------
+    pandas.Series
     """
     ref_qry_df = _pd.read_csv(filename, **kwargs)
     ref_qry_df[Columns.REF_SPLIT] = ref_qry_df[Columns.REF].str.split(Columns.STR_SEP)
