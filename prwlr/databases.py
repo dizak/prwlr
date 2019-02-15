@@ -63,7 +63,7 @@ class Columns(_ApisColumns):
     SEQ = "SEQ"
     TITLE = "TITLE"
     PSS = "PSS"
-    PROF_Q = "PROF_Q".format(QUERY_SUF)
+    PROF_Q = "PROF{}".format(QUERY_SUF)
     PROF_A = "PROF{}".format(ARRAY_SUF)
     dtypes = {GIS: "float32",
               GIS_SD: "float32",
