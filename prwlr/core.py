@@ -168,16 +168,19 @@ def read_network(
     **kwargs
 ):
     """
-    Returns pandas.DataFrame with prwlr.profiles.Profile objects from CSV.
+    Returns pandas.DataFrame representing a Genetic Interaction Network with
+    prwlr.profiles.Profile objects from CSV file. Together with
+    prwlr.core.save_profiles provides a convenient way of saving/reading-in
+    prwlr.profiles.Profile objects to/from a flat text file.
 
     Parameters
     -------
     filename: str, path
-        Filename of the CSV.
+        CSV file name.
 
     Returns
     -------
-        pandas.DataFrame
+    pandas.DataFrame
     """
     qry_ref_col = '{}_{}'.format(Columns.PROF_Q, Columns.REF)
     qry_qry_col = '{}_{}'.format(Columns.PROF_Q, Columns.QRY)
@@ -211,16 +214,15 @@ def save_network(
     **kwargs
 ):
     """
-    Saves pandas.DataFrame with prwlr.profiles.Profile to CSV.
+    Writes pandas.DataFrame representing a Genetic Interaction Network with
+    prwlr.profiles.Profile objects to CSV file. Together with
+    prwlr.core.save_profiles provides a convenient way of saving/reading-in
+    prwlr.profiles.Profile objects to/from a flat text file.
 
     Parameters
     -------
     filename: str, path
-        Filename of the CSV.
-
-    Returns
-    -------
-        pandas.DataFrame
+        CSV file name.
     """
     qry_ref_col = '{}_{}'.format(Columns.PROF_Q, Columns.REF)
     qry_qry_col = '{}_{}'.format(Columns.PROF_Q, Columns.QRY)
