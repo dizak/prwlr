@@ -1,4 +1,4 @@
-import gc
+import gc as _gc
 import pandas as _pd
 import numpy as _np
 from . import databases as _databases
@@ -244,7 +244,7 @@ def save_network(
     df.drop(
         columns=[Columns.PROF_Q, Columns.PROF_A],
     ).to_csv(filename, **kwargs)
-    del df; gc.collect()
+    del df; _gc.collect()
 
 def merge_sga_profiles(
     sga,
