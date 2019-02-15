@@ -204,10 +204,6 @@ def read_network(
 def save_network(
     dataframe,
     filename,
-    profile_query_column=Columns.PROF_Q,
-    profile_array_column=Columns.PROF_A,
-    profile_reference_column_suffix=Columns.REF,
-    profile_query_column_suffix=Columns.QRY,
     str_sep='|',
     **kwargs
 ):
@@ -218,18 +214,6 @@ def save_network(
     -------
     filename: str, path
         Filename of the CSV.
-    profile_query_column: str, default prwlr.core.Columns.PROF_Q
-        Column name of the query profile. The default value is taken from the
-        module-wide settings.
-    profile_array_column: str, default prwlr.core.Columns.PROF_A
-        Column name of the array profile. The default value is taken from the
-        module-wide settings.
-    profile_reference_column_suffix: str, default prwlr.core.Columns.REF
-        Column name suffix  of the profile's reference
-        (see prwlr.profiles.Profile).
-    profile_query_column_suffix: str, default prwlr.core.Columns.QRY
-        Column name suffix  of the profile's query
-        (see prwlr.profiles.Profile).
     str_sep: str, default '|'
         The internal separator for the profile's reference/query.
 
@@ -237,25 +221,25 @@ def save_network(
     -------
         pandas.DataFrame
     """
-    qry_ref_col = '{}_{}'.format(profile_query_column, profile_reference_column_suffix)
-    qry_qry_col = '{}_{}'.format(profile_query_column, profile_query_column_suffix)
-    arr_ref_col = '{}_{}'.format(profile_array_column, profile_reference_column_suffix)
-    arr_qry_col = '{}_{}'.format(profile_array_column, profile_query_column_suffix)
+    qry_ref_col = '{}_{}'.format(Columns.PROF_Q, Columns.REF)
+    qry_qry_col = '{}_{}'.format(Columns.PROF_Q, Columns.QRY)
+    arr_ref_col = '{}_{}'.format(Columns.PROF_A, Columns.REF)
+    arr_qry_col = '{}_{}'.format(Columns.PROF_A, Columns.QRY)
     df = dataframe.copy()
-    df[qry_ref_col] = df[profile_query_column].apply(
+    df[qry_ref_col] = df[Columns.PROF_Q].apply(
         lambda x: x.reference,
     ).str.join(str_sep)
-    df[qry_qry_col] = df[profile_query_column].apply(
+    df[qry_qry_col] = df[Columns.PROF_Q].apply(
         lambda x: x.query,
     ).str.join(str_sep)
-    df[arr_ref_col] = df[profile_array_column].apply(
+    df[arr_ref_col] = df[Columns.PROF_A].apply(
         lambda x: x.reference,
     ).str.join(str_sep)
-    df[arr_qry_col] = df[profile_array_column].apply(
+    df[arr_qry_col] = df[Columns.PROF_A].apply(
         lambda x: x.query,
     ).str.join(str_sep)
     df.drop(
-        columns=[profile_query_column, profile_array_column],
+        columns=[Columns.PROF_Q, Columns.PROF_A],
     ).to_csv(filename, **kwargs)
     del df; gc.collect()
 
