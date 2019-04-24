@@ -416,7 +416,8 @@ class BioprocessesTests(unittest.TestCase):
         self.ref_bioprocesses = pd.read_csv("test_data/BioprocessesTests/ref_bioproc_100r.csv",
                                             sep='\t',
                                             index_col=[0])
-        self.test_bioprocesses = pd.read_excel("test_data/BioprocessesTests/test_bioproc_100r.xls")
+        self.test_bioprocesses = pd.read_excel("test_data/BioprocessesTests/test_bioproc_100r.xls",
+                                               index_col=[0])
 
     def test_parse(self):
         """
