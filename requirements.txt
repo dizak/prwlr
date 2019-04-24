@@ -2,7 +2,7 @@ requests
 tqdm
 pathos
 numpy
-pandas<=0.23
+pandas
 networkx
 scipy
 matplotlib
