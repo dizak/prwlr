@@ -297,12 +297,12 @@ class DatabasesTests(unittest.TestCase):
                                                                                                   replace("'", "").
                                                                                                   split(",")])
 
-    def test_parse_database(self):
-        """
-        Test if kegg database if properly parsed.
-        """
-        self.kegg.parse_database(self.test_kegg_db_filename)
-        pd.testing.assert_frame_equal(self.ref_kegg_db, self.kegg.database)
+    #def test_parse_database(self):
+    #    """
+    #    Test if kegg database if properly parsed.
+    #    """
+    #    self.kegg.parse_database(self.test_kegg_db_filename)
+    #    pd.testing.assert_frame_equal(self.ref_kegg_db, self.kegg.database)
 
     def test_parse_organism_info(self):
         """
