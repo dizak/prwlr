@@ -178,7 +178,7 @@ class ApisTests(unittest.TestCase,
         for org_name, org_id in zip(self.orgs_names, self.orgs_ids):
             self.assertEqual(self.kegg_api.org_name_2_kegg_id(org_name), org_id)
 
-    def test_get_org_db_X_ref(self):
+    def test_get_org_db_X_ref_drop_all_duplicates(self):
         """
         Test if apis.get_org_db_X_ref returns correct KEGG database
         cross-reference.
