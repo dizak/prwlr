@@ -132,7 +132,8 @@ class KEGG_API(Columns):
                          out_file_name,
                          skip_dwnld=False,
                          strip_prefix=True,
-                         drop_duplicates=True):
+                         drop_ORF_duplicates=True,
+                         drop_KO_duplicates=True):
         """Get desired KEGG's database entries linked with all the genes from
         given organism. Data are downloaded to a local file and then made into
         pandas.DataFrame. File can be reused. Necessary for
@@ -166,12 +167,14 @@ class KEGG_API(Columns):
                                           "{}:".format(self.databases[target_db]): ""},
                                          regex=True,
                                          inplace=True)
-        if drop_duplicates:
+        self.org_db_X_ref_df.drop_duplicates(inplace=True)
+        if drop_ORF_duplicates:
             self.org_db_X_ref_df.drop_duplicates(
                 subset=[self.ORF_ID],
                 keep=False,
                 inplace=True,
             )
+        if drop_KO_duplicates:
             self.org_db_X_ref_df.drop_duplicates(
                 subset=[self.KEGG_ID],
                 keep=False,
