@@ -211,6 +211,30 @@ class ApisTests(unittest.TestCase,
             self.ref_org_db_X_df_drop_ORF_duplicates.reset_index(drop=True),
         )
 
+    def test_get_org_db_X_ref_drop_KO_duplicates(self):
+        """
+        Test if apis.get_org_db_X_ref returns correct KEGG database
+        cross-reference. All duplicated rows and duplicated KO records should
+        be removed.
+        """
+        self.kegg_api_drop_KO_duplicates = apis.KEGG_API()
+        self.kegg_api_drop_KO_duplicates.get_organisms_ids(
+                "test_data/ApisTests/test_orgs_ids_in.csv",
+                skip_dwnld=True,
+        )
+        self.kegg_api_drop_KO_duplicates.get_org_db_X_ref(
+            organism="Saccharomyces cerevisiae",
+            target_db="orthology",
+            out_file_name="test_data/ApisTests/test_orgs_db_X_ref.csv",
+            skip_dwnld=True,
+            drop_ORF_duplicates=False,
+            drop_KO_duplicates=True,
+        )
+        pd.testing.assert_frame_equal(
+            self.kegg_api_drop_KO_duplicates.org_db_X_ref_df.reset_index(drop=True),
+            self.ref_org_db_X_df_drop_KO_duplicates.reset_index(drop=True),
+        )
+
     def test_get_KOs_db_X_ref(self):
         """
         Test if apis.get_KOs_db_X_ref returns correct KEGG database
