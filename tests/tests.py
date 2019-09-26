@@ -181,7 +181,8 @@ class ApisTests(unittest.TestCase,
     def test_get_org_db_X_ref_drop_all_duplicates(self):
         """
         Test if apis.get_org_db_X_ref returns correct KEGG database
-        cross-reference.
+        cross-reference. All the duplicates should be removed, duplicated rows,
+        duplicated ORF records and duplicated KOs records.
         """
         pd.testing.assert_frame_equal(self.kegg_api.org_db_X_ref_df,
                                       self.ref_org_db_X_df)
