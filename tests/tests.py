@@ -105,6 +105,20 @@ class ApisTests(unittest.TestCase,
                                            names=["ORF_ID",
                                                   "KEGG_ID"],
                                            dtype="object")
+        cls.ref_org_db_X_df_drop_ORF_duplicates = pd.read_csv(
+            "test_data/ApisTests/ref_org_db_X_df_drop_ORF_duplicates.csv",
+            sep="\t",
+            names=["ORF_ID",
+            "KEGG_ID"],
+            dtype="object",
+        )
+        cls.ref_org_db_X_df_drop_KO_duplicates = pd.read_csv(
+            "test_data/ApisTests/ref_org_db_X_df_drop_KO_duplicates.csv",
+               sep="\t",
+               names=["ORF_ID",
+                      "KEGG_ID"],
+               dtype="object",
+        )
         cls.ref_KOs_db_X_ref_df = pd.read_csv(
             "test_data/ApisTests/ref_KOs_db_X_ref.csv",
             sep="\t",
