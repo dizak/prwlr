@@ -171,6 +171,8 @@ class KEGG(Columns):
                             KOs=None,
                             strip_prefix=True,
                             IDs_only=False,
+                            drop_ORF_duplicates=True,
+                            drop_KO_duplicates=True,
                             threads=6):
         print("Getting the organisms' KEGG IDs...")
         if IDs:
@@ -195,12 +197,16 @@ class KEGG(Columns):
                                        target_db=self.database_type,
                                        out_file_name=X_ref,
                                        skip_dwnld=True,
+                                       drop_ORF_duplicates=drop_ORF_duplicates,
+                                       drop_KO_duplicates=drop_KO_duplicates,
                                        strip_prefix=True)
         else:
             X_ref_tmp = tempfile.NamedTemporaryFile(delete=True)
             self._api.get_org_db_X_ref(organism=organism,
                                        target_db=self.database_type,
                                        out_file_name=X_ref_tmp.name,
+                                       drop_ORF_duplicates=drop_ORF_duplicates,
+                                       drop_KO_duplicates=drop_KO_duplicates,
                                        skip_dwnld=False,
                                        strip_prefix=True)
             X_ref_tmp.close()
