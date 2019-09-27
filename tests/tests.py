@@ -105,6 +105,20 @@ class ApisTests(unittest.TestCase,
                                            names=["ORF_ID",
                                                   "KEGG_ID"],
                                            dtype="object")
+        cls.ref_org_db_X_df_drop_ORF_duplicates = pd.read_csv(
+            "test_data/ApisTests/ref_org_db_X_df_drop_ORF_duplicates.csv",
+            sep="\t",
+            names=["ORF_ID",
+            "KEGG_ID"],
+            dtype="object",
+        )
+        cls.ref_org_db_X_df_drop_KO_duplicates = pd.read_csv(
+            "test_data/ApisTests/ref_org_db_X_df_drop_KO_duplicates.csv",
+               sep="\t",
+               names=["ORF_ID",
+                      "KEGG_ID"],
+               dtype="object",
+        )
         cls.ref_KOs_db_X_ref_df = pd.read_csv(
             "test_data/ApisTests/ref_KOs_db_X_ref.csv",
             sep="\t",
@@ -164,13 +178,62 @@ class ApisTests(unittest.TestCase,
         for org_name, org_id in zip(self.orgs_names, self.orgs_ids):
             self.assertEqual(self.kegg_api.org_name_2_kegg_id(org_name), org_id)
 
-    def test_get_org_db_X_ref(self):
+    def test_get_org_db_X_ref_drop_all_duplicates(self):
         """
         Test if apis.get_org_db_X_ref returns correct KEGG database
-        cross-reference.
+        cross-reference. All the duplicates should be removed, duplicated rows,
+        duplicated ORF records and duplicated KOs records.
         """
         pd.testing.assert_frame_equal(self.kegg_api.org_db_X_ref_df,
                                       self.ref_org_db_X_df)
+
+    def test_get_org_db_X_ref_drop_ORF_duplicates(self):
+        """
+        Test if apis.get_org_db_X_ref returns correct KEGG database
+        cross-reference. All duplicated rows and duplicated ORF records should
+        be removed.
+        """
+        self.kegg_api_drop_ORF_duplicates = apis.KEGG_API()
+        self.kegg_api_drop_ORF_duplicates.get_organisms_ids(
+                "test_data/ApisTests/test_orgs_ids_in.csv",
+                skip_dwnld=True,
+        )
+        self.kegg_api_drop_ORF_duplicates.get_org_db_X_ref(
+            organism="Saccharomyces cerevisiae",
+            target_db="orthology",
+            out_file_name="test_data/ApisTests/test_orgs_db_X_ref.csv",
+            skip_dwnld=True,
+            drop_ORF_duplicates=True,
+            drop_KO_duplicates=False,
+        )
+        pd.testing.assert_frame_equal(
+            self.kegg_api_drop_ORF_duplicates.org_db_X_ref_df.reset_index(drop=True),
+            self.ref_org_db_X_df_drop_ORF_duplicates.reset_index(drop=True),
+        )
+
+    def test_get_org_db_X_ref_drop_KO_duplicates(self):
+        """
+        Test if apis.get_org_db_X_ref returns correct KEGG database
+        cross-reference. All duplicated rows and duplicated KO records should
+        be removed.
+        """
+        self.kegg_api_drop_KO_duplicates = apis.KEGG_API()
+        self.kegg_api_drop_KO_duplicates.get_organisms_ids(
+                "test_data/ApisTests/test_orgs_ids_in.csv",
+                skip_dwnld=True,
+        )
+        self.kegg_api_drop_KO_duplicates.get_org_db_X_ref(
+            organism="Saccharomyces cerevisiae",
+            target_db="orthology",
+            out_file_name="test_data/ApisTests/test_orgs_db_X_ref.csv",
+            skip_dwnld=True,
+            drop_ORF_duplicates=False,
+            drop_KO_duplicates=True,
+        )
+        pd.testing.assert_frame_equal(
+            self.kegg_api_drop_KO_duplicates.org_db_X_ref_df.reset_index(drop=True),
+            self.ref_org_db_X_df_drop_KO_duplicates.reset_index(drop=True),
+        )
 
     def test_get_KOs_db_X_ref(self):
         """
@@ -297,12 +360,12 @@ class DatabasesTests(unittest.TestCase):
                                                                                                   replace("'", "").
                                                                                                   split(",")])
 
-    def test_parse_database(self):
-        """
-        Test if kegg database if properly parsed.
-        """
-        self.kegg.parse_database(self.test_kegg_db_filename)
-        pd.testing.assert_frame_equal(self.ref_kegg_db, self.kegg.database)
+    #def test_parse_database(self):
+    #    """
+    #    Test if kegg database if properly parsed.
+    #    """
+    #    self.kegg.parse_database(self.test_kegg_db_filename)
+    #    pd.testing.assert_frame_equal(self.ref_kegg_db, self.kegg.database)
 
     def test_parse_organism_info(self):
         """
