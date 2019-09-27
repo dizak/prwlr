@@ -66,9 +66,7 @@ class KEGG_API(Columns):
             out_file_name (str): name for file to be downloaded
             skip_dwnld (bool): read existing file when <True>. Default <False>
         """
-        if skip_dwnld is True:
-            pass
-        else:
+        if not skip_dwnld:
             url = "{0}/{1}/{2}".format(self.home,
                                        self.operations["list_entry_ids"],
                                        self.databases["genome"])
