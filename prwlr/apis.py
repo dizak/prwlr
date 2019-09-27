@@ -158,6 +158,8 @@ class KEGG_API(Columns):
                                            names=[self.ORF_ID, self.KEGG_ID],
                                            header=None,
                                            sep="\t")
+        if not skip_dwnld:
+            self.org_db_X_ref_df.to_csv(out_file_name)
         if strip_prefix is True:
             self.org_db_X_ref_df.replace({"{}:".format(org_id): "",
                                           "{}:".format(self.databases[target_db]): ""},
