@@ -66,16 +66,13 @@ class KEGG_API(Columns):
             out_file_name (str): name for file to be downloaded
             skip_dwnld (bool): read existing file when <True>. Default <False>
         """
-        if skip_dwnld is True:
-            pass
+        if skip_dwnld:
+            path = out_file_name
         else:
-            url = "{0}/{1}/{2}".format(self.home,
+            path = "{0}/{1}/{2}".format(self.home,
                                        self.operations["list_entry_ids"],
                                        self.databases["genome"])
-            res = rq.get(url)
-            with open(out_file_name, "wb") as fout:
-                fout.write(res.content)
-        self.organisms_ids_df = pd.read_csv(out_file_name,
+        self.organisms_ids_df = pd.read_csv(path,
                                             names=[self.GENOME_ID,
                                                    self.NAMES,
                                                    self.DESCRIPTION],
@@ -84,6 +81,8 @@ class KEGG_API(Columns):
                                             engine="python",
                                             error_bad_lines=False,
                                             warn_bad_lines=True)
+        if not skip_dwnld:
+            self.organisms_ids_df.to_csv(out_file_name, sep='\t')
         temp_sub_df = self.organisms_ids_df[self.NAMES].str.split(",", expand=True)
         temp_sub_df.columns = [self.KEGG_ORG_ID, self.NAME, self.TAXON_ID]
         self.organisms_ids_df.drop(self.NAMES, axis=1, inplace=True)
@@ -148,20 +147,19 @@ class KEGG_API(Columns):
             skip_dwnld (bool) = read existing file when <True>. Default <False>
         """
         org_id = self.org_name_2_kegg_id(organism)
-        if skip_dwnld is True:
-            pass
+        if skip_dwnld:
+            path = out_file_name
         else:
-            url = "{0}/{1}/{2}/{3}".format(self.home,
+            path = "{0}/{1}/{2}/{3}".format(self.home,
                                            self.operations["find_X_ref"],
                                            self.databases[target_db],
                                            org_id)
-            res = rq.get(url)
-            with open(out_file_name, "wb") as fout:
-                fout.write(res.content)
-        self.org_db_X_ref_df = pd.read_csv(out_file_name,
+        self.org_db_X_ref_df = pd.read_csv(path,
                                            names=[self.ORF_ID, self.KEGG_ID],
                                            header=None,
                                            sep="\t")
+        if not skip_dwnld:
+            self.org_db_X_ref_df.to_csv(out_file_name)
         if strip_prefix is True:
             self.org_db_X_ref_df.replace({"{}:".format(org_id): "",
                                           "{}:".format(self.databases[target_db]): ""},
