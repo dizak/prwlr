@@ -81,6 +81,8 @@ class KEGG_API(Columns):
                                             engine="python",
                                             error_bad_lines=False,
                                             warn_bad_lines=True)
+        if not skip_dwnld:
+            self.organisms_ids_df.to_csv(out_file_name, sep='\t')
         temp_sub_df = self.organisms_ids_df[self.NAMES].str.split(",", expand=True)
         temp_sub_df.columns = [self.KEGG_ORG_ID, self.NAME, self.TAXON_ID]
         self.organisms_ids_df.drop(self.NAMES, axis=1, inplace=True)
