@@ -66,13 +66,12 @@ class KEGG_API(Columns):
             out_file_name (str): name for file to be downloaded
             skip_dwnld (bool): read existing file when <True>. Default <False>
         """
-        if not skip_dwnld:
-            url = "{0}/{1}/{2}".format(self.home,
+        if skip_dwnld:
+            path = out_file_name
+        else:
+            path = "{0}/{1}/{2}".format(self.home,
                                        self.operations["list_entry_ids"],
                                        self.databases["genome"])
-            res = rq.get(url)
-            with open(out_file_name, "wb") as fout:
-                fout.write(res.content)
         self.organisms_ids_df = pd.read_csv(out_file_name,
                                             names=[self.GENOME_ID,
                                                    self.NAMES,
