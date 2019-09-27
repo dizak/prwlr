@@ -147,17 +147,14 @@ class KEGG_API(Columns):
             skip_dwnld (bool) = read existing file when <True>. Default <False>
         """
         org_id = self.org_name_2_kegg_id(organism)
-        if skip_dwnld is True:
-            pass
+        if skip_dwnld:
+            path = out_file_name
         else:
-            url = "{0}/{1}/{2}/{3}".format(self.home,
+            path = "{0}/{1}/{2}/{3}".format(self.home,
                                            self.operations["find_X_ref"],
                                            self.databases[target_db],
                                            org_id)
-            res = rq.get(url)
-            with open(out_file_name, "wb") as fout:
-                fout.write(res.content)
-        self.org_db_X_ref_df = pd.read_csv(out_file_name,
+        self.org_db_X_ref_df = pd.read_csv(path,
                                            names=[self.ORF_ID, self.KEGG_ID],
                                            header=None,
                                            sep="\t")
