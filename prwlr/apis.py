@@ -72,7 +72,7 @@ class KEGG_API(Columns):
             path = "{0}/{1}/{2}".format(self.home,
                                        self.operations["list_entry_ids"],
                                        self.databases["genome"])
-        self.organisms_ids_df = pd.read_csv(out_file_name,
+        self.organisms_ids_df = pd.read_csv(path,
                                             names=[self.GENOME_ID,
                                                    self.NAMES,
                                                    self.DESCRIPTION],
