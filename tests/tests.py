@@ -395,7 +395,7 @@ class DatabasesTests(unittest.TestCase):
 
     @unittest.skipUnless(
         rq.get(apis.KEGG_API().home).status_code == 200,
-        f'{apis.KEGG_API().home} not responding'
+        '{} not responding'.format(apis.KEGG_API().home)
     )
     def test_parse_organism_info_keep_KO_duplicates(self):
         """
@@ -424,7 +424,7 @@ class DatabasesTests(unittest.TestCase):
 
     @unittest.skipUnless(
         rq.get(apis.KEGG_API().home).status_code == 200,
-        f'{apis.KEGG_API().home} not responding'
+        '{} not responding'.format(apis.KEGG_API().home)
     )
     def test_parse_organism_info_keep_ORF_duplicates(self):
         """
