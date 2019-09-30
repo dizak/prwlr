@@ -49,6 +49,8 @@ def profilize_organism(
     IDs=None,
     X_ref=None,
     KOs=None,
+    drop_KO_duplicates=False,
+    drop_ORF_duplicates=True,
 ):
     """
     Returns pandas.DataFrame with Phylogenetic Profile for each ORF name of an
@@ -81,6 +83,8 @@ def profilize_organism(
         IDs=IDs,
         X_ref=X_ref,
         KOs=KOs,
+        drop_KO_duplicates=drop_KO_duplicates,
+        drop_ORF_duplicates=drop_ORF_duplicates,
     )
     return kegg_db.organism_info.drop(columns=_databases.Columns.KEGG_ID)
 
