@@ -220,7 +220,10 @@ class KEGG_API(Columns):
             genes
         """
         def f(i):
-            print("{} ".format(i), flush=True, end='\r')
+            if sys.version_info.major < 3:
+                print("{} ".format(i))
+            else:
+                print("{} ".format(i), flush=True, end='\r')
             res = rq.get('{}/{}/{}/{}'.format(
             self.home,
             self.operations['find_X_ref'],
