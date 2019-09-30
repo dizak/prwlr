@@ -393,6 +393,10 @@ class DatabasesTests(unittest.TestCase):
         )
         pd.testing.assert_frame_equal(self.kegg.organism_info, self.ref_organism_info)
 
+    @unittest.skipUnless(
+        rq.get(apis.KEGG_API().home).status_code == 200,
+        f'{apis.KEGG_API().home} not responding'
+    )
     def test_parse_organism_info_keep_KO_duplicates(self):
         """
         Test if organism_info is properly parsed if input files are supplied.
@@ -418,6 +422,10 @@ class DatabasesTests(unittest.TestCase):
             self.ref_organism_info_KO_duplicates,
         )
 
+    @unittest.skipUnless(
+        rq.get(apis.KEGG_API().home).status_code == 200,
+        f'{apis.KEGG_API().home} not responding'
+    )
     def test_parse_organism_info_keep_ORF_duplicates(self):
         """
         Test if organism_info is properly parsed if input files are supplied.
