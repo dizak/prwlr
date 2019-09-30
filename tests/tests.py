@@ -345,6 +345,16 @@ class DatabasesTests(unittest.TestCase):
             sep="\t",
             index_col=[0],
             )
+        self.ref_organism_info_KO_duplicates = pd.read_csv(
+            "test_data/DatabasesTests/ref_organism_info_KO_duplicates.csv",
+            sep="\t",
+            index_col=[0],
+        )
+        self.ref_organism_info_ORF_duplicates = pd.read_csv(
+            "test_data/DatabasesTests/ref_organism_info_ORF_duplicates.csv",
+            sep="\t",
+            index_col=[0],
+        )
         self.ref_kegg_db = pd.read_csv("test_data/DatabasesTests/ref_kegg_db.csv",
                                        sep='\t',
                                        index_col=[0])
