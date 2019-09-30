@@ -2,6 +2,7 @@
 
 
 from __future__ import print_function
+import sys
 import requests as rq
 import pandas as pd
 from tqdm import tqdm
