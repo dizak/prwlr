@@ -175,6 +175,10 @@ class KEGG(Columns):
                             drop_KO_duplicates=True,
                             threads=6,
                             raise_exceptions=True):
+        KOs_different = """{} of X_reference and KO_organisms are different.""".format(self.KEGG_ID)
+        KOs_different_mltpl_threads_msg = """{} of X_reference and KO_organisms are different. This
+        might be caused by the server access denial. Try
+        deacreasing number of threads""".format(self.KEGG_ID)
         print("Getting the organisms' KEGG IDs...")
         if IDs:
             self._api.get_organisms_ids(IDs, skip_dwnld=True)
