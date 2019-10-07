@@ -345,6 +345,16 @@ class DatabasesTests(unittest.TestCase):
             sep="\t",
             index_col=[0],
             )
+        self.ref_organism_info_KO_duplicates = pd.read_csv(
+            "test_data/DatabasesTests/ref_organism_info_KO_duplicates.csv",
+            sep="\t",
+            index_col=[0],
+        )
+        self.ref_organism_info_ORF_duplicates = pd.read_csv(
+            "test_data/DatabasesTests/ref_organism_info_ORF_duplicates.csv",
+            sep="\t",
+            index_col=[0],
+        )
         self.ref_kegg_db = pd.read_csv("test_data/DatabasesTests/ref_kegg_db.csv",
                                        sep='\t',
                                        index_col=[0])
@@ -383,6 +393,63 @@ class DatabasesTests(unittest.TestCase):
         )
         pd.testing.assert_frame_equal(self.kegg.organism_info, self.ref_organism_info)
 
+    @unittest.skipUnless(
+        rq.get(apis.KEGG_API().home).status_code == 200,
+        '{} not responding'.format(apis.KEGG_API().home)
+    )
+    def test_parse_organism_info_keep_KO_duplicates(self):
+        """
+        Test if organism_info is properly parsed if input files are supplied.
+        Duplicated KOs should be kept. Requires internet connection.
+        """
+        self.kegg.parse_organism_info(
+            organism=self.organism_name,
+            reference_species=self.query_species,
+            IDs=self.IDs,
+            X_ref=self.X_ref,
+            #KOs=self.KOs,
+            drop_KO_duplicates=False,
+        )
+        self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
+        self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
+        self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
+        self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
+        self.kegg.organism_info[self.kegg.PROF] = self.kegg.organism_info[
+                self.kegg.PROF
+        ].apply(lambda x: x.to_string())
+        pd.testing.assert_frame_equal(
+            self.kegg.organism_info,
+            self.ref_organism_info_KO_duplicates,
+        )
+
+    @unittest.skipUnless(
+        rq.get(apis.KEGG_API().home).status_code == 200,
+        '{} not responding'.format(apis.KEGG_API().home)
+    )
+    def test_parse_organism_info_keep_ORF_duplicates(self):
+        """
+        Test if organism_info is properly parsed if input files are supplied.
+        Duplicated ORFs should be kept. Requires internet connection.
+        """
+        self.kegg.parse_organism_info(
+            organism=self.organism_name,
+            reference_species=self.query_species,
+            IDs=self.IDs,
+            X_ref=self.X_ref,
+            #KOs=self.KOs,
+            drop_ORF_duplicates=False,
+        )
+        self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
+        self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
+        self.assertEqual(self.kegg.name_ID, self.ref_databases_KEGG_name_ID)
+        self.assertEqual(self.kegg.ID_name, self.ref_databases_KEGG_ID_name)
+        self.kegg.organism_info[self.kegg.PROF] = self.kegg.organism_info[
+                self.kegg.PROF
+        ].apply(lambda x: x.to_string())
+        pd.testing.assert_frame_equal(
+            self.kegg.organism_info,
+            self.ref_organism_info_ORF_duplicates,
+        )
 
 class SGA1Tests(unittest.TestCase):
     """
