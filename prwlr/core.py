@@ -51,6 +51,8 @@ def profilize_organism(
     KOs=None,
     drop_KO_duplicates=False,
     drop_ORF_duplicates=True,
+    threads=6,
+    raise_exceptions=True,
 ):
     """
     Returns pandas.DataFrame with Phylogenetic Profile for each ORF name of an
