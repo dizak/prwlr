@@ -79,15 +79,7 @@ def profilize_organism(
     pandas.DataFrame
     """
     kegg_db = _databases.KEGG('Orthology')
-    kegg_db.parse_organism_info(
-        organism=organism,
-        reference_species=species,
-        IDs=IDs,
-        X_ref=X_ref,
-        KOs=KOs,
-        drop_KO_duplicates=drop_KO_duplicates,
-        drop_ORF_duplicates=drop_ORF_duplicates,
-    )
+    kegg_db.parse_organism_info(*args, **kwargs)
     return kegg_db.organism_info.drop(columns=_databases.Columns.KEGG_ID)
 
 def read_sga(
