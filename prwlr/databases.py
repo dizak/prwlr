@@ -173,7 +173,8 @@ class KEGG(Columns):
                             IDs_only=False,
                             drop_ORF_duplicates=True,
                             drop_KO_duplicates=True,
-                            threads=6):
+                            threads=6,
+                            raise_exceptions=True):
         print("Getting the organisms' KEGG IDs...")
         if IDs:
             self._api.get_organisms_ids(IDs, skip_dwnld=True)
