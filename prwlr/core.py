@@ -43,17 +43,7 @@ def get_IDs_names(
     )
     return {k.lower(): v for k, v in kegg_db.ID_name.items()}
 
-def profilize_organism(
-    organism,
-    species,
-    IDs=None,
-    X_ref=None,
-    KOs=None,
-    drop_KO_duplicates=False,
-    drop_ORF_duplicates=True,
-    threads=6,
-    raise_exceptions=True,
-):
+def profilize_organism(*args, **kwargs):
     """
     Returns pandas.DataFrame with Phylogenetic Profile for each ORF name of an
     organism.
