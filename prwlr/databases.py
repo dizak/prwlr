@@ -173,7 +173,12 @@ class KEGG(Columns):
                             IDs_only=False,
                             drop_ORF_duplicates=True,
                             drop_KO_duplicates=True,
-                            threads=6):
+                            threads=6,
+                            raise_exceptions=True):
+        KOs_different = """{} of X_reference and KO_organisms are different.""".format(self.KEGG_ID)
+        KOs_different_mltpl_threads_msg = """{} of X_reference and KO_organisms are different. This
+        might be caused by the server access denial. Try
+        deacreasing number of threads""".format(self.KEGG_ID)
         print("Getting the organisms' KEGG IDs...")
         if IDs:
             self._api.get_organisms_ids(IDs, skip_dwnld=True)
@@ -236,18 +241,15 @@ class KEGG(Columns):
             self.KO_organisms = self._api.KOs_db_X_ref_df
         except AssertionError:
             if threads > 1:
-                raise ParserError(
-                    """{} of X_reference and KO_organisms are different. This
-                    might be caused by the server access denial. Try
-                    deacreasing number of threads""".format(
-                        self.KEGG_ID
-                    )
-                )
+                if raise_exceptions:
+                    raise ParserError(KOs_different_mltpl_threads_msg)
+                else:
+                    print(KOs_different_mltpl_threads_msg)
             else:
-                raise ParserError(
-                    """{} of X_reference and KO_organisms are different.""".
-                    format(self.KEGG_ID)
-                )
+                if raise_exceptions:
+                    raise ParserError(KOs_different)
+                else:
+                    print(KOs_different)
         self.organism_info = pd.merge(
             left=self.X_reference,
             right=self.KO_organisms,
