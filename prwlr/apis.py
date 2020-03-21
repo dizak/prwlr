@@ -240,7 +240,8 @@ class KEGG_API(Columns):
                     self.org_db_X_ref_df[self.KEGG_ID]
                 )
             else:
-                map(f, self.org_db_X_ref_df[self.KEGG_ID])
+                for i in self.org_db_X_ref_df[self.KEGG_ID]:
+                    f(i)
         self.KOs_db_X_ref_df = pd.read_csv(filename,
                                            names=[self.KEGG_ID,
                                                   self.ORG_GENE_ID],
