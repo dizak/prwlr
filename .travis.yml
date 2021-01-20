@@ -27,4 +27,5 @@ script:
 
 notifications:
   email:
-    - szymon@ibb.waw.pl
+    on_success: never
+    on_failure: never
