@@ -282,7 +282,7 @@ class KEGG_API(Columns):
             url = "{0}/{1}/{2}".format(self.home,
                                        self.operations["get_by_entry_no"],
                                        i)
-            print(f"Getting entry from {url}")
+            print("Getting entry from {}".format(url))
             res = rq.get(url)
             with open(out_file_name, "ab") as fout:
                 fout.write(res.content)
