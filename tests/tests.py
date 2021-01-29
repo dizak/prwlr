@@ -758,11 +758,11 @@ class StatsTests(unittest.TestCase):
         self.assertGreater(stats.binomial_pss_test(desired_pss=self.desired_pss,
                                                    selected=self.ref_nwrk,
                                                    total=self.ref_nwrk)["complete"],
-                           550)
+                           500)
         self.assertLess(stats.binomial_pss_test(desired_pss=self.desired_pss,
                                                 selected=self.ref_nwrk,
                                                 total=self.ref_nwrk)["complete"],
-                        650)
+                        700)
 
 
 class CoreTests(unittest.TestCase):
