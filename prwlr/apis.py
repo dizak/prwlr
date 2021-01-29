@@ -221,16 +221,24 @@ class KEGG_API(Columns):
             genes
         """
         def f(i):
+            retries = rq.packages.urllib3.util.retry.Retry(
+                total=5,
+                backoff_factor=0.5,
+            )
+            adapter = rq.adapters.HTTPAdapter(max_retries=retries)
+            http = rq.Session()
+            http.mount("http://", adapter)
             if sys.version_info.major < 3:
                 print("{} ".format(i))
             else:
                 print("{} ".format(i), flush=True, end='\r')
-            res = rq.get('{}/{}/{}/{}'.format(
-            self.home,
-            self.operations['find_X_ref'],
-            self.databases[target_db],
-            i,
-            ))
+            url = '{}/{}/{}/{}'.format(
+                self.home,
+                self.operations['find_X_ref'],
+                self.databases[target_db],
+                i,
+            )
+            res = rq.get(url)
             with open(filename, 'ab') as fout:
                 fout.write(res.content)
         if not skip_dwnld:
@@ -274,6 +282,7 @@ class KEGG_API(Columns):
             url = "{0}/{1}/{2}".format(self.home,
                                        self.operations["get_by_entry_no"],
                                        i)
+            print("Getting entry from {}".format(url))
             res = rq.get(url)
             with open(out_file_name, "ab") as fout:
                 fout.write(res.content)

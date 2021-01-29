@@ -52,7 +52,7 @@ def profilize_organism(*args, **kwargs):
     -------
     organism: str
         Full biological name of the organism.
-    species: list of str
+    reference_species: list of str
         List of full biological names to build the Phylogenetic Profile.
     IDs: str, path
         Filename of the KEGG Organism IDs. Downloaded to a temporary file if
@@ -63,6 +63,9 @@ def profilize_organism(*args, **kwargs):
     KOs: str, path
         Filename of the KEGG Orthology Group-Organism cross-reference.
         Downloaded to a temporary file if <None>.
+    threads: int
+        Number of threads to utilize when downloading from KEGG. More means
+        faster but can make KEGG block the download temporarily. Default: <2>
 
     Returns
     ------

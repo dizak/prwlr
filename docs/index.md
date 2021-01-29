@@ -48,7 +48,7 @@ species=[
 
 profiles = prwl.profilize_organism(
     organism="Saccharomyces cerevisiae",
-    species=species
+    reference_species=species
 )
 
 profiles.head()

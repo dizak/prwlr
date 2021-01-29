@@ -13,7 +13,7 @@ setup(
     author=AUTHOR,
     packages=find_packages(exclude=["*test*"]),
     install_requires=open("requirements.txt").readlines(),
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, <4',
+    python_requires='>3.5',
     long_description=open("README.md").read(),
     description="Annotate genetic interactions networks with phylogenetic profiles and other attributes.",
     author_email="dariusz.izak@ibb.waw.pl",
@@ -33,7 +33,6 @@ setup(
     classifiers=[
         "License :: OSI Approved :: BSD License",
         "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
     ],
 )
