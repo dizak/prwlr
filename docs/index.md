@@ -62,7 +62,19 @@ profiles.head()
 |YNL151C|-+--+---+------
 |YNL162W|++--+-+-++-++++
 
-Parse your **Genetic Interactions** network. It can come from the widely-known [Costanzo Network](http://science.sciencemag.org/content/353/6306/aaf1420) or from any other source.
+*Please note that [KEGG Orthology](http://www.genome.jp/kegg/ko.html) put restrictions on the download bandwidth. Profilizing the ORFs set for an entire organism can take up to several minutes*
+
+You're short on time and interested in just a subset of ORFs? Use ```restrict_to``` parameter:
+
+```python
+profiles = prwl.profilize_organism(
+    organism="Saccharomyces cerevisiae",
+    reference_species=species,
+    restrict_to=["YNL113W", "YNL130C", "YNL141W", "YNL151C"],
+)
+```
+
+Parse your **GeneYNL162Wtic Interactions** network. It can come from the widely-known [Costanzo Network](http://science.sciencemag.org/content/353/6306/aaf1420) or from any other source.
 
 ```python
 ExN_NxE = prwl.read_sga('./SGA_ExN_NxE.txt')
