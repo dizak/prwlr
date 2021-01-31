@@ -166,6 +166,7 @@ class KEGG(Columns):
     def parse_organism_info(self,
                             organism,
                             reference_species,
+                            restrict_to=None,
                             IDs=None,
                             X_ref=None,
                             KOs=None,
@@ -215,6 +216,10 @@ class KEGG(Columns):
                                        skip_dwnld=False,
                                        strip_prefix=True)
             X_ref_tmp.close()
+        if restrict_to is not None:
+            self._api.org_db_X_ref_df = self._api.org_db_X_ref_df[
+                self._api.org_db_X_ref_df[self._api.ORF_ID].isin(restrict_to)
+            ]
         self.X_reference = self._api.org_db_X_ref_df
         print("Getting the Organisms List for Each of The Orthology Group...")
         if KOs:
