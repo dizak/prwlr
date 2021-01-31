@@ -74,6 +74,8 @@ profiles = prwl.profilize_organism(
 )
 ```
 
+The order of the organisms in the profile's ```.query``` attribute is always imposed by ```prwlr``` by sorting and removing the duplicates. Thanks to that, you will always get the same profile for the same set of organisms, no need to worry about that.
+
 Parse your **GeneYNL162Wtic Interactions** network. It can come from the widely-known [Costanzo Network](http://science.sciencemag.org/content/353/6306/aaf1420) or from any other source.
 
 ```python
