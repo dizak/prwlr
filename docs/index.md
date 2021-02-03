@@ -46,7 +46,7 @@ species=[
     'Volvox carteri',
 ]
 
-profiles = prwl.profilize_organism(
+profiles = prwlr.profilize_organism(
     organism="Saccharomyces cerevisiae",
     reference_species=species
 )
